@@ -1,0 +1,74 @@
+1- Abrir la ventana de comandos
+2- Navegar a la carpeta "Firmwares" del proyecto (C:\Users\Franco\Google Drive\YAELTEX\HARDWARE\KILO MUX SHIELD\KILO MUX SHIELD\Firmwares)
+3- Ejecutar los siguientes comandos, según el firmware deseado
+	Para HIDUINO:
+		avrdude -p at90usb162 -b 19200 -P COM10 -c arduino -U flash:w:HIDUINO_MIDI.hex -v -F
+		avrdude -p at90usb162 -b 19200 -P COM10 -c arduino -U flash:w:TRACTORCITO.hex -v -F
+	Para USB-SERIAL+DFU:
+	usbserial_uno_16u2
+		2- avrdude -p at90usb162 -b 19200 -P COM10 -c arduino -U flash:w:usbserial_uno_16u2.hex -v -F
+		3- avrdude -p at90usb162 -F -P COM10 -c arduino -U flash:w:usbserial_uno_16u2.hex -U lfuse:w:0xFF:m -U hfuse:w:0xD9:m -U efuse:w:0xF4:m -U lock:w:0x0F:m
+		
+ERRORES Y SOLUCIONES:
+	- stk500_getsync(): not in sync: resp=0x15 o 0x00
+		- Capacitor de 10uF entre RESET y GND del arduino programador.
+		
+	- Device signature: 0xXXXXXX
+	  Expected signature for BLABLA is 0xZZZZZZ.
+		- Agregar al final del comando la opción -F, para pasar por alto la verificación
+		- http://www.ladyada.net/learn/avr/avrdude.html
+				
+		
+		
+Para cambiar el nombre del dispositivo, debemos tener:
+- Windows: WinAVR instalado (para usar avrdude) - http://winavr.sourceforge.net/download.html
+- Mac: CodePack - https://www.obdev.at/products/crosspack/index.html
+- LUFA 101122 - http://www.fourwalledcubicle.com/files/LUFA/LUFA-101122.zip
+- HIDUINO-MASTER - https://github.com/ddiakopoulos/hiduino
+
+La versión precompilada de HIDUINO es reconocida por la computadora como "HIDUINO". Compilar desde cero permite a un usuario renombrar el dispositivo cambiando solo una cadena de caracteres y su largo en el archivo de nombre "Descriptors.c", en la lineas 275 y 277:
+
+273 - USB_Descriptor_String_t PROGMEM ProductString =
+274 - {
+275 -	.Header                 = {.Size = USB_STRING_LEN(11), .Type = DTYPE_String},
+276 -
+277 -	.UnicodeString          = L"TRACTORCITO"
+278 - };
+
+Asegurarse que se descargó LUFA 101122. Colocar la carpeta entera en la carpeta "hiduino-master"
+
+  `hiduino-master\LUFA 101122`
+
+Copiar la carpeta entera
+
+  `hiduino-master\src\Experimental\HIDUINO_MIDI`
+
+En
+
+  `hiduino-master\LUFA 101122\Projects`
+
+Esto es necesario para que el makefile encuentre la librería LUFA. Dependiendo del dispositivo utilizado (Arduino Uno o Mega2560), se debe comentar la linea 70 o la 72 del makefile. Por default, el dispositivo es Mega2560.
+
+Una vez que la carpeta fue movida a la carpeta Projects, navegar con la linea de comandos al interior de esa carpeta con el comando cd:
+Ej:
+	`cd C:\Users\Franco\Google Drive\YAELTEX\HARDWARE\KILO MUX SHIELD\KILO MUX SHIELD\Codigo\lib\hiduino-master\LUFA101122\Projects\HIDUINO_MIDI`
+  
+y ejecutar make:
+
+  `make`
+
+La compilación debería demorar entre 5-10 segundos. Una vez completada tomar el archivo HIDUINO_MIDI.hex y cargarlo en la arduino deseada con el programador.
+
+Errores posibles con la última versión de hiduino "arduino-midi.c":
+	-	Al compilar, "make" tira un error 2, diciendo que no reconoce un parámetro de una función en la línea 74:
+			73- // Disable clock division
+			74- 	clock_prescale_set(clock_div_1);
+		
+		"clock_div_1" no está definido para algunos microcontroladores (bug en avr/power.h). Referencia: http://fab.cba.mit.edu/classes/863.14/people/andrew_mao/week11/
+																										 http://savannah.nongnu.org/bugs/?39061
+		Comentar esa línea y debajo pegar el siguiente código:
+		
+			CLKPR = (1 << CLKPCE);
+			CLKPR = (0 << CLKPS3) | (0 << CLKPS2) | (0 << CLKPS1) | (0 << CLKPS0);
+		
+		Recompilar con "make".
