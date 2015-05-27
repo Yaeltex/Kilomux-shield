@@ -20,38 +20,11 @@ NOTA: Se modificó la librería MuxShield, para trabajar sólo con 1 o 2 multipl
 Para las entradas analógicas, por cuestiones de ruido se recomienda usar potenciómetros o sensores con buena estabilidad, y con preferencia con valores 
 cercanos o menores a 10 Kohm.
 
-Si se quiere enviar los datos via MIDI, ya sea a través de HIDUINO o por serial hacia un intermediario (HW o SW) se deben descomentar las siguientes líneas
-En la función setup()
-- MIDI.begin(MIDI_CHANNEL_OMNI;  
-En la función loop()
-- leer_MIDI();
-En la función leerEntradas()
-- enviarControlChangeMidi(nota);
-- enviarNoteMidi(nota, NOTE_ON);
-- enviarNoteMidi(nota, NOTE_OFF);
-En la función leerUltrasonico()
-- MIDI.sendControlChange(CC_US_MIDI, ccSensorValue, CANAL_MIDI_CC);
-          
-
-Y se deben sacar los comentarios de las siguientes líneas, que se haya justo abajo de cada una de las anteriores
-En la función setup()
-- Serial.begin(VELOCIDAD_SERIAL);                   // NOTA: No descomentar ésta línea si se desea enviar MIDI por USB hacia Hairless MIDI.
-En la función loop()
-- encender_leds_serial();
-En la función leerEntradas()
-- enviarControlChangeSerial(nota);  
-- enviarNoteSerial(nota, NOTE_ON);  
-- enviarNoteSerial(nota, NOTE_ON);   
-En la función leerUltrasonico()
-- Serial.print("Sensor Ultrasonico CC: "); Serial.print(CC_US_MIDI); Serial.print("  Valor: "); Serial.print(ccSensorValue);
-
 Agradecimientos:
   - Jorge Crowe
   - Lucas Leal
   - Dimitri Diakopoulos
 */
-// BOF preprocessor bug prevent - insert me on top of your arduino-code
-// From: http://www.a-control.de/arduino-fehler/?lang=en
 
 #include <NewPing.h>
 #include <MIDI.h>
@@ -65,24 +38,30 @@ Agradecimientos:
 // Comentar la siguiente linea si no se usa sensor de ultrasonido
 #define CON_ULTRASONIDO
 
+// Comentar una de las dos lineas siguientes para definir el tipo de comunicación
+#define COMUNICACION_MIDI
+#define COMUNICACION_SERIAL
+
 void setup(); // Esto es para solucionar el bug que tiene Arduino al usar los #ifdef del preprocesador
 
-#define NUM_MUX 2                                  // Número de multiplexores a direccionar
-#define NUM_CANALES_MUX 16                         // Número de canales en cada mux
+#define NUM_MUX 2 // Número de multiplexores a direccionar
+#define NUM_CANALES_MUX 16 // Número de canales en cada mux
 
 #define MUX_A 0
 #define MUX_B 1
-#define MUX_A_ENTRADA A0                           // Pin analógico por dónde se lee el MUX A
-#define MUX_B_ENTRADA A1                           // Pin analógico por dónde se lee el MUX B
+#define MUX_A_ENTRADA A0 // Pin analógico por dónde se lee el MUX A
+#define MUX_B_ENTRADA A1 // Pin analógico por dónde se lee el MUX B
 
-#define MUX_DIGITAL   MUX_A                        // CAMBIAR SEGÚN APLICACIÓN
-#define MUX_ANALOGICO MUX_B                        // CAMBIAR SEGÚN APLICACIÓN
+// CAMBIAR SEGÚN APLICACIÓN
+#define MUX_DIGITAL   MUX_B   
+// CAMBIAR SEGÚN APLICACIÓN
+#define MUX_ANALOGICO MUX_A 
 
-#define ENTRADA_DIGITAL   MUX_A_ENTRADA            // CAMBIAR SEGÚN APLICACIÓN -  Multiplexor con entradas digitales
-#define ENTRADA_ANALOGICA MUX_B_ENTRADA            // CAMBIAR SEGÚN APLICACIÓN - Multiplexor con entradas analógicas
+#define ENTRADA_DIGITAL   MUX_B_ENTRADA // CAMBIAR SEGÚN APLICACIÓN - Multiplexor con entradas digitales
+#define ENTRADA_ANALOGICA MUX_A_ENTRADA // CAMBIAR SEGÚN APLICACIÓN - Multiplexor con entradas analógicas
 
-#define NUM_595s 2                                 // Número de integrados 74HC595
-#define NUM_LEDS NUM_595s*8                        // Número de LEDs en total, NO CAMBIAR
+#define NUM_595s 2 // Número de integrados 74HC595
+#define NUM_LEDS NUM_595s*8 // Número de LEDs en total, NO CAMBIAR
 
 // Estos valores dependen de como están cableados los botones en el controlador
 // FIJOS - NO TOCAR!!!
@@ -298,19 +277,22 @@ void setup() {
 
   clearRegisters();                             // Se limpia el array registros (todos a LOW)
   writeRegisters();                             // Se envían los datos al 595
-  // COMENTAR LA SIGUIENTE LINEA PARA DEBUGGEAR CON SERIAL ///////////////////////////////////////////////////////////////////////
+
+#ifdef COMUNICACION_MIDI
   MIDI.begin(MIDI_CHANNEL_OMNI); MIDI.turnThruOff();  // Se inicializa la comunicación MIDI.
                                                       // Por default, la librería de Arduino MIDI tiene el THRU en ON, y NO QUEREMOS ESO!
-                                                      
-  // DESCOMENTAR LA SIGUIENTE LINEA PARA DEBUGGEAR CON SERIAL ///////////////////////////////////////////////////////////////////////                                                      
+#elif defined(COMUNICACION_SERIAL)
   Serial.begin(VELOCIDAD_SERIAL);                  // Se inicializa la comunicación serial. Descomentar para usar con Hairless MID
+#endif
 }
 
 void loop() {  
-  // COMENTAR LA SIGUIENTE LINEA PARA DEBUGGEAR CON SERIAL ///////////////////////////////////////////////////////////////////////
+#ifdef COMUNICACION_MIDI
    leer_MIDI();
-  // DESCOMENTAR LA SIGUIENTE LINEA PARA DEBUGGEAR CON SERIAL ///////////////////////////////////////////////////////////////////////
-//  encender_leds_serial();
+#elif defined(COMUNICACION_SERIAL)
+  encender_leds_serial();
+#endif  
+
   if (millis() - anteriorMillis > INTERVALO_LEDS)          // Si transcurrieron más de X ms desde la ultima actualización,
     titilarLeds();
   leerEntradas();
@@ -333,11 +315,11 @@ void leerEntradas(void) {
         velocity[mux][canal] = analogData >> 3;                                      // El valor leido va de 0-1023. Convertimos a 0-127, dividiendo por 8.
         
         if (esRuido(canal) == 0) {                                         // Si lo que leo no es ruido
-          // COMENTAR LA SIGUIENTE LINEA PARA DEBUGGEAR CON SERIAL ///////////////////////////////////////////////////////////////////////
-           enviarControlChangeMidi(canal);
-          // DESCOMENTAR LA SIGUIENTE LINEA PARA DEBUGGEAR CON SERIAL ///////////////////////////////////////////////////////////////////////          
-//          enviarControlChangeSerial(canal);
-          // FIN COMENTARIO ///////////////////////////////////////////////////////////////////////////////////////////
+          #ifdef COMUNICACION_MIDI
+            enviarControlChangeMidi(canal);
+          #elif defined(COMUNICACION_SERIAL)
+            enviarControlChangeSerial(canal);
+          #endif
         }
         else continue;
       }
@@ -351,19 +333,19 @@ void leerEntradas(void) {
           if (!velocity[mux][canal] && !noteOn[canal]) {                               // Si leo 0 (botón accionado) 
             noteOn[canal] = 1;
             // Se envía NOTE ON
-            // COMENTAR LA SIGUIENTE LINEA PARA DEBUGGEAR CON SERIAL ///////////////////////////////////////////////////////////////////////
-            enviarNoteMidi(canal, NOTE_ON);
-            // DESCOMENTAR LA SIGUIENTE LINEA PARA DEBUGGEAR CON SERIAL ///////////////////////////////////////////////////////////////////////            
-//            enviarNoteSerial(canal, NOTE_ON);
-            // FIN COMENTARIO ///////////////////////////////////////////////////////////////////////////////////////////
+            #ifdef COMUNICACION_MIDI
+              enviarNoteMidi(canal, NOTE_ON);
+            #elif defined(COMUNICACION_SERIAL)
+              enviarNoteSerial(canal, NOTE_ON);
+            #endif
           }
           else if (noteOn[canal]) {
             noteOn[canal] = 0;
-            // COMENTAR LA SIGUIENTE LINEA PARA DEBUGGEAR CON SERIAL ///////////////////////////////////////////////////////////////////////
-            enviarNoteMidi(canal, NOTE_OFF);
-            // DESCOMENTAR LA SIGUIENTE LINEA PARA DEBUGGEAR CON SERIAL ///////////////////////////////////////////////////////////////////////
-//            enviarNoteSerial(canal, NOTE_OFF);
-            // FIN COMENTARIO ///////////////////////////////////////////////////////////////////////////////////////////
+            #ifdef COMUNICACION_MIDI
+              enviarNoteMidi(canal, NOTE_OFF);
+            #elif defined(COMUNICACION_SERIAL)
+              enviarNoteSerial(canal, NOTE_OFF);
+            #endif
           }
         }
         // FIN CÓDIGO PARA LECTURA DE ENTRADAS DIGITALES /////////////////////////////////////////////////////////////////////
@@ -414,15 +396,19 @@ void leerUltrasonico(void){
         indiceFiltro %= FILTRO_US+1;
         // FIN FILTRADO ////////////////////////////////
         
-        // COMENTAR LA SIGUIENTE LINEA PARA DEBUGGEAR CON SERIAL ///////////////////////////////////////////////////////////////////////
-        MIDI.sendControlChange(CC_US_MIDI, ccSensorValue, CANAL_MIDI_CC);
-        // DESCOMENTAR LA SIGUIENTE LINEA PARA DEBUGGEAR CON SERIAL ///////////////////////////////////////////////////////////////////////
-        //Serial.print("Sensor Ultrasonico CC: "); Serial.print(CC_US_MIDI); Serial.print("  Valor: "); Serial.println(ccSensorValue);
-      }      
+        #ifdef COMUNICACION_MIDI
+          MIDI.sendControlChange(CC_US_MIDI, ccSensorValue, CANAL_MIDI_CC);
+        #elif defined(COMUNICACION_SERIAL)
+          Serial.print("Sensor Ultrasonico CC: "); Serial.print(CC_US_MIDI); Serial.print("  Valor: "); Serial.println(ccSensorValue);
+        #endif
+      }
+      else return;        
     }
   }
 }
 #endif
+
+#ifdef COMUNICACION_MIDI
 // Lee el canal midi, note y velocity, y actualiza el estado de los leds.
 void leer_MIDI(void) {
   // COMENTAR PARA DEBUGGEAR CON SERIAL ///////////////////////////////////////////////////////////////////////
@@ -549,7 +535,9 @@ void leer_MIDI(void) {
   }
   // FIN COMENTARIO ///////////////////////////////////////////////////////////////////////////////////////////
 }
+#endif
 
+#ifdef COMUNICACION_SERIAL
 void encender_leds_serial(void){
 // EL DEBUG FUNCIONA ENVIANDO DESDE EL TERMINAL SERIE UN NUMERO DEL 0-9 O UNA LETRA DE a-f O DE A-F (10-15) QUE CORRESPONDE AL LED QUE QUEREMOS QUE CAMBIE DE ESTADO
   // CADA VEZ QUE LLEGA EL NUMERO, SE CAMBIA DE UN ESTADO AL SIGUIENTE
@@ -599,6 +587,8 @@ void encender_leds_serial(void){
     }
   // FIN COMENTARIO DEBUG ///////////////////////////////////////////////////////////////////////////////////////////
 }
+#endif
+
 // Esta función actualiza el estado de los LEDs que titilan
 void titilarLeds(void) {
   unsigned int i = 0;
@@ -616,6 +606,7 @@ void titilarLeds(void) {
   tiempo_on = !tiempo_on;
 }
 
+#ifdef COMUNICACION_MIDI
 void enviarNoteMidi(unsigned int nota, unsigned int veloc) {
   switch (nota) {
     case NOTA_0_HW:  MIDI.sendNoteOn(NOTA_0_MIDI, veloc, CANAL_MIDI_NOTES); break;
@@ -637,6 +628,9 @@ void enviarNoteMidi(unsigned int nota, unsigned int veloc) {
   }
   return;
 }
+#endif
+
+#ifdef COMUNICACION_SERIAL
 void enviarNoteSerial(unsigned int nota, unsigned int veloc) {
 // FIN COMENTARIO ///////////////////////////////////////////////////////////////////////////////////////////
   // DEBUG ///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -661,6 +655,9 @@ void enviarNoteSerial(unsigned int nota, unsigned int veloc) {
   }
   /////// FIN CODIGO DEBUG ////////////////////////////////////////////////////////////////////////////////////////////////
 }  
+#endif
+
+#ifdef COMUNICACION_MIDI
 // Remapea las entradas analógicas y las envía por MIDI
 void enviarControlChangeMidi(unsigned int nota) {
   switch (nota) {
@@ -684,7 +681,9 @@ void enviarControlChangeMidi(unsigned int nota) {
   }
   return;
 }
+#endif
 
+#ifdef COMUNICACION_SERIAL
 void enviarControlChangeSerial(unsigned int nota) {
   switch (nota) {
     case CC_0_HW:  Serial.print("Numero de pote: "); Serial.print(CC_0_MIDI); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
@@ -704,9 +703,9 @@ void enviarControlChangeSerial(unsigned int nota) {
     case CC_14_HW:  Serial.print("Numero de pote: "); Serial.print(CC_14_MIDI); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
     case CC_15_HW:  Serial.print("Numero de pote: "); Serial.print(CC_15_MIDI); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
   }
-  return;
-  
+  return; 
 }
+#endif
 
 // Funcion para filtrar el ruido analógico de los pontenciómetros. Guarda 3 valores para detectar si el valor crece o decrece intencionalmente, o si
 // es ruido de inestabilidad que baila entre dos valores +-1.
