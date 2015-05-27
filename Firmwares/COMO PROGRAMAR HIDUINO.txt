@@ -2,9 +2,12 @@
 2- Navegar a la carpeta "Firmwares" del proyecto (C:\Users\Franco\Google Drive\YAELTEX\HARDWARE\KILO MUX SHIELD\KILO MUX SHIELD\Firmwares)
 3- Ejecutar los siguientes comandos, según el firmware deseado
 	Para HIDUINO:
+		avrdude -p at90usb162 -b 19200 -P COM10 -c arduino -U flash:w:HIDUINO_MIDI.hex -v -F
 		avrdude -p at90usb162 -b 19200 -P COM10 -c arduino -U flash:w:TRACTORCITO.hex -v -F
 	Para USB-SERIAL+DFU:
-		avrdude -p at90usb162 -b 19200 -P COM10 -c arduino -U flash:w:usbserial_uno_16u2.hex -v -F
+	usbserial_uno_16u2
+		2- avrdude -p at90usb162 -b 19200 -P COM10 -c arduino -U flash:w:usbserial_uno_16u2.hex -v -F
+		3- avrdude -p at90usb162 -F -P COM10 -c arduino -U flash:w:usbserial_uno_16u2.hex -U lfuse:w:0xFF:m -U hfuse:w:0xD9:m -U efuse:w:0xF4:m -U lock:w:0x0F:m
 		
 ERRORES Y SOLUCIONES:
 	- stk500_getsync(): not in sync: resp=0x15 o 0x00
@@ -23,19 +26,14 @@ Para cambiar el nombre del dispositivo, debemos tener:
 - LUFA 101122 - http://www.fourwalledcubicle.com/files/LUFA/LUFA-101122.zip
 - HIDUINO-MASTER - https://github.com/ddiakopoulos/hiduino
 
-La versión precompilada de HIDUINO es reconocida por la computadora como "HIDUINO". Compilar desde cero permite a un usuario renombrar el fabricante y el nombre del dispositivo cambiando solo una cadena de caracteres el archivo de nombre "Descriptors.c", en la lineas 257 y 263:
+La versión precompilada de HIDUINO es reconocida por la computadora como "HIDUINO". Compilar desde cero permite a un usuario renombrar el dispositivo cambiando solo una cadena de caracteres y su largo en el archivo de nombre "Descriptors.c", en la lineas 275 y 277:
 
-	/** Manufacturer descriptor string. This is a Unicode string containing the manufacturer's details in human readable
-	 *  form, and is read out upon request by the host when the appropriate string ID is requested, listed in the Device
-	 *  Descriptor.
-	 */
-	const USB_Descriptor_String_t PROGMEM ManufacturerString = USB_STRING_DESCRIPTOR(L"YAELTEX");
-
-	/** Product descriptor string. This is a Unicode string containing the product's details in human readable form,
-	 *  and is read out upon request by the host when the appropriate string ID is requested, listed in the Device
-	 *  Descriptor.
-	 */
-	const USB_Descriptor_String_t PROGMEM ProductString = USB_STRING_DESCRIPTOR(L"TRACTORCITO");
+273 - USB_Descriptor_String_t PROGMEM ProductString =
+274 - {
+275 -	.Header                 = {.Size = USB_STRING_LEN(11), .Type = DTYPE_String},
+276 -
+277 -	.UnicodeString          = L"TRACTORCITO"
+278 - };
 
 Asegurarse que se descargó LUFA 101122. Colocar la carpeta entera en la carpeta "hiduino-master"
 
@@ -53,7 +51,7 @@ Esto es necesario para que el makefile encuentre la librería LUFA. Dependiendo 
 
 Una vez que la carpeta fue movida a la carpeta Projects, navegar con la linea de comandos al interior de esa carpeta con el comando cd:
 Ej:
-	`cd C:\Users\Franco\Google Drive\YAELTEX\HARDWARE\KILO MUX SHIELD\KILO MUX SHIELD\Codigo\lib\hiduino-master\lufa-LUFA-140928\Projects\arduino_midi`
+	`cd C:\Users\Franco\Google Drive\YAELTEX\HARDWARE\KILO MUX SHIELD\KILO MUX SHIELD\Codigo\lib\hiduino-master\LUFA101122\Projects\HIDUINO_MIDI`
   
 y ejecutar make:
 
