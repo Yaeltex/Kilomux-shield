@@ -26,6 +26,13 @@ Agradecimientos:
 */
 
 #include <MuxShield.h>
+#include <NewPing.h>
+#include <MIDI.h>
+#include <midi_Defs.h>
+//#include <midi_Message.h>      // Si no compila porque le falta midi_message.h, descomentar esta linea
+#include <midi_Namespace.h>
+#include <midi_Settings.h>
+
 // Descomentar la próxima línea si el compilador no encuentra MIDI
 // MIDI_CREATE_DEFAULT_INSTANCE()
 
@@ -33,21 +40,10 @@ Agradecimientos:
 //#define CON_ULTRASONIDO
 
 // Dejar descomentada solo una de las tres lineas siguientes para definir el tipo de comunicación
-#define COMUNICACION_MIDI
-//#define HAIRLESS_MIDI
-//#define COMUNICACION_SERIAL
+#define COMUNICACION_MIDI          // Para enviar mensajes a través de HIDUINO o por hardware
+//#define HAIRLESS_MIDI            // Para enviar mensajes midi por USB hacia Hairless MIDI
+//#define COMUNICACION_SERIAL      // Para debuggear con el Monitor Serial
 
-#ifdef CON_ULTRASONIDO
-  #include <NewPing.h>
-#endif
-
-#if defined(COMUNICACION_MIDI)|defined(HAIRLESS_MIDI)
- #include <MIDI.h>
- #include <midi_Defs.h>
- //#include <midi_Message.h>      // Si no compila
- #include <midi_Namespace.h>
- #include <midi_Settings.h>
-#endif
 
 void setup(); // Esto es para solucionar el bug que tiene Arduino al usar los #ifdef del preprocesador
 
