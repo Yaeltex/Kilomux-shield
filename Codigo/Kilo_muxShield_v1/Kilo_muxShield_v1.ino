@@ -25,21 +25,16 @@ Agradecimientos:
   - Dimitri Diakopoulos
 */
 
-//#include <NewPing.h>
-//#include <MIDI.h>
-//#include <midi_Defs.h>
-//#include <midi_Namespace.h>
-//#include <midi_Settings.h>
 #include <MuxShield.h>
 // Descomentar la próxima línea si el compilador no encuentra MIDI
-// MIDI_CREATE_DEFAULT_INSTANCE();
+// MIDI_CREATE_DEFAULT_INSTANCE()
 
 // Comentar la siguiente linea si no se usa sensor de ultrasonido
 //#define CON_ULTRASONIDO
 
 // Dejar descomentada solo una de las tres lineas siguientes para definir el tipo de comunicación
-//#define COMUNICACION_MIDI
-#define HAIRLESS_MIDI
+#define COMUNICACION_MIDI
+//#define HAIRLESS_MIDI
 //#define COMUNICACION_SERIAL
 
 #ifdef CON_ULTRASONIDO
@@ -49,6 +44,7 @@ Agradecimientos:
 #if defined(COMUNICACION_MIDI)|defined(HAIRLESS_MIDI)
  #include <MIDI.h>
  #include <midi_Defs.h>
+ //#include <midi_Message.h>      // Si no compila
  #include <midi_Namespace.h>
  #include <midi_Settings.h>
 #endif
@@ -413,12 +409,13 @@ void leerUltrasonico(void){
         ccSensorValuePrev[indiceFiltro++] = ccSensorValue; // Y actualizo el índice del buffer circular
         indiceFiltro %= FILTRO_US+1;
         // FIN FILTRADO ////////////////////////////////
-        
-        #if defined(COMUNICACION_MIDI)|defined(HAIRLESS_MIDI)
-          MIDI.sendControlChange(CC_US_MIDI, ccSensorValue, CANAL_MIDI_CC);
-        #elif defined(COMUNICACION_SERIAL)
-          Serial.print("Sensor Ultrasonico CC: "); Serial.print(CC_US_MIDI); Serial.print("  Valor: "); Serial.println(ccSensorValue);
-        #endif
+        if(ccSensorValue != ccSensorValuePrev[indiceFiltro]){        // Detecto si cambió el valor filtrado, para no mandar valores repetidos
+          #if defined(COMUNICACION_MIDI)|defined(HAIRLESS_MIDI)
+            MIDI.sendControlChange(CC_US_MIDI, ccSensorValue, CANAL_MIDI_CC);
+          #elif defined(COMUNICACION_SERIAL)
+            Serial.print("Sensor Ultrasonico CC: "); Serial.print(CC_US_MIDI); Serial.print("  Valor: "); Serial.println(ccSensorValue);
+          #endif
+        }
       }
       else return;        
     }
@@ -643,6 +640,7 @@ void enviarNoteMidi(unsigned int nota, unsigned int veloc) {
     case NOTA_13_HW:  MIDI.sendNoteOn(NOTA_13_MIDI, veloc, CANAL_MIDI_NOTES);  break;
     case NOTA_14_HW:  MIDI.sendNoteOn(NOTA_14_MIDI, veloc, CANAL_MIDI_NOTES);  break;
     case NOTA_15_HW:  MIDI.sendNoteOn(NOTA_15_MIDI, veloc, CANAL_MIDI_NOTES);  break;
+    default: break;
   }
   return;
 }
@@ -670,6 +668,7 @@ void enviarNoteSerial(unsigned int nota, unsigned int veloc) {
     case NOTA_13_HW:  Serial.print("BOTON NOTE ON"); Serial.print("  Nota: "); Serial.print(NOTA_13_MIDI); Serial.print("  Velocity: "); Serial.println(veloc); break;
     case NOTA_14_HW:  Serial.print("BOTON NOTE ON"); Serial.print("  Nota: "); Serial.print(NOTA_14_MIDI); Serial.print("  Velocity: "); Serial.println(veloc); break;
     case NOTA_15_HW:  Serial.print("BOTON NOTE ON"); Serial.print("  Nota: "); Serial.print(NOTA_15_MIDI); Serial.print("  Velocity: "); Serial.println(veloc); break;
+    default: break;
   }
   /////// FIN CODIGO DEBUG ////////////////////////////////////////////////////////////////////////////////////////////////
 }  
@@ -695,6 +694,7 @@ void enviarControlChangeMidi(unsigned int nota) {
     case CC_13_HW:  MIDI.sendControlChange(CC_13_MIDI, velocity[mux][canal], CANAL_MIDI_CC);  break;  
     case CC_14_HW:  MIDI.sendControlChange(CC_14_MIDI, velocity[mux][canal], CANAL_MIDI_CC);  break;
     case CC_15_HW:  MIDI.sendControlChange(CC_15_MIDI, velocity[mux][canal], CANAL_MIDI_CC);  break;
+    default: break;
     
   }
   return;
@@ -720,6 +720,7 @@ void enviarControlChangeSerial(unsigned int nota) {
     case CC_13_HW:  Serial.print("Numero de pote: "); Serial.print(CC_13_MIDI); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
     case CC_14_HW:  Serial.print("Numero de pote: "); Serial.print(CC_14_MIDI); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
     case CC_15_HW:  Serial.print("Numero de pote: "); Serial.print(CC_15_MIDI); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+    default: break;
   }
   return; 
 }

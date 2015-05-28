@@ -118,35 +118,34 @@ dispositivo de entrada sea "HIDUINO" o el puerto MIDI virtual utilizado
 \, si se utiliza un intermediario. Encender el DSP \, en "Media ->
 DSP Encendido";
 #X text 819 8 BOTONES y POTENCIOMETROS;
-#X text 804 212 MIDI THRU \, lo que llega se envía al OUT para los
+#X text 625 249 MIDI THRU \, lo que llega se envía al OUT para los
 LEDS;
 #X obj 984 157 ctlin;
 #X obj 1017 355 hsl 128 15 0 127 0 0 empty empty empty -2 -8 0 10 -262144
 -1 -1 0 1;
 #X obj 983 205 pack;
-#X obj 983 260 route 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15;
 #X obj 988 292 hsl 128 15 0 127 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 0 1;
+-1 -1 8200 1;
 #X obj 1001 324 hsl 128 15 0 127 0 0 empty empty empty -2 -8 0 10 -262144
 -1 -1 0 1;
 #X obj 1033 381 hsl 128 15 0 127 0 0 empty empty empty -2 -8 0 10 -262144
 -1 -1 0 1;
 #X obj 1049 407 hsl 128 15 0 127 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 0 1;
+-1 -1 2200 1;
 #X obj 1065 433 hsl 128 15 0 127 0 0 empty empty empty -2 -8 0 10 -262144
 -1 -1 0 1;
 #X obj 1081 457 hsl 128 15 0 127 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 0 1;
+-1 -1 4100 1;
 #X obj 1129 541 hsl 128 15 0 127 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 0 1;
+-1 -1 8000 1;
 #X obj 1098 484 hsl 128 15 0 127 0 0 empty empty empty -2 -8 0 10 -262144
 -1 -1 0 1;
 #X obj 1113 510 hsl 128 15 0 127 0 0 empty empty empty -2 -8 0 10 -262144
 -1 -1 0 1;
 #X obj 1145 567 hsl 128 15 0 127 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 0 1;
+-1 -1 2300 1;
 #X obj 1161 593 hsl 128 15 0 127 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 0 1;
+-1 -1 7600 1;
 #X obj 1177 619 hsl 128 15 0 127 0 0 empty empty empty -2 -8 0 10 -262144
 -1 -1 0 1;
 #X obj 1193 643 hsl 128 15 0 127 0 0 empty empty empty -2 -8 0 10 -262144
@@ -177,7 +176,6 @@ LEDS;
 #X text 1178 693 CC 15;
 #X text 991 113 CONTROLLERS (CCs);
 #X obj 726 547 dac~;
-#X obj 737 495 *~;
 #X obj 736 426 mtof;
 #X obj 736 460 osc~;
 #X obj 736 388 +;
@@ -185,6 +183,7 @@ LEDS;
 #X text 685 192 NOTE;
 #X text 798 191 VELOCITY;
 #X text 773 114 NOTES;
+#X obj 997 253 route 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15;
 #X connect 1 0 0 0;
 #X connect 3 0 2 0;
 #X connect 6 0 0 0;
@@ -213,7 +212,7 @@ LEDS;
 #X connect 40 0 41 0;
 #X connect 57 0 13 0;
 #X connect 58 0 61 0;
-#X connect 58 0 157 0;
+#X connect 58 0 155 0;
 #X connect 59 0 61 1;
 #X connect 60 0 58 0;
 #X connect 60 1 59 0;
@@ -287,30 +286,29 @@ LEDS;
 #X connect 104 0 88 0;
 #X connect 105 0 88 0;
 #X connect 113 0 115 1;
-#X connect 113 0 133 0;
+#X connect 113 0 132 0;
 #X connect 113 1 115 0;
-#X connect 113 1 132 0;
-#X connect 115 0 116 0;
-#X connect 116 0 117 0;
-#X connect 116 1 118 0;
-#X connect 116 2 114 0;
-#X connect 116 3 119 0;
-#X connect 116 4 120 0;
-#X connect 116 5 121 0;
-#X connect 116 6 122 0;
-#X connect 116 7 124 0;
-#X connect 116 8 125 0;
-#X connect 116 9 123 0;
-#X connect 116 10 126 0;
-#X connect 116 11 127 0;
-#X connect 116 12 128 0;
-#X connect 116 13 129 0;
-#X connect 116 14 130 0;
-#X connect 116 15 131 0;
-#X connect 117 0 158 0;
-#X connect 154 0 153 0;
-#X connect 154 0 153 1;
-#X connect 155 0 156 0;
-#X connect 156 0 154 0;
-#X connect 157 0 155 0;
-#X connect 158 0 157 1;
+#X connect 113 1 131 0;
+#X connect 115 0 160 0;
+#X connect 116 0 156 0;
+#X connect 153 0 154 0;
+#X connect 154 0 152 0;
+#X connect 154 0 152 1;
+#X connect 155 0 153 0;
+#X connect 156 0 155 1;
+#X connect 160 0 116 0;
+#X connect 160 1 117 0;
+#X connect 160 2 114 0;
+#X connect 160 3 118 0;
+#X connect 160 4 119 0;
+#X connect 160 5 120 0;
+#X connect 160 6 121 0;
+#X connect 160 7 123 0;
+#X connect 160 8 124 0;
+#X connect 160 9 122 0;
+#X connect 160 10 125 0;
+#X connect 160 11 126 0;
+#X connect 160 12 127 0;
+#X connect 160 13 128 0;
+#X connect 160 14 129 0;
+#X connect 160 15 130 0;
