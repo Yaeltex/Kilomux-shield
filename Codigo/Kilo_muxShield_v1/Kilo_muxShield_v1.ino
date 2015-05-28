@@ -38,9 +38,9 @@ Agradecimientos:
 // Comentar la siguiente linea si no se usa sensor de ultrasonido
 #define CON_ULTRASONIDO
 
-// Comentar una de las dos lineas siguientes para definir el tipo de comunicación
-#define COMUNICACION_MIDI
-//#define HAIRLESS_MIDI
+// Dejar descomentada solo una de las tres lineas siguientes para definir el tipo de comunicación
+//#define COMUNICACION_MIDI
+#define HAIRLESS_MIDI
 //#define COMUNICACION_SERIAL
 
 void setup(); // Esto es para solucionar el bug que tiene Arduino al usar los #ifdef del preprocesador
