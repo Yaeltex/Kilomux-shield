@@ -40,6 +40,7 @@ Agradecimientos:
 
 // Comentar una de las dos lineas siguientes para definir el tipo de comunicación
 #define COMUNICACION_MIDI
+//#define HAIRLESS_MIDI
 //#define COMUNICACION_SERIAL
 
 void setup(); // Esto es para solucionar el bug que tiene Arduino al usar los #ifdef del preprocesador
@@ -283,6 +284,10 @@ void setup() {
                                                       // Por default, la librería de Arduino MIDI tiene el THRU en ON, y NO QUEREMOS ESO!
 #elif defined(COMUNICACION_SERIAL)
   Serial.begin(VELOCIDAD_SERIAL);                  // Se inicializa la comunicación serial. Descomentar para usar con Hairless MID
+#elif defined(HAIRLESS_MIDI)
+  MIDI.begin(MIDI_CHANNEL_OMNI); MIDI.turnThruOff();  // Se inicializa la comunicación MIDI.
+                                                      // Por default, la librería de Arduino MIDI tiene el THRU en ON, y NO QUEREMOS ESO!
+  Serial.begin(VELOCIDAD_SERIAL);                  // Se inicializa la comunicación serial para usar con Hairless MID
 #endif
 }
 
