@@ -7,7 +7,7 @@ Kilo Mux Shield por Yaeltex se distribuye bajo una licencia
 Creative Commons Atribución-CompartirIgual 4.0 Internacional - http://creativecommons.org/licenses/by-sa/4.0/
 ----
 Código para el manejo de los integrados 74HC595 tomado de http://bildr.org/2011/02/74HC595/
-Librería de multiplexado tomada de http://mayhewlabs.com/products/mux-shield-2
+Librería de multiplexado (modificada) tomada de http://mayhewlabs.com/products/mux-shield-2
 Librería para el manejo del sensor de ultrasonido tomada de http://playground.arduino.cc/Code/NewPing
 
 Este código fue desarrollado para el KILO MUX SHIELD desarrolado en conjunto por Yaeltex y el Laboratorio del Juguete, en Buenos Aires, Argentina, 
@@ -19,29 +19,39 @@ NOTA: Se modificó la librería MuxShield, para trabajar sólo con 1 o 2 multipl
 
 Para las entradas analógicas, por cuestiones de ruido se recomienda usar potenciómetros o sensores con buena estabilidad, y con preferencia con valores 
 cercanos o menores a 10 Kohm.
-
 Agradecimientos:
   - Jorge Crowe
   - Lucas Leal
   - Dimitri Diakopoulos
 */
 
-#include <NewPing.h>
-#include <MIDI.h>
-#include <midi_Defs.h>
-#include <midi_Namespace.h>
-#include <midi_Settings.h>
+//#include <NewPing.h>
+//#include <MIDI.h>
+//#include <midi_Defs.h>
+//#include <midi_Namespace.h>
+//#include <midi_Settings.h>
 #include <MuxShield.h>
 // Descomentar la próxima línea si el compilador no encuentra MIDI
 // MIDI_CREATE_DEFAULT_INSTANCE();
 
 // Comentar la siguiente linea si no se usa sensor de ultrasonido
-#define CON_ULTRASONIDO
+//#define CON_ULTRASONIDO
 
 // Dejar descomentada solo una de las tres lineas siguientes para definir el tipo de comunicación
 //#define COMUNICACION_MIDI
 #define HAIRLESS_MIDI
 //#define COMUNICACION_SERIAL
+
+#ifdef CON_ULTRASONIDO
+  #include <NewPing.h>
+#endif
+
+#if defined(COMUNICACION_MIDI)|defined(HAIRLESS_MIDI)
+ #include <MIDI.h>
+ #include <midi_Defs.h>
+ #include <midi_Namespace.h>
+ #include <midi_Settings.h>
+#endif
 
 void setup(); // Esto es para solucionar el bug que tiene Arduino al usar los #ifdef del preprocesador
 
@@ -54,12 +64,12 @@ void setup(); // Esto es para solucionar el bug que tiene Arduino al usar los #i
 #define MUX_B_ENTRADA A1 // Pin analógico por dónde se lee el MUX B
 
 // CAMBIAR SEGÚN APLICACIÓN
-#define MUX_DIGITAL   MUX_B   
+#define MUX_DIGITAL   MUX_A   
 // CAMBIAR SEGÚN APLICACIÓN
-#define MUX_ANALOGICO MUX_A 
+#define MUX_ANALOGICO MUX_B 
 
-#define ENTRADA_DIGITAL   MUX_B_ENTRADA // CAMBIAR SEGÚN APLICACIÓN - Multiplexor con entradas digitales
-#define ENTRADA_ANALOGICA MUX_A_ENTRADA // CAMBIAR SEGÚN APLICACIÓN - Multiplexor con entradas analógicas
+#define ENTRADA_DIGITAL   MUX_A_ENTRADA // CAMBIAR SEGÚN APLICACIÓN - Multiplexor con entradas digitales
+#define ENTRADA_ANALOGICA MUX_B_ENTRADA // CAMBIAR SEGÚN APLICACIÓN - Multiplexor con entradas analógicas
 
 #define NUM_595s 2 // Número de integrados 74HC595
 #define NUM_LEDS NUM_595s*8 // Número de LEDs en total, NO CAMBIAR
@@ -139,8 +149,11 @@ void setup(); // Esto es para solucionar el bug que tiene Arduino al usar los #i
 #define CC_13_MIDI 13
 #define CC_14_MIDI 14
 #define CC_15_MIDI 15
+
+#ifdef CON_ULTRASONIDO
 // CC para el sensor ultrasónico - AJUSTABLE
 #define CC_US_MIDI 16
+#endif
 
 // Estos son los identificadores de cada LED en hardware.
 // FIJOS - NO TOCAR!!!
@@ -283,16 +296,16 @@ void setup() {
   MIDI.begin(MIDI_CHANNEL_OMNI); MIDI.turnThruOff();  // Se inicializa la comunicación MIDI.
                                                       // Por default, la librería de Arduino MIDI tiene el THRU en ON, y NO QUEREMOS ESO!
 #elif defined(COMUNICACION_SERIAL)
-  Serial.begin(VELOCIDAD_SERIAL);                  // Se inicializa la comunicación serial. Descomentar para usar con Hairless MID
+  Serial.begin(VELOCIDAD_SERIAL);                  // Se inicializa la comunicación serial. 
 #elif defined(HAIRLESS_MIDI)
   MIDI.begin(MIDI_CHANNEL_OMNI); MIDI.turnThruOff();  // Se inicializa la comunicación MIDI.
                                                       // Por default, la librería de Arduino MIDI tiene el THRU en ON, y NO QUEREMOS ESO!
-  Serial.begin(VELOCIDAD_SERIAL);                  // Se inicializa la comunicación serial para usar con Hairless MID
+  Serial.begin(VELOCIDAD_SERIAL);                  // Se inicializa la comunicación serial. 
 #endif
 }
 
 void loop() {  
-#ifdef COMUNICACION_MIDI
+#if defined(COMUNICACION_MIDI)|defined(HAIRLESS_MIDI)
    leer_MIDI();
 #elif defined(COMUNICACION_SERIAL)
   encender_leds_serial();
@@ -320,7 +333,7 @@ void leerEntradas(void) {
         velocity[mux][canal] = analogData >> 3;                                      // El valor leido va de 0-1023. Convertimos a 0-127, dividiendo por 8.
         
         if (esRuido(canal) == 0) {                                         // Si lo que leo no es ruido
-          #ifdef COMUNICACION_MIDI
+          #if defined(COMUNICACION_MIDI)|defined(HAIRLESS_MIDI)
             enviarControlChangeMidi(canal);
           #elif defined(COMUNICACION_SERIAL)
             enviarControlChangeSerial(canal);
@@ -338,7 +351,7 @@ void leerEntradas(void) {
           if (!velocity[mux][canal] && !noteOn[canal]) {                               // Si leo 0 (botón accionado) 
             noteOn[canal] = 1;
             // Se envía NOTE ON
-            #ifdef COMUNICACION_MIDI
+            #if defined(COMUNICACION_MIDI)|defined(HAIRLESS_MIDI)
               enviarNoteMidi(canal, NOTE_ON);
             #elif defined(COMUNICACION_SERIAL)
               enviarNoteSerial(canal, NOTE_ON);
@@ -346,7 +359,7 @@ void leerEntradas(void) {
           }
           else if (noteOn[canal]) {
             noteOn[canal] = 0;
-            #ifdef COMUNICACION_MIDI
+            #if defined(COMUNICACION_MIDI)|defined(HAIRLESS_MIDI)
               enviarNoteMidi(canal, NOTE_OFF);
             #elif defined(COMUNICACION_SERIAL)
               enviarNoteSerial(canal, NOTE_OFF);
@@ -401,7 +414,7 @@ void leerUltrasonico(void){
         indiceFiltro %= FILTRO_US+1;
         // FIN FILTRADO ////////////////////////////////
         
-        #ifdef COMUNICACION_MIDI
+        #if defined(COMUNICACION_MIDI)|defined(HAIRLESS_MIDI)
           MIDI.sendControlChange(CC_US_MIDI, ccSensorValue, CANAL_MIDI_CC);
         #elif defined(COMUNICACION_SERIAL)
           Serial.print("Sensor Ultrasonico CC: "); Serial.print(CC_US_MIDI); Serial.print("  Valor: "); Serial.println(ccSensorValue);
@@ -413,7 +426,7 @@ void leerUltrasonico(void){
 }
 #endif
 
-#ifdef COMUNICACION_MIDI
+#if defined(COMUNICACION_MIDI)|defined(HAIRLESS_MIDI)
 // Lee el canal midi, note y velocity, y actualiza el estado de los leds.
 void leer_MIDI(void) {
   // COMENTAR PARA DEBUGGEAR CON SERIAL ///////////////////////////////////////////////////////////////////////
@@ -611,7 +624,7 @@ void titilarLeds(void) {
   tiempo_on = !tiempo_on;
 }
 
-#ifdef COMUNICACION_MIDI
+#if defined(COMUNICACION_MIDI)|defined(HAIRLESS_MIDI)
 void enviarNoteMidi(unsigned int nota, unsigned int veloc) {
   switch (nota) {
     case NOTA_0_HW:  MIDI.sendNoteOn(NOTA_0_MIDI, veloc, CANAL_MIDI_NOTES); break;
@@ -662,7 +675,7 @@ void enviarNoteSerial(unsigned int nota, unsigned int veloc) {
 }  
 #endif
 
-#ifdef COMUNICACION_MIDI
+#if defined(COMUNICACION_MIDI)|defined(HAIRLESS_MIDI)
 // Remapea las entradas analógicas y las envía por MIDI
 void enviarControlChangeMidi(unsigned int nota) {
   switch (nota) {
@@ -759,4 +772,3 @@ void writeRegisters() {
   }
   digitalWrite(latchPin, HIGH);                 // Se vuelve a poner en HIGH la línea de latch para avisar que no se enviarán mas datos
 }
-
