@@ -40,7 +40,7 @@ Agradecimientos:
 
 // Comentar una de las dos lineas siguientes para definir el tipo de comunicación
 #define COMUNICACION_MIDI
-#define COMUNICACION_SERIAL
+//#define COMUNICACION_SERIAL
 
 void setup(); // Esto es para solucionar el bug que tiene Arduino al usar los #ifdef del preprocesador
 
