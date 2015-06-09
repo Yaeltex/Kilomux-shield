@@ -37,13 +37,15 @@ Agradecimientos:
 // MIDI_CREATE_DEFAULT_INSTANCE()
 
 // Comentar la siguiente linea si no se usa sensor de ultrasonido
-//#define CON_ULTRASONIDO
+#define CON_ULTRASONIDO
 
 // Dejar descomentada solo una de las tres lineas siguientes para definir el tipo de comunicación
-#define COMUNICACION_MIDI          // Para enviar mensajes a través de HIDUINO o por hardware
+//#define COMUNICACION_MIDI          // Para enviar mensajes a través de HIDUINO o por hardware
 //#define HAIRLESS_MIDI            // Para enviar mensajes midi por USB hacia Hairless MIDI
-//#define COMUNICACION_SERIAL      // Para debuggear con el Monitor Serial
+#define COMUNICACION_SERIAL      // Para debuggear con el Monitor Serial
 
+// Dejar descomentada si se quiere que los botones actúen como TOGGLE
+#define TOGGLE                  
 
 void setup(); // Esto es para solucionar el bug que tiene Arduino al usar los #ifdef del preprocesador
 
@@ -192,8 +194,12 @@ void setup(); // Esto es para solucionar el bug que tiene Arduino al usar los #i
 #define CANAL_MIDI_CC     1                              // DEFINIR CANAL MIDI A UTILIZAR
 #define CANAL_MIDI_LEDS   1                              // DEFINIR CANAL MIDI A UTILIZAR
 
+#define ANALOGO_CRECIENDO   1
+#define ANALOGO_DECRECIENDO 0
+
 #define UMBRAL_RUIDO        1                      // Ventana de ruido para las entradas analógicas. Si entrada < entrada+umbral o 
                                                    //                                                   entrada > entrada-umbral descarta la lectura.
+                                                   
 #define INTERVALO_LEDS      300                    // Intervalo de intermitencia
 #define VELOCITY_LIM_TITILA 64                     // Limite de velocity para definir parpadeo - 0            - APAGADO
                                                    //                                            1 a LIMITE   - TITILA
@@ -340,7 +346,12 @@ void leerEntradas(void) {
         velocity[mux][canal] = muxShield.digitalReadMS(mux + 1, canal);               // Leer entradas analógicas 'muxShield.analogReadMS(N_MUX,N_CANAL)'
         
         if (velocity[mux][canal] != velocityPrev[mux][canal]) {                        // Me interesa la lectura, si cambió el estado del botón,
-          if (!velocity[mux][canal] && !noteOn[canal]) {                               // Si leo 0 (botón accionado) 
+        #if defined(TOGGLE)
+          if (!velocity[mux][canal])                                // Si leo 0 (botón accionado)
+        #else
+          if (!velocity[mux][canal] && !noteOn[canal])              // Si leo 0 (botón accionado)
+        #endif          
+          {
             noteOn[canal] = 1;
             // Se envía NOTE ON
             #if defined(COMUNICACION_MIDI)|defined(HAIRLESS_MIDI)
@@ -349,14 +360,16 @@ void leerEntradas(void) {
               enviarNoteSerial(canal, NOTE_ON);
             #endif
           }
+        #ifndef TOGGLE         
           else if (noteOn[canal]) {
             noteOn[canal] = 0;
             #if defined(COMUNICACION_MIDI)|defined(HAIRLESS_MIDI)
-              enviarNoteMidi(canal, NOTE_OFF);
+              enviarControlNoteMidi(canal, NOTE_OFF);
             #elif defined(COMUNICACION_SERIAL)
-              enviarNoteSerial(canal, NOTE_OFF);
+              enviarControlNoteSerial(canal, NOTE_OFF);
             #endif
           }
+        #endif
         }
         // FIN CÓDIGO PARA LECTURA DE ENTRADAS DIGITALES /////////////////////////////////////////////////////////////////////
       }
@@ -392,7 +405,7 @@ void leerUltrasonico(void){
     if (millis()-antMillisUltraSonico > DELAY_ULTRAS){
       antMillisUltraSonico = millis();
       microSeg = sensorUS.ping(); // Send ping, get ping time in microseconds (uS).
-      int ccSensorValue = map(constrain(microSeg, MIN_US, MAX_US), MIN_US, MAX_US, 0, 127);
+      int ccSensorValue = map(constrain(microSeg, MIN_US, MAX_US), MIN_US, MAX_US, 0, 130);
       if(ccSensorValue != ccSensorValuePrev[indiceFiltro]){
         if(!ccSensorValue & ccSensorValuePrev[indiceFiltro] > 10){      // Este if no permite que si se saca la mano o se excede la distancia maxima, el valor vuelva a 0
           ccSensorValue =  ccSensorValuePrev[indiceFiltro];             // igualando el valor actual con el último valor anterior, si el nuevo valor es 0 y el anterior es mayor a 10
@@ -722,23 +735,31 @@ void enviarControlChangeSerial(unsigned int nota) {
 }
 #endif
 
-// Funcion para filtrar el ruido analógico de los pontenciómetros. Guarda 3 valores para detectar si el valor crece o decrece intencionalmente, o si
-// es ruido de inestabilidad que baila entre dos valores +-1.
+/* 
+Funcion para filtrar el ruido analógico de los pontenciómetros.  
+*/
 unsigned int esRuido(unsigned int nota) {
-  static unsigned int prev2[NUM_CANALES_MUX] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-  if ((velocity[mux][nota] > velocityPrev[mux][nota] + UMBRAL_RUIDO) || (velocity[mux][nota] < velocityPrev[mux][nota] - UMBRAL_RUIDO)) {
-    return 0;
-  }
-  else if ((velocity[mux][nota] == velocityPrev[mux][nota] + UMBRAL_RUIDO) || (velocity[mux][nota] == velocityPrev[mux][nota] - UMBRAL_RUIDO)) {
-    if (prev2[nota] == velocity[mux][nota]) {
-      return 1;
+  static bool estado[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+  static unsigned int valorPrev = 0;
+  if (estado[nota] == ANALOGO_CRECIENDO){
+    if(velocity[mux][nota] > velocityPrev[mux][nota]){                              // Si el valor está creciendo, y la nueva lectura es mayor a la anterior, 
+       return 0;                                        // no es ruido.
     }
-    else {
-      prev2[nota] = velocityPrev[mux][nota];
-      return 0;
+    else if(velocity[mux][nota] < velocityPrev[mux][nota] - UMBRAL_RUIDO){    // Si el valor está creciendo, y la nueva lectura menor a la anterior menos el UMBRAL
+      estado[nota] = ANALOGO_DECRECIENDO;                                     // se cambia el estado a DECRECIENDO y 
+      return 0;                                                               // no es ruido.
     }
   }
-  else return 1;
+  if (estado[nota] == ANALOGO_DECRECIENDO){                                   
+    if(velocity[mux][nota] < velocityPrev[mux][nota]){  // Si el valor está decreciendo, y la nueva lectura es menor a la anterior,  
+       return 0;                                        // no es ruido.
+    }
+    else if(velocity[mux][nota] > velocityPrev[mux][nota] + UMBRAL_RUIDO){    // Si el valor está decreciendo, y la nueva lectura mayor a la anterior mas el UMBRAL  
+      estado[nota] = ANALOGO_CRECIENDO;                                       // se cambia el estado a CRECIENDO y 
+      return 0;                                                               // no es ruido.
+    }
+  }
+  return 1;         // Si todo lo anterior no se cumple, es ruido.
 }
 
 // Prender o apagar un solo led
