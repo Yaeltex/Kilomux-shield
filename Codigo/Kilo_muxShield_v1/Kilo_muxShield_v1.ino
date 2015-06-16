@@ -217,7 +217,7 @@ void setup(); // Esto es para solucionar el bug que tiene Arduino al usar los #i
   // AJUSTABLES
   #define MAX_DISTANCIA        45        // Maxima distancia que se desea medir (en centimetros). El sensor mide hasta 400-500cm.
   #define MIN_DISTANCIA        2         // Minima distancia que se desea medir (en centimetros). El sensor mide desde 1cm.
-  #define DELAY_ULTRAS         15        // Delay entre dos pings de
+  #define DELAY_ULTRAS         15        // Delay entre dos pings del sensor
   #define UMBRAL_DIFERENCIA_US 80 
   #define FILTRO_US            3
 #endif
@@ -352,24 +352,24 @@ void leerEntradas(void) {
           if (!velocity[mux][canal] && !noteOn[canal])              // Si leo 0 (botón accionado)
         #endif          
           {
-            noteOn[canal] = 1;
+            noteOn[canal] = !noteOn[canal];
             // Se envía NOTE ON
             #if defined(COMUNICACION_MIDI)|defined(HAIRLESS_MIDI)
-              enviarNoteMidi(canal, NOTE_ON);
+              enviarNoteMidi(canal, noteOn[canal]*127);
             #elif defined(COMUNICACION_SERIAL)
-              enviarNoteSerial(canal, NOTE_ON);
+              enviarNoteSerial(canal, noteOn[canal]*127);
             #endif
-          }
+          }   
         #ifndef TOGGLE         
           else if (noteOn[canal]) {
             noteOn[canal] = 0;
             #if defined(COMUNICACION_MIDI)|defined(HAIRLESS_MIDI)
-              enviarControlNoteMidi(canal, NOTE_OFF);
+              enviarNoteMidi(canal, NOTE_OFF);
             #elif defined(COMUNICACION_SERIAL)
-              enviarControlNoteSerial(canal, NOTE_OFF);
+              enviarNoteSerial(canal, NOTE_OFF);
             #endif
           }
-        #endif
+        #endif          
         }
         // FIN CÓDIGO PARA LECTURA DE ENTRADAS DIGITALES /////////////////////////////////////////////////////////////////////
       }
@@ -742,19 +742,19 @@ unsigned int esRuido(unsigned int nota) {
   static bool estado[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
   static unsigned int valorPrev = 0;
   if (estado[nota] == ANALOGO_CRECIENDO){
-    if(velocity[mux][nota] > velocityPrev[mux][nota]){                              // Si el valor está creciendo, y la nueva lectura es mayor a la anterior, 
-       return 0;                                        // no es ruido.
+    if(velocity[mux][canal] > velocityPrev[mux][canal]){              // Si el valor está creciendo, y la nueva lectura es mayor a la anterior, 
+       return 0;                                                      // no es ruido.
     }
-    else if(velocity[mux][nota] < velocityPrev[mux][nota] - UMBRAL_RUIDO){    // Si el valor está creciendo, y la nueva lectura menor a la anterior menos el UMBRAL
+    else if(velocity[mux][canal] < velocityPrev[mux][canal] - UMBRAL_RUIDO){   // Si el valor está creciendo, y la nueva lectura menor a la anterior menos el UMBRAL
       estado[nota] = ANALOGO_DECRECIENDO;                                     // se cambia el estado a DECRECIENDO y 
       return 0;                                                               // no es ruido.
     }
   }
   if (estado[nota] == ANALOGO_DECRECIENDO){                                   
-    if(velocity[mux][nota] < velocityPrev[mux][nota]){  // Si el valor está decreciendo, y la nueva lectura es menor a la anterior,  
+    if(velocity[mux][canal] < velocityPrev[mux][canal]){  // Si el valor está decreciendo, y la nueva lectura es menor a la anterior,  
        return 0;                                        // no es ruido.
     }
-    else if(velocity[mux][nota] > velocityPrev[mux][nota] + UMBRAL_RUIDO){    // Si el valor está decreciendo, y la nueva lectura mayor a la anterior mas el UMBRAL  
+    else if(velocity[mux][canal] > velocityPrev[mux][canal] + UMBRAL_RUIDO){    // Si el valor está decreciendo, y la nueva lectura mayor a la anterior mas el UMBRAL  
       estado[nota] = ANALOGO_CRECIENDO;                                       // se cambia el estado a CRECIENDO y 
       return 0;                                                               // no es ruido.
     }
