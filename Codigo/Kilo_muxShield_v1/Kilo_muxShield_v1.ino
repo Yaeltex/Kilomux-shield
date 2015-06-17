@@ -33,43 +33,48 @@ Agradecimientos:
 #include <midi_Namespace.h>
 #include <midi_Settings.h>
 
-// Descomentar la próxima línea si el compilador no encuentra MIDI
+// SOLO MAC: Descomentar la próxima línea si el compilador no encuentra MIDI 
 // MIDI_CREATE_DEFAULT_INSTANCE()
 
-// Comentar la siguiente linea si no se usa sensor de ultrasonido
-#define CON_ULTRASONIDO
-
 // Dejar descomentada solo una de las tres lineas siguientes para definir el tipo de comunicación
-//#define COMUNICACION_MIDI          // Para enviar mensajes a través de HIDUINO o por hardware
+#define COMUNICACION_MIDI          // Para enviar mensajes a través de HIDUINO o por hardware
 //#define HAIRLESS_MIDI            // Para enviar mensajes midi por USB hacia Hairless MIDI
-#define COMUNICACION_SERIAL      // Para debuggear con el Monitor Serial
+//#define COMUNICACION_SERIAL      // Para debuggear con el Monitor Serial
+
+// Comentar la siguiente linea si no se usa sensor de ultrasonido
+//#define CON_ULTRASONIDO
 
 // Dejar descomentada si se quiere que los botones actúen como TOGGLE
-#define TOGGLE                  
+//#define TOGGLE     
+
+// Dejar descomentada si se usan los shifters
+//#define SHIFTERS     
 
 void setup(); // Esto es para solucionar el bug que tiene Arduino al usar los #ifdef del preprocesador
 
-#define NUM_MUX 2 // Número de multiplexores a direccionar
-#define NUM_CANALES_MUX 16 // Número de canales en cada mux
-
+// NO MODIFICAR
 #define MUX_A 0
 #define MUX_B 1
 #define MUX_A_ENTRADA A0 // Pin analógico por dónde se lee el MUX A
 #define MUX_B_ENTRADA A1 // Pin analógico por dónde se lee el MUX B
 
-// CAMBIAR SEGÚN APLICACIÓN
-#define MUX_DIGITAL   MUX_A   
-// CAMBIAR SEGÚN APLICACIÓN
-#define MUX_ANALOGICO MUX_B 
+// AJUSTAR SEGÚN APLICACIÓN
+#define MUX_DIGITAL       MUX_A   
+// AJUSTAR SEGÚN APLICACIÓN
+#define MUX_ANALOGICO     MUX_B 
+// AJUSTAR SEGÚN APLICACIÓN - Multiplexor con entradas digitales
+#define ENTRADA_DIGITAL   MUX_A_ENTRADA 
+// AJUSTAR SEGÚN APLICACIÓN - Multiplexor con entradas analógicas
+#define ENTRADA_ANALOGICA MUX_B_ENTRADA 
 
-#define ENTRADA_DIGITAL   MUX_A_ENTRADA // CAMBIAR SEGÚN APLICACIÓN - Multiplexor con entradas digitales
-#define ENTRADA_ANALOGICA MUX_B_ENTRADA // CAMBIAR SEGÚN APLICACIÓN - Multiplexor con entradas analógicas
+#define NUM_MUX 2 // Número de multiplexores a direccionar
+#define NUM_CANALES_MUX 16 // Número de canales en cada mux
 
 #define NUM_595s 2 // Número de integrados 74HC595
 #define NUM_LEDS NUM_595s*8 // Número de LEDs en total, NO CAMBIAR
 
-// Estos valores dependen de como están cableados los botones en el controlador
 // FIJOS - NO TOCAR!!!
+// Estos valores dependen de como están cableados los botones en el controlador
 #define NOTA_0_HW  0
 #define NOTA_1_HW  1
 #define NOTA_2_HW  2
@@ -105,6 +110,12 @@ void setup(); // Esto es para solucionar el bug que tiene Arduino al usar los #i
 #define NOTA_13_MIDI 13
 #define NOTA_14_MIDI 14
 #define NOTA_15_MIDI 15
+
+// AJUSTABLES SEGUN APLICACION
+// Identificador de HW de los botones que actúan como shifters de CC.
+#define SHIFTER_1  0
+#define SHIFTER_2  1
+#define SHIFTER_3  2
 
 // Estos valores dependen de como están cableadas las entradas analógicas en el controlador
 // FIJOS - NO TOCAR!!!
@@ -144,9 +155,68 @@ void setup(); // Esto es para solucionar el bug que tiene Arduino al usar los #i
 #define CC_14_MIDI 14
 #define CC_15_MIDI 15
 
+#ifdef SHIFTERS
+// Estos son los valores de Control Change que se quieren recibir en la aplicación DAW con el shifter 1 presionado
+// AJUSTABLES SEGÚN APLICACIÓN
+#define CC_0_MIDI_SHIFT_1  16
+#define CC_1_MIDI_SHIFT_1  17
+#define CC_2_MIDI_SHIFT_1  18
+#define CC_3_MIDI_SHIFT_1  19
+#define CC_4_MIDI_SHIFT_1  20
+#define CC_5_MIDI_SHIFT_1  21
+#define CC_6_MIDI_SHIFT_1  22
+#define CC_7_MIDI_SHIFT_1  23
+#define CC_8_MIDI_SHIFT_1  24
+#define CC_9_MIDI_SHIFT_1  25
+#define CC_10_MIDI_SHIFT_1 26
+#define CC_11_MIDI_SHIFT_1 27
+#define CC_12_MIDI_SHIFT_1 28
+#define CC_13_MIDI_SHIFT_1 29
+#define CC_14_MIDI_SHIFT_1 30
+#define CC_15_MIDI_SHIFT_1 31
+
+// Estos son los valores de Control Change que se quieren recibir en la aplicación DAW con el shifter 2 presionado
+// AJUSTABLES SEGÚN APLICACIÓN
+#define CC_0_MIDI_SHIFT_2  32
+#define CC_1_MIDI_SHIFT_2  33
+#define CC_2_MIDI_SHIFT_2  34
+#define CC_3_MIDI_SHIFT_2  35
+#define CC_4_MIDI_SHIFT_2  36
+#define CC_5_MIDI_SHIFT_2  37
+#define CC_6_MIDI_SHIFT_2  38
+#define CC_7_MIDI_SHIFT_2  39
+#define CC_8_MIDI_SHIFT_2  40
+#define CC_9_MIDI_SHIFT_2  41
+#define CC_10_MIDI_SHIFT_2 42
+#define CC_11_MIDI_SHIFT_2 43
+#define CC_12_MIDI_SHIFT_2 44
+#define CC_13_MIDI_SHIFT_2 45
+#define CC_14_MIDI_SHIFT_2 46
+#define CC_15_MIDI_SHIFT_2 47
+
+// Estos son los valores de Control Change que se quieren recibir en la aplicación DAW  con el shifter 3 presionado
+// AJUSTABLES SEGÚN APLICACIÓN
+#define CC_0_MIDI_SHIFT_3  48
+#define CC_1_MIDI_SHIFT_3  49
+#define CC_2_MIDI_SHIFT_3  50
+#define CC_3_MIDI_SHIFT_3  51
+#define CC_4_MIDI_SHIFT_3  52
+#define CC_5_MIDI_SHIFT_3  53
+#define CC_6_MIDI_SHIFT_3  54
+#define CC_7_MIDI_SHIFT_3  55
+#define CC_8_MIDI_SHIFT_3  56
+#define CC_9_MIDI_SHIFT_3  57
+#define CC_10_MIDI_SHIFT_3 58
+#define CC_11_MIDI_SHIFT_3 59
+#define CC_12_MIDI_SHIFT_3 60
+#define CC_13_MIDI_SHIFT_3 61
+#define CC_14_MIDI_SHIFT_3 62
+#define CC_15_MIDI_SHIFT_3 63
+#endif //  SHIFTERS
+
 #ifdef CON_ULTRASONIDO
 // CC para el sensor ultrasónico - AJUSTABLE
-#define CC_US_MIDI 16
+#define CC_US_MIDI 64
 #endif
 
 // Estos son los identificadores de cada LED en hardware.
@@ -194,16 +264,18 @@ void setup(); // Esto es para solucionar el bug que tiene Arduino al usar los #i
 #define CANAL_MIDI_CC     1                              // DEFINIR CANAL MIDI A UTILIZAR
 #define CANAL_MIDI_LEDS   1                              // DEFINIR CANAL MIDI A UTILIZAR
 
+// Para la función de filtrado de ruido analógico
 #define ANALOGO_CRECIENDO   1
 #define ANALOGO_DECRECIENDO 0
-
+// AJUSTABLE - Si hay ruido que varía entre valores (+- 1, +- 2, +- 3...) colocar el umbral en (1, 2, 3...)
 #define UMBRAL_RUIDO        1                      // Ventana de ruido para las entradas analógicas. Si entrada < entrada+umbral o 
                                                    //                                                   entrada > entrada-umbral descarta la lectura.
-                                                   
+
+// AJUSTABLE                                                   
 #define INTERVALO_LEDS      300                    // Intervalo de intermitencia
-#define VELOCITY_LIM_TITILA 64                     // Limite de velocity para definir parpadeo - 0            - APAGADO
-                                                   //                                            1 a LIMITE   - TITILA
-                                                   //                                            LIMITE a 127 - ENCENDIDO
+#define VELOCITY_LIM_TITILA 64                     // Limite de velocity en el MIDI INpara definir parpadeo - 0            - APAGADO
+                                                   //                                                         1 a LIMITE   - TITILA
+                                                   //                                                         LIMITE a 127 - ENCENDIDO
                                                    
 #ifdef CON_ULTRASONIDO                                                   
   // DEFINES PARA SENSOR ULTRASONICO                                                 
@@ -217,11 +289,12 @@ void setup(); // Esto es para solucionar el bug que tiene Arduino al usar los #i
   // AJUSTABLES
   #define MAX_DISTANCIA        45        // Maxima distancia que se desea medir (en centimetros). El sensor mide hasta 400-500cm.
   #define MIN_DISTANCIA        2         // Minima distancia que se desea medir (en centimetros). El sensor mide desde 1cm.
-  #define DELAY_ULTRAS         15        // Delay entre dos pings del sensor
-  #define UMBRAL_DIFERENCIA_US 80 
-  #define FILTRO_US            3
+  #define DELAY_ULTRAS         15        // Delay entre dos pings del sensor (en milisegundos). Mantener arriba de 10.
+  #define UMBRAL_DIFERENCIA_US 80        // 
+  #define FILTRO_US            3         // Cantidad de valores almacenados para el filtro. Cuanto más grande, mejor el suavizado y  más lenta la lectura.
 #endif
 
+// AJUSTABLE
 #define VELOCIDAD_SERIAL 115200                    // Velocidad de transferencia (bits/seg) de la comunicación serial
 
 #ifdef CON_ULTRASONIDO 
@@ -242,11 +315,12 @@ boolean leds_que_titilan[NUM_LEDS];                // Si está en 1, el LED titi
 byte velocity[NUM_MUX][NUM_CANALES_MUX];               // Variable de 1 byte que guarda la velocity actual de cada canal
 byte velocityPrev[NUM_MUX][NUM_CANALES_MUX];           // Variable de 1 byte que guarda la velocity anterior de cada canal
 
-
 // Contadores, flags
 int mux, canal;                           // Contadores para recorrer los multiplexores
 bool tiempo_on = 0;                       // Tiempo que llevan encendidos los leds, para el parpadeo
 unsigned int anteriorMillis = 0;          // Variable para guardar ms
+bool botonActivo[NUM_CANALES_MUX] = {};   // Estado de los botones
+unsigned int shift = 0;                   // Variable que registra que shifteo se produce.
 
 void setup() {
   // Setear pines de salida
@@ -261,7 +335,6 @@ void setup() {
   pinMode(ENTRADA_DIGITAL, INPUT);                // Estas dos líneas setean el pin analógico que recibe las entradas digitales como pin digital y
   digitalWrite(ENTRADA_DIGITAL, HIGH);            // setea el resistor de Pull-Up en el mismo
 
-
   // Guardar cantidad de ms desde el encendido
   anteriorMillis = millis();
 
@@ -270,22 +343,10 @@ void setup() {
       velocity[mux][canal] = 0;
       velocityPrev[mux][canal] = 0;
     }
+    if (mux) botonActivo[canal] = 0;
   }
-  // Prescalers para el ADC
-  const unsigned char PS_16 = (1 << ADPS2);
-  const unsigned char PS_32 = (1 << ADPS2) | (1 << ADPS0);
-  const unsigned char PS_64 = (1 << ADPS2) | (1 << ADPS1);
-  const unsigned char PS_128 = (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0);
-  // Setear el prescaler (divisor de clock) del ADC
-  ADCSRA &= ~PS_128;  // Poner a 0 los bits del registro seteados por la librería de Arduino
-  // Elegimos uno de los prescalers:
-  // PS_16 (1MHz o 50000 muestras/s) 
-  // PS_32 (500KHz o 31250 muestras/s) 
-  // PS_64 (250KHz o 16666 muestras/s)
-  // PS_128 (125KHz o 8620 muestras/s)
-  // Atmel sugiere mantener la frecuencia de operación del ADC entre 50Khz y 200Khz, advirtiendo que 
-  // puede degradarse la resolución si se supera la misma
-  ADCSRA |= PS_16;    // Setear el prescaler al valor elegido
+  // Ésta función setea la velocidad de muestreo del conversor analógico digital.
+  setADCprescaler();
 
   clearRegisters();                             // Se limpia el array registros (todos a LOW)
   writeRegisters();                             // Se envían los datos al 595
@@ -311,17 +372,18 @@ void loop() {
 
   if (millis() - anteriorMillis > INTERVALO_LEDS)          // Si transcurrieron más de X ms desde la ultima actualización,
     titilarLeds();
+  // Esta función recorre las entradas de los multiplexores y envía datos MIDI si detecta cambios.  
   leerEntradas();
+  
 #ifdef CON_ULTRASONIDO  
+  // Función que lee los datos que reporta el sensor ultrasónico, filtra y envía la información MIDI si hay cambios.
   leerUltrasonico();
 #endif  
 }
 
-
 // Esta función lee todas las entradas y almacena los valores de cada una en la matriz 'velocity'.
 // Compara con los valores previos, almacenados en 'velocityPrev', y si cambian, envía una NoteOn o NoteOff (entradas digitales) o un ControlChange (entradas analógicas)
 void leerEntradas(void) {
-  static bool noteOn[NUM_CANALES_MUX] = {};
   for (mux = 0; mux < NUM_MUX; mux++) {                                           // Recorro el numero de multiplexores, definido al principio
     for (canal = 0; canal < NUM_CANALES_MUX; canal++) {                                // Recorro todos los canales de cada multiplexor
       // ENTRADAS ANALÓGICAS
@@ -332,44 +394,64 @@ void leerEntradas(void) {
         
         if (esRuido(canal) == 0) {                                         // Si lo que leo no es ruido
           #if defined(COMUNICACION_MIDI)|defined(HAIRLESS_MIDI)
-            enviarControlChangeMidi(canal);
+            enviarControlChangeMidi(canal);                                // Envío datos MIDI
           #elif defined(COMUNICACION_SERIAL)
-            enviarControlChangeSerial(canal);
+            enviarControlChangeSerial(canal);                              // Envío datos SERIAL
           #endif
         }
-        else continue;
+        else continue;                                                     // Sigo con la próxima lectura
       }
       // FIN CÓDIGO PARA LECTURA DE ENTRADAS ANALÓGICAS /////////////////////////////////////////////////////////////////
+      
       // ENTRADAS DIGITALES
       if (mux == MUX_DIGITAL) {                                                    // Si es un pulsador,
         // CÓDIGO PARA LECTURA DE ENTRADAS DIGITALES /////////////////////////////////////////////////////////////////////
-        velocity[mux][canal] = muxShield.digitalReadMS(mux + 1, canal);               // Leer entradas analógicas 'muxShield.analogReadMS(N_MUX,N_CANAL)'
+        velocity[mux][canal] = muxShield.digitalReadMS(mux + 1, canal);               // Leer entradas digitales 'muxShield.digitalReadMS(N_MUX, N_CANAL)'
         
         if (velocity[mux][canal] != velocityPrev[mux][canal]) {                        // Me interesa la lectura, si cambió el estado del botón,
         #if defined(TOGGLE)
           if (!velocity[mux][canal])                                // Si leo 0 (botón accionado)
         #else
-          if (!velocity[mux][canal] && !noteOn[canal])              // Si leo 0 (botón accionado)
+          if (!velocity[mux][canal] && !botonActivo[canal])              // Si leo 0 (botón accionado) y no estaba activo
         #endif          
-          {
-            noteOn[canal] = !noteOn[canal];
+          {  
+            botonActivo[canal] = !botonActivo[canal];                    // MODO TOGGLE: Cambia de 0 a 1, o viceversa
+                                                                         // MODO NORMAL: Cambia de 0 a 1
+          #ifdef SHIFTERS
+            // En caso que el botón presionado sea uno de los shifters, señalo con el flag.
+            switch(canal){
+              case SHIFTER_1: shift = 1; continue; break;
+              case SHIFTER_2: shift = 2; continue; break;
+              case SHIFTER_3: shift = 3; continue; break;
+              default: break;
+            }
+          #endif              
             // Se envía NOTE ON
             #if defined(COMUNICACION_MIDI)|defined(HAIRLESS_MIDI)
-              enviarNoteMidi(canal, noteOn[canal]*127);
+              enviarNoteMidi(canal, botonActivo[canal]*127);        // Envío MIDI
             #elif defined(COMUNICACION_SERIAL)
-              enviarNoteSerial(canal, noteOn[canal]*127);
+              enviarNoteSerial(canal, botonActivo[canal]*127);      // Envío SERIAL
             #endif
           }   
-        #ifndef TOGGLE         
-          else if (noteOn[canal]) {
-            noteOn[canal] = 0;
-            #if defined(COMUNICACION_MIDI)|defined(HAIRLESS_MIDI)
-              enviarNoteMidi(canal, NOTE_OFF);
-            #elif defined(COMUNICACION_SERIAL)
-              enviarNoteSerial(canal, NOTE_OFF);
+      #ifndef TOGGLE                              // Si los botones no son TOGGLE
+          else if (velocity[mux][canal] && botonActivo[canal]) {  // Si se lee que el botón pasa de activo a inactivo (lectura -> 5V)
+            botonActivo[canal] = 0;               //  Se actualiza el flag a inactivo
+        #ifdef SHIFTERS            
+            shift = 0;                            // Vuelve el shifter a la posición stand-by.
+            switch(canal){                        // Si es uno de los shifters, se continua con la próxima lectura, sin enviar MIDI.
+              case SHIFTER_1: continue; break;
+              case SHIFTER_2: continue; break;
+              case SHIFTER_3: continue; break;
+              default: break;
+            }
+        #endif         // endif SHIFTERS
+            #if defined(COMUNICACION_MIDI)|defined(HAIRLESS_MIDI)    
+              enviarNoteMidi(canal, NOTE_OFF);                  // Envío MIDI
+            #elif defined(COMUNICACION_SERIAL)              
+              enviarNoteSerial(canal, NOTE_OFF);                // Envío SERIAL
             #endif
-          }
-        #endif          
+          } 
+      #endif          // endif TOGGLE
         }
         // FIN CÓDIGO PARA LECTURA DE ENTRADAS DIGITALES /////////////////////////////////////////////////////////////////////
       }
@@ -385,9 +467,9 @@ void leerUltrasonico(void){
   static bool estadoBoton = 1;                   // Inicializo inactivo (entrada activa baja)
   static bool estadoLed = 0;                     // Inicializo inactivo (salida activa alta)
   static bool sensorActivado = 0;                // Inicializo inactivo (variable interna)
-  static unsigned int indiceFiltro = 0;     
+  static unsigned int indiceFiltro = 0;          // Indice que recorre los valores del filtro de suavizado
     
-  int microSeg = 0;
+  int microSeg = 0;                              // Contador de microsegundos para el ping del sensor.
   
   // Este codigo verifica si se presionó el botón y activa o desactiva el sensor cada vez que se presiona
   estadoBoton = digitalRead(PIN_BOTON_ACT_US);
@@ -401,16 +483,18 @@ void leerUltrasonico(void){
     estadoBotonAnt = HIGH;                           // Actualizo el estado previo
   } 
   
-  if(sensorActivado){      // Si el sensor está activado
-    if (millis()-antMillisUltraSonico > DELAY_ULTRAS){
-      antMillisUltraSonico = millis();
-      microSeg = sensorUS.ping(); // Send ping, get ping time in microseconds (uS).
+  if(sensorActivado){                                      // Si el sensor está activado
+    if (millis()-antMillisUltraSonico > DELAY_ULTRAS){      // y transcurrió el delay minimo entre lecturas
+      antMillisUltraSonico = millis();                      
+      microSeg = sensorUS.ping();                           // Sensar el tiempo que tarda el pulso de ultrasonido en volver. Se recibe el valor el us.
       int ccSensorValue = map(constrain(microSeg, MIN_US, MAX_US), MIN_US, MAX_US, 0, 130);
-      if(ccSensorValue != ccSensorValuePrev[indiceFiltro]){
+      
+      if(ccSensorValue != ccSensorValuePrev[indiceFiltro]){            // Si el valor actual es distinto al anterior, filtro y envío datos
         if(!ccSensorValue & ccSensorValuePrev[indiceFiltro] > 10){      // Este if no permite que si se saca la mano o se excede la distancia maxima, el valor vuelva a 0
           ccSensorValue =  ccSensorValuePrev[indiceFiltro];             // igualando el valor actual con el último valor anterior, si el nuevo valor es 0 y el anterior es mayor a 10
         }
-        // FILTRO DE MEDIA MÓVIL VALORES DE ULTRASONIDO
+        
+        // FILTRO DE MEDIA MÓVIL PARA SUAVIZAR LA LECTURA
         for(int i = 0; i < FILTRO_US; i++){                      
           ccSensorValue += ccSensorValuePrev[i];           // Suma al valor actual, los N (FILTRO_US) valores anteriores 
         }
@@ -418,11 +502,13 @@ void leerUltrasonico(void){
         ccSensorValuePrev[indiceFiltro++] = ccSensorValue; // Y actualizo el índice del buffer circular
         indiceFiltro %= FILTRO_US+1;
         // FIN FILTRADO ////////////////////////////////
-        if(ccSensorValue != ccSensorValuePrev[indiceFiltro]){        // Detecto si cambió el valor filtrado, para no mandar valores repetidos
+        
+        // Detecto si cambió el valor filtrado, para no mandar valores repetidos
+        if(ccSensorValue != ccSensorValuePrev[indiceFiltro]){        
           #if defined(COMUNICACION_MIDI)|defined(HAIRLESS_MIDI)
-            MIDI.sendControlChange(CC_US_MIDI, ccSensorValue, CANAL_MIDI_CC);
-          #elif defined(COMUNICACION_SERIAL)
-            Serial.print("Sensor Ultrasonico CC: "); Serial.print(CC_US_MIDI); Serial.print("  Valor: "); Serial.println(ccSensorValue);
+            MIDI.sendControlChange(CC_US_MIDI, ccSensorValue, CANAL_MIDI_CC);          // Envío MIDI
+          #elif defined(COMUNICACION_SERIAL)  
+            Serial.print("Sensor Ultrasonico CC: "); Serial.print(CC_US_MIDI); Serial.print("  Valor: "); Serial.println(ccSensorValue);    // Envío SERIAL
           #endif
         }
       }
@@ -430,7 +516,7 @@ void leerUltrasonico(void){
     }
   }
 }
-#endif
+#endif    // CON_ULTRASONIDO
 
 #if defined(COMUNICACION_MIDI)|defined(HAIRLESS_MIDI)
 // Lee el canal midi, note y velocity, y actualiza el estado de los leds.
@@ -553,6 +639,43 @@ void leer_MIDI(void) {
           }
         }
         break;
+            case midi::NoteOff:        // Apago también los LEDs si recibo cualquier NOTE-OFF
+        switch(led_number){
+          case N_LED_MIDI_0:
+            setLed_595(N_LED_HW_0, LOW); leds_que_titilan[N_LED_HW_0] = 0; break;      // Encender el LED correspondiente y no dejar que titile
+          case N_LED_MIDI_1:
+            setLed_595(N_LED_HW_1, LOW); leds_que_titilan[N_LED_HW_1] = 0; break;            
+          case N_LED_MIDI_2:
+            setLed_595(N_LED_HW_2, LOW); leds_que_titilan[N_LED_HW_2] = 0; break;            
+          case N_LED_MIDI_3:
+            setLed_595(N_LED_HW_3, LOW); leds_que_titilan[N_LED_HW_3] = 0; break;            
+          case N_LED_MIDI_4:
+            setLed_595(N_LED_HW_4, LOW); leds_que_titilan[N_LED_HW_4] = 0; break;            
+          case N_LED_MIDI_5:
+            setLed_595(N_LED_HW_5, LOW); leds_que_titilan[N_LED_HW_5] = 0; break;            
+          case N_LED_MIDI_6:
+            setLed_595(N_LED_HW_6, LOW); leds_que_titilan[N_LED_HW_6] = 0; break;            
+          case N_LED_MIDI_7:
+            setLed_595(N_LED_HW_7, LOW); leds_que_titilan[N_LED_HW_7] = 0; break;            
+          case N_LED_MIDI_8:
+            setLed_595(N_LED_HW_8, LOW); leds_que_titilan[N_LED_HW_8] = 0; break;            
+          case N_LED_MIDI_9:
+            setLed_595(N_LED_HW_9, LOW); leds_que_titilan[N_LED_HW_9] = 0; break;            
+          case N_LED_MIDI_10:
+            setLed_595(N_LED_HW_10, LOW); leds_que_titilan[N_LED_HW_10] = 0; break;           
+          case N_LED_MIDI_11:
+            setLed_595(N_LED_HW_11, LOW); leds_que_titilan[N_LED_HW_11] = 0; break;           
+          case N_LED_MIDI_12:
+            setLed_595(N_LED_HW_12, LOW); leds_que_titilan[N_LED_HW_12] = 0; break;           
+          case N_LED_MIDI_13:
+            setLed_595(N_LED_HW_13, LOW); leds_que_titilan[N_LED_HW_13] = 0; break;           
+          case N_LED_MIDI_14:
+            setLed_595(N_LED_HW_14, LOW); leds_que_titilan[N_LED_HW_14] = 0; break;           
+          case N_LED_MIDI_15:
+            setLed_595(N_LED_HW_15, LOW); leds_que_titilan[N_LED_HW_15] = 0; break;            // Encender el LED correspondiente              
+          default: break;  
+        }
+      break;
       default:
         break;
     }
@@ -686,25 +809,95 @@ void enviarNoteSerial(unsigned int nota, unsigned int veloc) {
 #if defined(COMUNICACION_MIDI)|defined(HAIRLESS_MIDI)
 // Remapea las entradas analógicas y las envía por MIDI
 void enviarControlChangeMidi(unsigned int nota) {
-  switch (nota) {
-    case CC_0_HW:  MIDI.sendControlChange(CC_0_MIDI, velocity[mux][canal], CANAL_MIDI_CC); break;
-    case CC_1_HW:  MIDI.sendControlChange(CC_1_MIDI, velocity[mux][canal], CANAL_MIDI_CC); break;
-    case CC_2_HW:  MIDI.sendControlChange(CC_2_MIDI, velocity[mux][canal], CANAL_MIDI_CC); break;
-    case CC_3_HW:  MIDI.sendControlChange(CC_3_MIDI, velocity[mux][canal], CANAL_MIDI_CC);  break;
-    case CC_4_HW:  MIDI.sendControlChange(CC_4_MIDI, velocity[mux][canal], CANAL_MIDI_CC);  break;   
-    case CC_5_HW:  MIDI.sendControlChange(CC_5_MIDI, velocity[mux][canal], CANAL_MIDI_CC);  break;
-    case CC_6_HW:  MIDI.sendControlChange(CC_6_MIDI, velocity[mux][canal], CANAL_MIDI_CC);  break; // MAPEO DE ORDEN DE ENTRADAS ANALOGICAS, SEGÚN COMO QUEDARON EN HARDWARE
-    case CC_7_HW:  MIDI.sendControlChange(CC_7_MIDI, velocity[mux][canal], CANAL_MIDI_CC);  break; // Y COMO LOS QUEREMOS EN SOFTWARE
-    case CC_8_HW:  MIDI.sendControlChange(CC_8_MIDI, velocity[mux][canal], CANAL_MIDI_CC);  break; // case NRO_BOTON_HARDWARE: MIDI.sendControlChange(NRO_ANALOG_MIDI, velocity, canal);
-    case CC_9_HW:  MIDI.sendControlChange(CC_9_MIDI, velocity[mux][canal], CANAL_MIDI_CC);  break;
-    case CC_10_HW:  MIDI.sendControlChange(CC_10_MIDI, velocity[mux][canal], CANAL_MIDI_CC);  break;
-    case CC_11_HW:  MIDI.sendControlChange(CC_11_MIDI, velocity[mux][canal], CANAL_MIDI_CC);  break;    
-    case CC_12_HW:  MIDI.sendControlChange(CC_12_MIDI, velocity[mux][canal], CANAL_MIDI_CC);  break;    
-    case CC_13_HW:  MIDI.sendControlChange(CC_13_MIDI, velocity[mux][canal], CANAL_MIDI_CC);  break;  
-    case CC_14_HW:  MIDI.sendControlChange(CC_14_MIDI, velocity[mux][canal], CANAL_MIDI_CC);  break;
-    case CC_15_HW:  MIDI.sendControlChange(CC_15_MIDI, velocity[mux][canal], CANAL_MIDI_CC);  break;
-    default: break;
-    
+
+  switch(shift){
+    case 0:
+      switch (nota) {
+        case CC_0_HW:  MIDI.sendControlChange(CC_0_MIDI, velocity[mux][canal], CANAL_MIDI_CC); break;
+        case CC_1_HW:  MIDI.sendControlChange(CC_1_MIDI, velocity[mux][canal], CANAL_MIDI_CC); break;
+        case CC_2_HW:  MIDI.sendControlChange(CC_2_MIDI, velocity[mux][canal], CANAL_MIDI_CC); break;
+        case CC_3_HW:  MIDI.sendControlChange(CC_3_MIDI, velocity[mux][canal], CANAL_MIDI_CC);  break;
+        case CC_4_HW:  MIDI.sendControlChange(CC_4_MIDI, velocity[mux][canal], CANAL_MIDI_CC);  break;   
+        case CC_5_HW:  MIDI.sendControlChange(CC_5_MIDI, velocity[mux][canal], CANAL_MIDI_CC);  break;
+        case CC_6_HW:  MIDI.sendControlChange(CC_6_MIDI, velocity[mux][canal], CANAL_MIDI_CC);  break; // MAPEO DE ORDEN DE ENTRADAS ANALOGICAS, SEGÚN COMO QUEDARON EN HARDWARE
+        case CC_7_HW:  MIDI.sendControlChange(CC_7_MIDI, velocity[mux][canal], CANAL_MIDI_CC);  break; // Y COMO LOS QUEREMOS EN SOFTWARE
+        case CC_8_HW:  MIDI.sendControlChange(CC_8_MIDI, velocity[mux][canal], CANAL_MIDI_CC);  break; // case NRO_BOTON_HARDWARE: MIDI.sendControlChange(NRO_ANALOG_MIDI, velocity, canal);
+        case CC_9_HW:  MIDI.sendControlChange(CC_9_MIDI, velocity[mux][canal], CANAL_MIDI_CC);  break;
+        case CC_10_HW:  MIDI.sendControlChange(CC_10_MIDI, velocity[mux][canal], CANAL_MIDI_CC);  break;
+        case CC_11_HW:  MIDI.sendControlChange(CC_11_MIDI, velocity[mux][canal], CANAL_MIDI_CC);  break;    
+        case CC_12_HW:  MIDI.sendControlChange(CC_12_MIDI, velocity[mux][canal], CANAL_MIDI_CC);  break;    
+        case CC_13_HW:  MIDI.sendControlChange(CC_13_MIDI, velocity[mux][canal], CANAL_MIDI_CC);  break;  
+        case CC_14_HW:  MIDI.sendControlChange(CC_14_MIDI, velocity[mux][canal], CANAL_MIDI_CC);  break;
+        case CC_15_HW:  MIDI.sendControlChange(CC_15_MIDI, velocity[mux][canal], CANAL_MIDI_CC);  break;
+        default: break;      
+      }
+      break;      
+#ifdef SHIFTERS      
+    case 1:
+      switch (nota) {
+        case CC_0_HW:  MIDI.sendControlChange(CC_0_MIDI_SHIFT_1, velocity[mux][canal], CANAL_MIDI_CC); break;
+        case CC_1_HW:  MIDI.sendControlChange(CC_1_MIDI_SHIFT_1, velocity[mux][canal], CANAL_MIDI_CC); break;
+        case CC_2_HW:  MIDI.sendControlChange(CC_2_MIDI_SHIFT_1, velocity[mux][canal], CANAL_MIDI_CC); break;
+        case CC_3_HW:  MIDI.sendControlChange(CC_3_MIDI_SHIFT_1, velocity[mux][canal], CANAL_MIDI_CC);  break;
+        case CC_4_HW:  MIDI.sendControlChange(CC_4_MIDI_SHIFT_1, velocity[mux][canal], CANAL_MIDI_CC);  break;   
+        case CC_5_HW:  MIDI.sendControlChange(CC_5_MIDI_SHIFT_1, velocity[mux][canal], CANAL_MIDI_CC);  break;
+        case CC_6_HW:  MIDI.sendControlChange(CC_6_MIDI_SHIFT_1, velocity[mux][canal], CANAL_MIDI_CC);  break; // MAPEO DE ORDEN DE ENTRADAS ANALOGICAS, SEGÚN COMO QUEDARON EN HARDWARE
+        case CC_7_HW:  MIDI.sendControlChange(CC_7_MIDI_SHIFT_1, velocity[mux][canal], CANAL_MIDI_CC);  break; // Y COMO LOS QUEREMOS EN SOFTWARE
+        case CC_8_HW:  MIDI.sendControlChange(CC_8_MIDI_SHIFT_1, velocity[mux][canal], CANAL_MIDI_CC);  break; // case NRO_BOTON_HARDWARE: MIDI.sendControlChange(NRO_ANALOG_MIDI, velocity, canal);
+        case CC_9_HW:  MIDI.sendControlChange(CC_9_MIDI_SHIFT_1, velocity[mux][canal], CANAL_MIDI_CC);  break;
+        case CC_10_HW:  MIDI.sendControlChange(CC_10_MIDI_SHIFT_1, velocity[mux][canal], CANAL_MIDI_CC);  break;
+        case CC_11_HW:  MIDI.sendControlChange(CC_11_MIDI_SHIFT_1, velocity[mux][canal], CANAL_MIDI_CC);  break;    
+        case CC_12_HW:  MIDI.sendControlChange(CC_12_MIDI_SHIFT_1, velocity[mux][canal], CANAL_MIDI_CC);  break;    
+        case CC_13_HW:  MIDI.sendControlChange(CC_13_MIDI_SHIFT_1, velocity[mux][canal], CANAL_MIDI_CC);  break;  
+        case CC_14_HW:  MIDI.sendControlChange(CC_14_MIDI_SHIFT_1, velocity[mux][canal], CANAL_MIDI_CC);  break;
+        case CC_15_HW:  MIDI.sendControlChange(CC_15_MIDI_SHIFT_1, velocity[mux][canal], CANAL_MIDI_CC);  break;
+        default: break;      
+      }
+      break;
+    case 2:
+      switch (nota) {
+        case CC_0_HW:  MIDI.sendControlChange(CC_0_MIDI_SHIFT_2, velocity[mux][canal], CANAL_MIDI_CC); break;
+        case CC_1_HW:  MIDI.sendControlChange(CC_1_MIDI_SHIFT_2, velocity[mux][canal], CANAL_MIDI_CC); break;
+        case CC_2_HW:  MIDI.sendControlChange(CC_2_MIDI_SHIFT_2, velocity[mux][canal], CANAL_MIDI_CC); break;
+        case CC_3_HW:  MIDI.sendControlChange(CC_3_MIDI_SHIFT_2, velocity[mux][canal], CANAL_MIDI_CC);  break;
+        case CC_4_HW:  MIDI.sendControlChange(CC_4_MIDI_SHIFT_2, velocity[mux][canal], CANAL_MIDI_CC);  break;   
+        case CC_5_HW:  MIDI.sendControlChange(CC_5_MIDI_SHIFT_2, velocity[mux][canal], CANAL_MIDI_CC);  break;
+        case CC_6_HW:  MIDI.sendControlChange(CC_6_MIDI_SHIFT_2, velocity[mux][canal], CANAL_MIDI_CC);  break; // MAPEO DE ORDEN DE ENTRADAS ANALOGICAS, SEGÚN COMO QUEDARON EN HARDWARE
+        case CC_7_HW:  MIDI.sendControlChange(CC_7_MIDI_SHIFT_2, velocity[mux][canal], CANAL_MIDI_CC);  break; // Y COMO LOS QUEREMOS EN SOFTWARE
+        case CC_8_HW:  MIDI.sendControlChange(CC_8_MIDI_SHIFT_2, velocity[mux][canal], CANAL_MIDI_CC);  break; // case NRO_BOTON_HARDWARE: MIDI.sendControlChange(NRO_ANALOG_MIDI, velocity, canal);
+        case CC_9_HW:  MIDI.sendControlChange(CC_9_MIDI_SHIFT_2, velocity[mux][canal], CANAL_MIDI_CC);  break;
+        case CC_10_HW:  MIDI.sendControlChange(CC_10_MIDI_SHIFT_2, velocity[mux][canal], CANAL_MIDI_CC);  break;
+        case CC_11_HW:  MIDI.sendControlChange(CC_11_MIDI_SHIFT_2, velocity[mux][canal], CANAL_MIDI_CC);  break;    
+        case CC_12_HW:  MIDI.sendControlChange(CC_12_MIDI_SHIFT_2, velocity[mux][canal], CANAL_MIDI_CC);  break;    
+        case CC_13_HW:  MIDI.sendControlChange(CC_13_MIDI_SHIFT_2, velocity[mux][canal], CANAL_MIDI_CC);  break;  
+        case CC_14_HW:  MIDI.sendControlChange(CC_14_MIDI_SHIFT_2, velocity[mux][canal], CANAL_MIDI_CC);  break;
+        case CC_15_HW:  MIDI.sendControlChange(CC_15_MIDI_SHIFT_2, velocity[mux][canal], CANAL_MIDI_CC);  break;
+        default: break;      
+      }
+      break;  
+    case 3:
+      switch (nota) {
+        case CC_0_HW:  MIDI.sendControlChange(CC_0_MIDI_SHIFT_3, velocity[mux][canal], CANAL_MIDI_CC); break;
+        case CC_1_HW:  MIDI.sendControlChange(CC_1_MIDI_SHIFT_3, velocity[mux][canal], CANAL_MIDI_CC); break;
+        case CC_2_HW:  MIDI.sendControlChange(CC_2_MIDI_SHIFT_3, velocity[mux][canal], CANAL_MIDI_CC); break;
+        case CC_3_HW:  MIDI.sendControlChange(CC_3_MIDI_SHIFT_3, velocity[mux][canal], CANAL_MIDI_CC);  break;
+        case CC_4_HW:  MIDI.sendControlChange(CC_4_MIDI_SHIFT_3, velocity[mux][canal], CANAL_MIDI_CC);  break;   
+        case CC_5_HW:  MIDI.sendControlChange(CC_5_MIDI_SHIFT_3, velocity[mux][canal], CANAL_MIDI_CC);  break;
+        case CC_6_HW:  MIDI.sendControlChange(CC_6_MIDI_SHIFT_3, velocity[mux][canal], CANAL_MIDI_CC);  break; // MAPEO DE ORDEN DE ENTRADAS ANALOGICAS, SEGÚN COMO QUEDARON EN HARDWARE
+        case CC_7_HW:  MIDI.sendControlChange(CC_7_MIDI_SHIFT_3, velocity[mux][canal], CANAL_MIDI_CC);  break; // Y COMO LOS QUEREMOS EN SOFTWARE
+        case CC_8_HW:  MIDI.sendControlChange(CC_8_MIDI_SHIFT_3, velocity[mux][canal], CANAL_MIDI_CC);  break; // case NRO_BOTON_HARDWARE: MIDI.sendControlChange(NRO_ANALOG_MIDI, velocity, canal);
+        case CC_9_HW:  MIDI.sendControlChange(CC_9_MIDI_SHIFT_3, velocity[mux][canal], CANAL_MIDI_CC);  break;
+        case CC_10_HW:  MIDI.sendControlChange(CC_10_MIDI_SHIFT_3, velocity[mux][canal], CANAL_MIDI_CC);  break;
+        case CC_11_HW:  MIDI.sendControlChange(CC_11_MIDI_SHIFT_3, velocity[mux][canal], CANAL_MIDI_CC);  break;    
+        case CC_12_HW:  MIDI.sendControlChange(CC_12_MIDI_SHIFT_3, velocity[mux][canal], CANAL_MIDI_CC);  break;    
+        case CC_13_HW:  MIDI.sendControlChange(CC_13_MIDI_SHIFT_3, velocity[mux][canal], CANAL_MIDI_CC);  break;  
+        case CC_14_HW:  MIDI.sendControlChange(CC_14_MIDI_SHIFT_3, velocity[mux][canal], CANAL_MIDI_CC);  break;
+        case CC_15_HW:  MIDI.sendControlChange(CC_15_MIDI_SHIFT_3, velocity[mux][canal], CANAL_MIDI_CC);  break;
+        default: break;      
+      }
+      break;
+      default:break;  
+#endif  ///SHIFTERS      
   }
   return;
 }
@@ -712,31 +905,100 @@ void enviarControlChangeMidi(unsigned int nota) {
 
 #ifdef COMUNICACION_SERIAL
 void enviarControlChangeSerial(unsigned int nota) {
-  switch (nota) {
-    case CC_0_HW:  Serial.print("Numero de pote: "); Serial.print(CC_0_MIDI); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
-    case CC_1_HW:  Serial.print("Numero de pote: "); Serial.print(CC_1_MIDI); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
-    case CC_2_HW:  Serial.print("Numero de pote: "); Serial.print(CC_2_MIDI); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
-    case CC_3_HW:  Serial.print("Numero de pote: "); Serial.print(CC_3_MIDI); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
-    case CC_4_HW:  Serial.print("Numero de pote: "); Serial.print(CC_4_MIDI); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
-    case CC_5_HW:  Serial.print("Numero de pote: "); Serial.print(CC_5_MIDI); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
-    case CC_6_HW:  Serial.print("Numero de pote: "); Serial.print(CC_6_MIDI); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
-    case CC_7_HW:  Serial.print("Numero de pote: "); Serial.print(CC_7_MIDI); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
-    case CC_8_HW:  Serial.print("Numero de pote: "); Serial.print(CC_8_MIDI); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
-    case CC_9_HW:  Serial.print("Numero de pote: "); Serial.print(CC_9_MIDI); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
-    case CC_10_HW:  Serial.print("Numero de pote: "); Serial.print(CC_10_MIDI); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
-    case CC_11_HW:  Serial.print("Numero de pote: "); Serial.print(CC_11_MIDI); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
-    case CC_12_HW:  Serial.print("Numero de pote: "); Serial.print(CC_12_MIDI); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
-    case CC_13_HW:  Serial.print("Numero de pote: "); Serial.print(CC_13_MIDI); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
-    case CC_14_HW:  Serial.print("Numero de pote: "); Serial.print(CC_14_MIDI); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
-    case CC_15_HW:  Serial.print("Numero de pote: "); Serial.print(CC_15_MIDI); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
-    default: break;
+  switch(shift){
+    case 0:                            // Página de CC stand-by
+      switch (nota) {
+        case CC_0_HW:  Serial.print("Numero de pote: "); Serial.print(CC_0_MIDI); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_1_HW:  Serial.print("Numero de pote: "); Serial.print(CC_1_MIDI); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_2_HW:  Serial.print("Numero de pote: "); Serial.print(CC_2_MIDI); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_3_HW:  Serial.print("Numero de pote: "); Serial.print(CC_3_MIDI); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_4_HW:  Serial.print("Numero de pote: "); Serial.print(CC_4_MIDI); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_5_HW:  Serial.print("Numero de pote: "); Serial.print(CC_5_MIDI); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_6_HW:  Serial.print("Numero de pote: "); Serial.print(CC_6_MIDI); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_7_HW:  Serial.print("Numero de pote: "); Serial.print(CC_7_MIDI); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_8_HW:  Serial.print("Numero de pote: "); Serial.print(CC_8_MIDI); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_9_HW:  Serial.print("Numero de pote: "); Serial.print(CC_9_MIDI); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_10_HW:  Serial.print("Numero de pote: "); Serial.print(CC_10_MIDI); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_11_HW:  Serial.print("Numero de pote: "); Serial.print(CC_11_MIDI); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_12_HW:  Serial.print("Numero de pote: "); Serial.print(CC_12_MIDI); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_13_HW:  Serial.print("Numero de pote: "); Serial.print(CC_13_MIDI); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_14_HW:  Serial.print("Numero de pote: "); Serial.print(CC_14_MIDI); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_15_HW:  Serial.print("Numero de pote: "); Serial.print(CC_15_MIDI); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        default: break;
+      }
+      break;
+    case 1:                        // Página de CC shift 1
+      switch (nota) {
+        case CC_0_HW:  Serial.print("Numero de pote: "); Serial.print(CC_0_MIDI_SHIFT_1); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_1_HW:  Serial.print("Numero de pote: "); Serial.print(CC_1_MIDI_SHIFT_1); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_2_HW:  Serial.print("Numero de pote: "); Serial.print(CC_2_MIDI_SHIFT_1); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_3_HW:  Serial.print("Numero de pote: "); Serial.print(CC_3_MIDI_SHIFT_1); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_4_HW:  Serial.print("Numero de pote: "); Serial.print(CC_4_MIDI_SHIFT_1); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_5_HW:  Serial.print("Numero de pote: "); Serial.print(CC_5_MIDI_SHIFT_1); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_6_HW:  Serial.print("Numero de pote: "); Serial.print(CC_6_MIDI_SHIFT_1); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_7_HW:  Serial.print("Numero de pote: "); Serial.print(CC_7_MIDI_SHIFT_1); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_8_HW:  Serial.print("Numero de pote: "); Serial.print(CC_8_MIDI_SHIFT_1); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_9_HW:  Serial.print("Numero de pote: "); Serial.print(CC_9_MIDI_SHIFT_1); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_10_HW:  Serial.print("Numero de pote: "); Serial.print(CC_10_MIDI_SHIFT_1); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_11_HW:  Serial.print("Numero de pote: "); Serial.print(CC_11_MIDI_SHIFT_1); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_12_HW:  Serial.print("Numero de pote: "); Serial.print(CC_12_MIDI_SHIFT_1); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_13_HW:  Serial.print("Numero de pote: "); Serial.print(CC_13_MIDI_SHIFT_1); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_14_HW:  Serial.print("Numero de pote: "); Serial.print(CC_14_MIDI_SHIFT_1); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_15_HW:  Serial.print("Numero de pote: "); Serial.print(CC_15_MIDI_SHIFT_1); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        default: break;
+      }
+      break;
+    case 2:                        // Página de CC shift 2
+      switch (nota) {
+        case CC_0_HW:  Serial.print("Numero de pote: "); Serial.print(CC_0_MIDI_SHIFT_2); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_1_HW:  Serial.print("Numero de pote: "); Serial.print(CC_1_MIDI_SHIFT_2); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_2_HW:  Serial.print("Numero de pote: "); Serial.print(CC_2_MIDI_SHIFT_2); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_3_HW:  Serial.print("Numero de pote: "); Serial.print(CC_3_MIDI_SHIFT_2); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_4_HW:  Serial.print("Numero de pote: "); Serial.print(CC_4_MIDI_SHIFT_2); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_5_HW:  Serial.print("Numero de pote: "); Serial.print(CC_5_MIDI_SHIFT_2); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_6_HW:  Serial.print("Numero de pote: "); Serial.print(CC_6_MIDI_SHIFT_2); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_7_HW:  Serial.print("Numero de pote: "); Serial.print(CC_7_MIDI_SHIFT_2); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_8_HW:  Serial.print("Numero de pote: "); Serial.print(CC_8_MIDI_SHIFT_2); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_9_HW:  Serial.print("Numero de pote: "); Serial.print(CC_9_MIDI_SHIFT_2); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_10_HW:  Serial.print("Numero de pote: "); Serial.print(CC_10_MIDI_SHIFT_2); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_11_HW:  Serial.print("Numero de pote: "); Serial.print(CC_11_MIDI_SHIFT_2); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_12_HW:  Serial.print("Numero de pote: "); Serial.print(CC_12_MIDI_SHIFT_2); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_13_HW:  Serial.print("Numero de pote: "); Serial.print(CC_13_MIDI_SHIFT_2); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_14_HW:  Serial.print("Numero de pote: "); Serial.print(CC_14_MIDI_SHIFT_2); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_15_HW:  Serial.print("Numero de pote: "); Serial.print(CC_15_MIDI_SHIFT_2); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        default: break;
+      }
+      break;  
+    case 3:                        // Página de CC shift 3
+      switch (nota) {
+        case CC_0_HW:  Serial.print("Numero de pote: "); Serial.print(CC_0_MIDI_SHIFT_3); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_1_HW:  Serial.print("Numero de pote: "); Serial.print(CC_1_MIDI_SHIFT_3); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_2_HW:  Serial.print("Numero de pote: "); Serial.print(CC_2_MIDI_SHIFT_3); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_3_HW:  Serial.print("Numero de pote: "); Serial.print(CC_3_MIDI_SHIFT_3); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_4_HW:  Serial.print("Numero de pote: "); Serial.print(CC_4_MIDI_SHIFT_3); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_5_HW:  Serial.print("Numero de pote: "); Serial.print(CC_5_MIDI_SHIFT_3); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_6_HW:  Serial.print("Numero de pote: "); Serial.print(CC_6_MIDI_SHIFT_3); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_7_HW:  Serial.print("Numero de pote: "); Serial.print(CC_7_MIDI_SHIFT_3); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_8_HW:  Serial.print("Numero de pote: "); Serial.print(CC_8_MIDI_SHIFT_3); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_9_HW:  Serial.print("Numero de pote: "); Serial.print(CC_9_MIDI_SHIFT_3); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_10_HW:  Serial.print("Numero de pote: "); Serial.print(CC_10_MIDI_SHIFT_3); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_11_HW:  Serial.print("Numero de pote: "); Serial.print(CC_11_MIDI_SHIFT_3); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_12_HW:  Serial.print("Numero de pote: "); Serial.print(CC_12_MIDI_SHIFT_3); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_13_HW:  Serial.print("Numero de pote: "); Serial.print(CC_13_MIDI_SHIFT_3); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_14_HW:  Serial.print("Numero de pote: "); Serial.print(CC_14_MIDI_SHIFT_3); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        case CC_15_HW:  Serial.print("Numero de pote: "); Serial.print(CC_15_MIDI_SHIFT_3); Serial.print("  Valor: "); Serial.println(velocity[mux][canal]); break;
+        default: break;
+      }
+      break;
+    default: break;      
   }
   return; 
 }
 #endif
 
 /* 
-Funcion para filtrar el ruido analógico de los pontenciómetros.  
+Funcion para filtrar el ruido analógico de los pontenciómetros. Analiza si el valor crece o decrece, y en el caso de un cambio de dirección,
+decide si es ruido o no, si hubo un cambio superior al valor anterior más el umbral de ruido.
 */
 unsigned int esRuido(unsigned int nota) {
   static bool estado[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -762,7 +1024,26 @@ unsigned int esRuido(unsigned int nota) {
   return 1;         // Si todo lo anterior no se cumple, es ruido.
 }
 
-// Prender o apagar un solo led
+// Función que define el Prescaler del ADC para cambiar la frecuencia de sampleo de las señales analógicas
+void setADCprescaler(void){
+  // Prescalers para el ADC
+  const unsigned char PS_16 = (1 << ADPS2);
+  const unsigned char PS_32 = (1 << ADPS2) | (1 << ADPS0);
+  const unsigned char PS_64 = (1 << ADPS2) | (1 << ADPS1);
+  const unsigned char PS_128 = (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0);
+  // Setear el prescaler (divisor de clock) del ADC
+  ADCSRA &= ~PS_128;  // Poner a 0 los bits del registro seteados por la librería de Arduino
+  // Elegimos uno de los prescalers:
+  // PS_16 (1MHz o 50000 muestras/s) 
+  // PS_32 (500KHz o 31250 muestras/s) 
+  // PS_64 (250KHz o 16666 muestras/s)
+  // PS_128 (125KHz o 8620 muestras/s)
+  // Atmel sugiere mantener la frecuencia de operación del ADC entre 50Khz y 200Khz, advirtiendo que 
+  // puede degradarse la resolución si se supera la misma
+  ADCSRA |= PS_16;    // Setear el prescaler al valor elegido
+}
+
+// Prender o apagar un solo led mediante el 
 void setLed_595(int num_led, int estado) {
   registros[num_led] = estado;
   writeRegisters();
