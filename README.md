@@ -1,8 +1,10 @@
 # KiloMux-Shield
 Repositorio para el KiloMux Shield para Arduino desarrollado en Yaeltex
+con colaboración de Jorge Crowe, del Laboratorio del Juguete, ambos
+ubicados en Buenos Aires, Argentina.
 
 El KiloMux es un shield para Arduino UNO que expande la cantidad de
-entradas y salidas usando multiplexores e integrados 79HC595 y permite
+entradas y salidas usando multiplexores e integrados 74HC595 y permite
 la comunicación via MIDI, ya sea por USB o por hardware.
 
 Se tienen 16 salidas digitales (por ahora sin PWM) y 32 entradas con la
