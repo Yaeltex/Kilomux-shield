@@ -1,0 +1,41 @@
+Partlist
+
+Exported from KiloMuxV2.brd at 12/06/2015 05:21:27 p.m.
+
+EAGLE Version 6.6.0 Copyright (c) 1988-2014 CadSoft
+
+Assembly variant: 
+
+Part      Value              Package              Library  Position (mm)         Orientation
+
+6N138     6N138              DIL08                KiloMux  (3.6 7.9)             R90
+595-1     74LS595N           DIL16                KiloMux  (27.8 34.9)           R270
+595-2     74LS595N           DIL16                KiloMux  (8.5 34.9)            R270
+C1        10uF               Electrolítico-25V    KiloMux  (84.4 31.6)           R270
+C2        104                Cerámico	          KiloMux  (80 31.5)             R270
+C3        104                Cerámico	          KiloMux  (100.38 10.4284)      R270
+C4        104                Cerámico	          KiloMux  (63.25 8.1524)        R0
+C5        104                Cerámico	          KiloMux  (34.59 42.6)          R90
+C6        104                Cerámico	          KiloMux  (15.16 42.7)          R90
+C7        104                Cerámico	          KiloMux  (108 44.5)            R0
+C8        104                Cerámico	          KiloMux  (126.1 44.5)          R0
+C9        104                Cerámico	          KiloMux  (63.9 44.5)           R0
+C10       104                Cerámico	          KiloMux  (83.7 44.5)           R0
+D1                           DIODE-1N4148         KiloMux  (10.29 6.1)           R270
+ISP                          2X3-MALE             KiloMux  (35.2 -2.9)           R180
+JP1                          AUDIO-JACK-ST-C/CTE  KiloMux  (114.2 -4.2)          R90
+JP2                          AUDIO-JACK-ST-C/CTE  KiloMux  (101.5 -4.2)          R90
+JP3                          1X02-MALE            KiloMux  (4.9 0.8)             R180
+LED1      				     2X05-MALE	          KiloMux  (30.8 50.5)           R90
+LED2           				 2X05-MALE            KiloMux  (6.8 50.5)            R90
+MUX-A-1   CONECTOR10POTESSHD 2X05-MALE		      KiloMux  (102.1 50.5)          R270
+MUX-A-2   CONECTOR10POTESSHD 2X05-MALE		      KiloMux  (121.2 50.5)          R270
+MUX-B-1   CONECTOR10POTESSHD 2X05-MALE		      KiloMux  (56.5 50.5)           R270
+MUX-B-2   CONECTOR10POTESSHD 2X05-MALE		      KiloMux  (76.7 50.5)           R270
+MUX_A     MUX-74HC4067DIP    DIP24                KiloMux  (111 25.3)            R0
+MUX_B     MUX-74HC4067DIP    DIP24                KiloMux  (65 25.9)             R0
+R1        220                1/8W-10%             KiloMux  (13.6 5.6)            R270
+R2        220                1/8W-10%             KiloMux  (18.8 16.5)           R90
+R3        220                1/8W-10%             KiloMux  (31.6 16.5)           R90
+R4        220                1/8W-10%             KiloMux  (25.6 16.5)           R90
+SENSOR_US                    2X3-MALE             KiloMux  (0.8 19.1)            R90
