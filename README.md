@@ -16,7 +16,7 @@ su activación.
 En el repositorio se encuentra el código de Arduino que realiza la
 lectura de las entradas, con funciones para enviar los datos usando la
 librería MIDI de Arduino, o por serial y que recibe datos por MIDI o
-serial y enciende las salidas corresponientes.
+serial y enciende las salidas correspondientes.
 
 Se pueden encontrar las librerías de código necesarias para el
 funcionamiento del sketch, que son la MuxShield (modificada de la de
