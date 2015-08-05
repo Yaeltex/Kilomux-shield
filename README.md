@@ -9,7 +9,7 @@ la comunicación via MIDI, ya sea por USB o por hardware.
 
 Se tienen 16 salidas digitales (por ahora sin PWM) y 32 entradas con la
 posibilidad de combinar 16 digitales y 16 analógicas o 32 analógicas o
-32 digitales. El shield tiene también libres los pines 2, 3, 12 y 13,
+32 digitales. El shield tiene también 4 pines digitales libres (2, 3, 12 y 13 en la v1 y 10, 11, 12 y 13 en la v2),
 pensado para conectar un sensor de ultrasonido y un botón y un LED para
 su activación.
 
