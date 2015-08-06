@@ -1,34 +1,17 @@
 # KiloMux-Shield
-Repositorio para el KiloMux Shield para Arduino desarrollado en Yaeltex
-con colaboración de Jorge Crowe, del Laboratorio del Juguete, ambos
-ubicados en Buenos Aires, Argentina.
+This is the KiloMux Arduino Shield repository, developed by Yaeltex in collaboration with Jorge Crowe from El Laboratorio del Juguete, both located in Buenos Aires, Argentina.
 
-El KiloMux es un shield para Arduino UNO que expande la cantidad de
-entradas y salidas usando multiplexores e integrados 74HC595 y permite
-la comunicación via MIDI, ya sea por USB o por hardware.
+KiloMux is an Arduino UNO shield which expands the number of inputs and outputs using multiplexers and 74HC595 ICs and allows MIDI communication via USB or hardware.
 
-Se tienen 16 salidas digitales (por ahora sin PWM) y 32 entradas con la
-posibilidad de combinar 16 digitales y 16 analógicas o 32 analógicas o
-32 digitales. El shield tiene también 4 pines digitales libres (2, 3, 12 y 13 en la v1 y 10, 11, 12 y 13 en la v2),
-pensado para conectar un sensor de ultrasonido y un botón y un LED para
-su activación.
+It has 16 digital outputs (without PWM for the moment) and 32 inputs with the possibility to combine 16 digital and 16 analog or 32 analog or 32 digital inputs. The shield has also 4 free digital pins (2, 3, 12 and 13 in v1, and 10, 11, 12 and 13 in v2), intended to connect an ultrasonic sensor, a button and an LED for its activation.
 
-En el repositorio se encuentra el código de Arduino que realiza la
-lectura de las entradas, con funciones para enviar los datos usando la
-librería MIDI de Arduino, o por serial y que recibe datos por MIDI o
-serial y enciende las salidas correspondientes.
+In the repository you can find the Arduino code in charge of reading the inputs - with functions to send data using the Arduino MIDI library or via serial - and receiving data via MIDI or serial and turn on the corresponding outputs.
 
-Se pueden encontrar las librerías de código necesarias para el
-funcionamiento del sketch, que son la MuxShield (modificada de la de
-MayhewLabs), MIDI (Arduino) y NewPing (para el sensor de ultrasonido).
+The code libraries necessary for the sketch functioning area also available: the MuxShield (a mod of MayhewLabs' library), MIDI (Arduino) and NewPing (for the ultrasonic sensor).
 
-También se encuentra en el repositorio entero de HIDUINO, el firmware
-necesario para envíar MIDI por USB y que la PC reconozca a la Arduino
-como un dispositivo MIDI. En la carpeta "hiduino-master" se puede
-encontrar un tutorial para recompilar (y renombrar) el firmware y para
-cargarlo en la Arduino.
+You can also find the whole HIDUINO repository - the firmware to send MIDI via USB and allow PC to recognize the Arduino as a MIDI device. In the "hiduino-master" folder you can find a tutorial on how to recompile (and rename) the firmware and load it into the Arduino device.
 
-Si tenes dudas, sugerencias o comentarios acerca del shield, escribi a
-franco@yaeltex.com.ar.
+If you have any questions, suggestions or comments about the shield, email us at franco@yaeltex.com.ar.
 
-Saludos!
+Cheers!
+
