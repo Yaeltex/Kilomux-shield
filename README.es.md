@@ -29,6 +29,6 @@ encontrar un tutorial para recompilar (y renombrar) el firmware y para
 cargarlo en la Arduino.
 
 Si tenes dudas, sugerencias o comentarios acerca del shield, escribi a
-franco@yaeltex.com.ar o posteala en el foro de Yaeltex foro.yaeltex.com.ar
+franco@yaeltex.com.ar o posteala en el foro de Yaeltex http://foro.yaeltex.com.ar
 
 Saludos!
