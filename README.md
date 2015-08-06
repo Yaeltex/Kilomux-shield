@@ -7,11 +7,11 @@ It has 16 digital outputs (without PWM for the moment) and 32 inputs with the po
 
 In the repository you can find the Arduino code in charge of reading the inputs - with functions to send data using the Arduino MIDI library or via serial - and receiving data via MIDI or serial and turn on the corresponding outputs.
 
-The code libraries necessary for the sketch functioning area also available: the MuxShield (a mod of MayhewLabs' library), MIDI (Arduino) and NewPing (for the ultrasonic sensor).
+The code libraries necessary for the sketch functioning are also available: the MuxShield (a mod of MayhewLabs' library), MIDI (Arduino) and NewPing (for the ultrasonic sensor).
 
 You can also find the whole HIDUINO repository - the firmware to send MIDI via USB and allow PC to recognize the Arduino as a MIDI device. In the "hiduino-master" folder you can find a tutorial on how to recompile (and rename) the firmware and load it into the Arduino device.
 
-If you have any questions, suggestions or comments about the shield, email us at franco@yaeltex.com.ar.
+If you have any questions, suggestions or comments about the shield, email us at franco@yaeltex.com.ar or post in Yaeltex's forum foro.yaeltex.com.ar.
 
 Cheers!
 
