@@ -7,11 +7,12 @@ El KiloMux es un shield para Arduino UNO que expande la cantidad de
 entradas y salidas usando multiplexores e integrados 74HC595 y permite
 la comunicación via MIDI, ya sea por USB o por hardware.
 
-Se tienen 16 salidas digitales (por ahora sin PWM) y 32 entradas con la
-posibilidad de combinar 16 digitales y 16 analógicas o 32 analógicas o
-32 digitales. El shield tiene también 4 pines digitales libres (2, 3, 12 y 13 en la v1 y 10, 11, 12 y 13 en la v2),
-pensado para conectar un sensor de ultrasonido y un botón y un LED para
-su activación.
+Se tienen 16 salidas digitales (por ahora sin PWM) y 32 entradas analógicas
+o digitales, a voluntad. 
+
+El shield tiene también 4 pines digitales libres (2, 3, 12 y 13 en la v1 y 
+10, 11, 12 y 13 en la v2), pensado para conectar un sensor de ultrasonido 
+y un botón y un LED para su activación.
 
 En el repositorio se encuentra el código de Arduino que realiza la
 lectura de las entradas, con funciones para enviar los datos usando la
