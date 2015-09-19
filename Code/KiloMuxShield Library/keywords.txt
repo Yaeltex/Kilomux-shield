@@ -1,0 +1,8 @@
+KiloMux	KEYWORD1
+digitalWriteKM	KEYWORD2
+digitalReadKM	KEYWORD2
+analogReadKM	KEYWORD2
+setADCprescaler	KEYWORD2
+isNoise	KEYWORD2
+MUX_A	KEYWORD4
+MUX_B	KEYWORD4
