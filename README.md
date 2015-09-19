@@ -3,7 +3,8 @@ This is the KiloMux Arduino Shield repository, developed by Yaeltex in collabora
 
 KiloMux is an Arduino UNO shield which expands the number of inputs and outputs using multiplexers and 74HC595 ICs and allows MIDI communication via USB or hardware.
 
-It has 16 digital outputs (without PWM for the moment) and 32 inputs with the possibility to combine 16 digital and 16 analog or 32 analog or 32 digital inputs. The shield has also 4 free digital pins (2, 3, 12 and 13 in v1, and 10, 11, 12 and 13 in v2), intended to connect an ultrasonic sensor, a button and an LED for its activation.
+It has 16 digital outputs (without PWM for the moment) and 32 analog/digital inputs, which can be used independently with the provided functions. 
+The shield has also 4 free digital pins (2, 3, 12 and 13 in v1, and 10, 11, 12 and 13 in v2), intended to connect an ultrasonic sensor, a button and an LED for its activation.
 
 In the repository you can find the Arduino code in charge of reading the inputs - with functions to send data using the Arduino MIDI library or via serial - and receiving data via MIDI or serial and turn on the corresponding outputs.
 
