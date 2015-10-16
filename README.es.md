@@ -29,6 +29,8 @@ como un dispositivo MIDI. En la carpeta "hiduino-master" se puede
 encontrar un tutorial para recompilar (y renombrar) el firmware y para
 cargarlo en la Arduino.
 
+Para más información acerca del shield, visitá nuestra wiki: http://wiki.yaeltex.com.ar
+
 Si tenes dudas, sugerencias o comentarios acerca del shield, escribi a
 franco@yaeltex.com.ar o posteala en el foro de Yaeltex http://foro.yaeltex.com.ar
 
