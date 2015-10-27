@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="7.2.0">
+<eagle version="6.6.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -7633,12 +7633,11 @@ Variant PTH is our storefront SKU PRT-08032</description>
 <segment>
 <pinref part="595-1" gate="A" pin="QH*"/>
 <wire x1="93.98" y1="22.86" x2="91.44" y2="22.86" width="0.1524" layer="91"/>
-<label x="93.98" y="22.86" size="1.778" layer="95"/>
-</segment>
-<segment>
+<wire x1="93.98" y1="22.86" x2="93.98" y2="12.7" width="0.1524" layer="91"/>
+<wire x1="93.98" y1="12.7" x2="60.96" y2="12.7" width="0.1524" layer="91"/>
+<wire x1="60.96" y1="12.7" x2="60.96" y2="2.54" width="0.1524" layer="91"/>
 <pinref part="595-2" gate="A" pin="SER"/>
-<wire x1="66.04" y1="2.54" x2="63.5" y2="2.54" width="0.1524" layer="91"/>
-<label x="58.42" y="2.54" size="1.778" layer="95"/>
+<wire x1="60.96" y1="2.54" x2="66.04" y2="2.54" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="DS" class="0">
