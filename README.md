@@ -1,4 +1,4 @@
-# KiloMux-Shield
+# KiloMux Shield
 This is the KiloMux Arduino Shield repository, developed by Yaeltex in collaboration with Jorge Crowe from El Laboratorio del Juguete, both located in Buenos Aires, Argentina.
 
 KiloMux is an Arduino UNO shield which expands the number of inputs and outputs using multiplexers and 74HC595 ICs and allows MIDI communication via USB or hardware.

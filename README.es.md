@@ -1,4 +1,4 @@
-# KiloMux-Shield
+# KiloMux Shield
 Repositorio para el KiloMux Shield para Arduino desarrollado en Yaeltex
 con colaboración de Jorge Crowe, del Laboratorio del Juguete, ambos
 ubicados en Buenos Aires, Argentina.
