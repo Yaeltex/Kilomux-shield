@@ -1,5 +1,5 @@
 #include <KiloMux.h>          // Import class declaration
-#include <KiloMuxDefs.h>      // Import KiloMux defines
+#include <KiloMuxDefs.h>
 
 KiloMux KMShield;             // KiloMux Shield    
 
