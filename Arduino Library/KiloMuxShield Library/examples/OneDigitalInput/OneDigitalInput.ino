@@ -11,7 +11,7 @@ void setup() {
 }
 
 void loop() {
-  unsigned int buttonState = 0;                                 // Variable to store digital values
+  int buttonState = 0;                                 // Variable to store digital values
   buttonState = KMShield.digitalReadKM(MUX_A, buttonInput);     // Read digital value from MUX_A and channel 'buttonInput' (1-16)   
   
   Serial.print("Button state: "); Serial.println(buttonState);  // print value at the serial monitor
