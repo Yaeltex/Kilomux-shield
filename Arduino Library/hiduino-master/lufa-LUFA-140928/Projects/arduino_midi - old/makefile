@@ -13,7 +13,7 @@
 
 MCU          = atmega16u2
 ARCH         = AVR8
-BOARD        = USBKEY
+BOARD        = DUE
 F_CPU        = 16000000
 F_USB        = $(F_CPU)
 OPTIMIZATION = s
@@ -32,8 +32,11 @@ CC_FLAGS += -DAVR_ERASE_LINE_DDR="DDRC"
 CC_FLAGS += -DAVR_ERASE_LINE_MASK="(1 << 6)"
 
 # Optional Variables 
-AVRDUDE_PROGRAMMER = avrisp2
-ARDUINO_MODEL_PID = 0x0001
+AVRDUDE_PROGRAMMER = arduino
+# Uno PID:
+#ARDUINO_MODEL_PID = 0x0001
+# Mega 2560 PID:
+ARDUINO_MODEL_PID = 0x0010
 
 # Default target
 all:

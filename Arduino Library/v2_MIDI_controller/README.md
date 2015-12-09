@@ -4,4 +4,4 @@ El código Kilo_muxShield_v2 incorpora grandes mejoras con respecto a la versió
 
 Otra mejora en el código es el mapeo dinámico de los componentes, mediante tablas, en lugar de los defines que usaba la versión 1. Esto simplifico y redujo mucho el código para lograr la correspondencia entre el identificador del canal del multiplexor, y el identificador MIDI que se requiere.
 
-La "KiloMux lib" se encuentra en desarrollo, así como la carpeta "func RGB".
+Por el momento, este código no hace uso de la librería "KiloMux Shield". Para manejar el multiplexado usa la librería MuxShield de Mayhew Labs, la librería NewPing para el manejo del sensor de ultrasonido y la Arduino MIDI Library, para el manejo de la comunicación MIDI. Todas ellas se encuentran en el directorio superior a este.
