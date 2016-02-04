@@ -1,2 +1,0 @@
-KiloMux   KEYWORD1
-function1    KEYWORD2
