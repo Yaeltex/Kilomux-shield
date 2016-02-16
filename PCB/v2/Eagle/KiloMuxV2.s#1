@@ -4385,8 +4385,8 @@ Keying posts into board</description>
 <symbol name="C-EU">
 <wire x1="0" y1="0" x2="0" y2="-0.508" width="0.1524" layer="94"/>
 <wire x1="0" y1="-2.54" x2="0" y2="-2.032" width="0.1524" layer="94"/>
-<text x="-6.096" y="0.381" size="1.778" layer="95">&gt;NAME</text>
-<text x="-6.096" y="-4.699" size="1.778" layer="96">&gt;VALUE</text>
+<text x="1.524" y="0.381" size="1.778" layer="95">&gt;NAME</text>
+<text x="1.524" y="-4.699" size="1.778" layer="96">&gt;VALUE</text>
 <rectangle x1="-2.032" y1="-2.032" x2="2.032" y2="-1.524" layer="94"/>
 <rectangle x1="-2.032" y1="-1.016" x2="2.032" y2="-0.508" layer="94"/>
 <pin name="1" x="0" y="2.54" visible="off" length="short" direction="pas" swaplevel="1" rot="R270"/>
@@ -6629,15 +6629,15 @@ Variant PTH is our storefront SKU PRT-08032</description>
 <instance part="R3" gate="G$1" x="71.12" y="104.14" rot="R90"/>
 <instance part="C8" gate="G$1" x="-17.78" y="45.72" rot="R180"/>
 <instance part="C10" gate="G$1" x="-114.3" y="71.12" rot="R180"/>
-<instance part="C7" gate="G$1" x="-114.3" y="-2.54" rot="R180"/>
+<instance part="C7" gate="G$1" x="-114.3" y="2.54" rot="R180"/>
 <instance part="C2" gate="G$1" x="106.68" y="50.8" rot="R180"/>
 <instance part="C1" gate="G$1" x="106.68" y="5.08" rot="R180"/>
 <instance part="595-1" gate="A" x="76.2" y="35.56"/>
 <instance part="595-2" gate="A" x="76.2" y="-7.62"/>
-<instance part="MUX-A-1" gate="G$1" x="-144.78" y="55.88"/>
+<instance part="MUX-A-1" gate="G$1" x="-144.78" y="50.8"/>
 <instance part="MUX-A-2" gate="G$1" x="-144.78" y="27.94"/>
 <instance part="MUX-B-1" gate="G$1" x="-144.78" y="-10.16"/>
-<instance part="MUX-B-2" gate="G$1" x="-144.78" y="-38.1"/>
+<instance part="MUX-B-2" gate="G$1" x="-144.78" y="-33.02"/>
 <instance part="M1" gate="G$1" x="22.86" y="-30.48" rot="R90"/>
 <instance part="C9" gate="G$1" x="-30.48" y="48.26"/>
 <instance part="P+1" gate="VCC" x="40.64" y="2.54"/>
@@ -6650,7 +6650,7 @@ Variant PTH is our storefront SKU PRT-08032</description>
 <instance part="P+8" gate="VCC" x="106.68" y="15.24"/>
 <instance part="P+9" gate="VCC" x="40.64" y="116.84"/>
 <instance part="P+10" gate="VCC" x="-114.3" y="81.28"/>
-<instance part="P+11" gate="VCC" x="-114.3" y="7.62"/>
+<instance part="P+11" gate="VCC" x="-114.3" y="12.7"/>
 <instance part="GND1" gate="1" x="-71.12" y="17.78"/>
 <instance part="GND2" gate="1" x="33.02" y="2.54"/>
 <instance part="GND3" gate="1" x="63.5" y="-25.4"/>
@@ -6660,19 +6660,19 @@ Variant PTH is our storefront SKU PRT-08032</description>
 <instance part="GND7" gate="1" x="30.48" y="76.2"/>
 <instance part="GND8" gate="1" x="106.68" y="-2.54"/>
 <instance part="GND9" gate="1" x="106.68" y="43.18"/>
-<instance part="GND10" gate="1" x="-114.3" y="-10.16"/>
+<instance part="GND10" gate="1" x="-114.3" y="-5.08"/>
 <instance part="GND11" gate="1" x="-114.3" y="63.5"/>
 <instance part="LED1" gate="G$1" x="127" y="38.1"/>
 <instance part="LED2" gate="G$1" x="127" y="-5.08"/>
 <instance part="GND12" gate="1" x="-71.12" y="-43.18"/>
-<instance part="P+12" gate="VCC" x="-157.48" y="68.58"/>
-<instance part="GND13" gate="1" x="-127" y="66.04"/>
+<instance part="P+12" gate="VCC" x="-157.48" y="63.5"/>
+<instance part="GND13" gate="1" x="-127" y="60.96"/>
 <instance part="GND14" gate="1" x="-129.54" y="35.56"/>
 <instance part="P+13" gate="VCC" x="-157.48" y="38.1"/>
 <instance part="GND15" gate="1" x="-129.54" y="0"/>
-<instance part="GND16" gate="1" x="-129.54" y="-30.48"/>
+<instance part="GND16" gate="1" x="-129.54" y="-25.4"/>
 <instance part="P+14" gate="VCC" x="-154.94" y="0"/>
-<instance part="P+15" gate="VCC" x="-154.94" y="-27.94"/>
+<instance part="P+15" gate="VCC" x="-154.94" y="-22.86"/>
 <instance part="GND17" gate="1" x="-22.86" y="40.64"/>
 <instance part="GND18" gate="1" x="-60.96" y="48.26"/>
 <instance part="GND19" gate="1" x="-60.96" y="-12.7"/>
@@ -6681,10 +6681,10 @@ Variant PTH is our storefront SKU PRT-08032</description>
 <instance part="GND21" gate="1" x="-30.48" y="78.74"/>
 <instance part="R4" gate="G$1" x="66.04" y="93.98" rot="R180"/>
 <instance part="RX-MIDI" gate="G$1" x="40.64" y="78.74"/>
-<instance part="C5" gate="G$1" x="-142.24" y="68.58" rot="R270"/>
+<instance part="C5" gate="G$1" x="-142.24" y="63.5" rot="R270"/>
 <instance part="C6" gate="G$1" x="-142.24" y="38.1" rot="R270"/>
 <instance part="C3" gate="G$1" x="-142.24" y="2.54" rot="R270"/>
-<instance part="C4" gate="G$1" x="-142.24" y="-27.94" rot="R270"/>
+<instance part="C4" gate="G$1" x="-142.24" y="-22.86" rot="R270"/>
 <instance part="ISP" gate="G$1" x="10.16" y="-53.34"/>
 <instance part="SENSOR_US" gate="G$1" x="-35.56" y="-53.34"/>
 </instances>
@@ -6732,7 +6732,7 @@ Variant PTH is our storefront SKU PRT-08032</description>
 <segment>
 <pinref part="C7" gate="G$1" pin="1"/>
 <pinref part="GND10" gate="1" pin="GND"/>
-<wire x1="-114.3" y1="-5.08" x2="-114.3" y2="-7.62" width="0.1524" layer="91"/>
+<wire x1="-114.3" y1="0" x2="-114.3" y2="-2.54" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="GND1" gate="1" pin="GND"/>
@@ -6753,15 +6753,15 @@ Variant PTH is our storefront SKU PRT-08032</description>
 </segment>
 <segment>
 <pinref part="MUX-A-1" gate="G$1" pin="GND"/>
-<wire x1="-137.16" y1="60.96" x2="-132.08" y2="60.96" width="0.1524" layer="91"/>
-<wire x1="-132.08" y1="60.96" x2="-132.08" y2="68.58" width="0.1524" layer="91"/>
+<wire x1="-137.16" y1="55.88" x2="-132.08" y2="55.88" width="0.1524" layer="91"/>
+<wire x1="-132.08" y1="55.88" x2="-132.08" y2="63.5" width="0.1524" layer="91"/>
 <pinref part="GND13" gate="1" pin="GND"/>
-<wire x1="-132.08" y1="68.58" x2="-132.08" y2="71.12" width="0.1524" layer="91"/>
-<wire x1="-132.08" y1="71.12" x2="-127" y2="71.12" width="0.1524" layer="91"/>
-<wire x1="-127" y1="71.12" x2="-127" y2="68.58" width="0.1524" layer="91"/>
+<wire x1="-132.08" y1="63.5" x2="-132.08" y2="66.04" width="0.1524" layer="91"/>
+<wire x1="-132.08" y1="66.04" x2="-127" y2="66.04" width="0.1524" layer="91"/>
+<wire x1="-127" y1="66.04" x2="-127" y2="63.5" width="0.1524" layer="91"/>
 <pinref part="C5" gate="G$1" pin="1"/>
-<wire x1="-139.7" y1="68.58" x2="-132.08" y2="68.58" width="0.1524" layer="91"/>
-<junction x="-132.08" y="68.58"/>
+<wire x1="-139.7" y1="63.5" x2="-132.08" y2="63.5" width="0.1524" layer="91"/>
+<junction x="-132.08" y="63.5"/>
 </segment>
 <segment>
 <pinref part="GND14" gate="1" pin="GND"/>
@@ -6789,15 +6789,15 @@ Variant PTH is our storefront SKU PRT-08032</description>
 </segment>
 <segment>
 <pinref part="GND16" gate="1" pin="GND"/>
-<wire x1="-129.54" y1="-27.94" x2="-129.54" y2="-25.4" width="0.1524" layer="91"/>
-<wire x1="-129.54" y1="-25.4" x2="-134.62" y2="-25.4" width="0.1524" layer="91"/>
-<wire x1="-134.62" y1="-25.4" x2="-134.62" y2="-27.94" width="0.1524" layer="91"/>
+<wire x1="-129.54" y1="-22.86" x2="-129.54" y2="-20.32" width="0.1524" layer="91"/>
+<wire x1="-129.54" y1="-20.32" x2="-134.62" y2="-20.32" width="0.1524" layer="91"/>
+<wire x1="-134.62" y1="-20.32" x2="-134.62" y2="-22.86" width="0.1524" layer="91"/>
 <pinref part="MUX-B-2" gate="G$1" pin="GND"/>
-<wire x1="-134.62" y1="-27.94" x2="-134.62" y2="-33.02" width="0.1524" layer="91"/>
-<wire x1="-134.62" y1="-33.02" x2="-137.16" y2="-33.02" width="0.1524" layer="91"/>
+<wire x1="-134.62" y1="-22.86" x2="-134.62" y2="-27.94" width="0.1524" layer="91"/>
+<wire x1="-134.62" y1="-27.94" x2="-137.16" y2="-27.94" width="0.1524" layer="91"/>
 <pinref part="C4" gate="G$1" pin="1"/>
-<wire x1="-139.7" y1="-27.94" x2="-134.62" y2="-27.94" width="0.1524" layer="91"/>
-<junction x="-134.62" y="-27.94"/>
+<wire x1="-139.7" y1="-22.86" x2="-134.62" y2="-22.86" width="0.1524" layer="91"/>
+<junction x="-134.62" y="-22.86"/>
 </segment>
 <segment>
 <pinref part="C8" gate="G$1" pin="1"/>
@@ -6891,7 +6891,7 @@ Variant PTH is our storefront SKU PRT-08032</description>
 <segment>
 <pinref part="P+11" gate="VCC" pin="VCC"/>
 <pinref part="C7" gate="G$1" pin="2"/>
-<wire x1="-114.3" y1="5.08" x2="-114.3" y2="2.54" width="0.1524" layer="91"/>
+<wire x1="-114.3" y1="10.16" x2="-114.3" y2="7.62" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="P+4" gate="VCC" pin="VCC"/>
@@ -6912,14 +6912,14 @@ Variant PTH is our storefront SKU PRT-08032</description>
 </segment>
 <segment>
 <pinref part="P+12" gate="VCC" pin="VCC"/>
-<wire x1="-157.48" y1="66.04" x2="-157.48" y2="60.96" width="0.1524" layer="91"/>
+<wire x1="-157.48" y1="60.96" x2="-157.48" y2="55.88" width="0.1524" layer="91"/>
 <pinref part="MUX-A-1" gate="G$1" pin="5V"/>
-<wire x1="-157.48" y1="60.96" x2="-154.94" y2="60.96" width="0.1524" layer="91"/>
+<wire x1="-157.48" y1="55.88" x2="-154.94" y2="55.88" width="0.1524" layer="91"/>
 <pinref part="C5" gate="G$1" pin="2"/>
-<wire x1="-154.94" y1="60.96" x2="-152.4" y2="60.96" width="0.1524" layer="91"/>
-<wire x1="-147.32" y1="68.58" x2="-154.94" y2="68.58" width="0.1524" layer="91"/>
-<wire x1="-154.94" y1="68.58" x2="-154.94" y2="60.96" width="0.1524" layer="91"/>
-<junction x="-154.94" y="60.96"/>
+<wire x1="-154.94" y1="55.88" x2="-152.4" y2="55.88" width="0.1524" layer="91"/>
+<wire x1="-147.32" y1="63.5" x2="-154.94" y2="63.5" width="0.1524" layer="91"/>
+<wire x1="-154.94" y1="63.5" x2="-154.94" y2="55.88" width="0.1524" layer="91"/>
+<junction x="-154.94" y="55.88"/>
 </segment>
 <segment>
 <pinref part="P+13" gate="VCC" pin="VCC"/>
@@ -6945,12 +6945,12 @@ Variant PTH is our storefront SKU PRT-08032</description>
 <segment>
 <pinref part="MUX-B-2" gate="G$1" pin="5V"/>
 <pinref part="P+15" gate="VCC" pin="VCC"/>
-<wire x1="-152.4" y1="-33.02" x2="-154.94" y2="-33.02" width="0.1524" layer="91"/>
-<wire x1="-154.94" y1="-33.02" x2="-154.94" y2="-30.48" width="0.1524" layer="91"/>
+<wire x1="-152.4" y1="-27.94" x2="-154.94" y2="-27.94" width="0.1524" layer="91"/>
+<wire x1="-154.94" y1="-27.94" x2="-154.94" y2="-25.4" width="0.1524" layer="91"/>
 <pinref part="C4" gate="G$1" pin="2"/>
-<wire x1="-147.32" y1="-27.94" x2="-152.4" y2="-27.94" width="0.1524" layer="91"/>
-<wire x1="-152.4" y1="-27.94" x2="-152.4" y2="-33.02" width="0.1524" layer="91"/>
-<junction x="-152.4" y="-33.02"/>
+<wire x1="-147.32" y1="-22.86" x2="-152.4" y2="-22.86" width="0.1524" layer="91"/>
+<wire x1="-152.4" y1="-22.86" x2="-152.4" y2="-27.94" width="0.1524" layer="91"/>
+<junction x="-152.4" y="-27.94"/>
 </segment>
 <segment>
 <pinref part="C8" gate="G$1" pin="2"/>
@@ -7092,8 +7092,8 @@ Variant PTH is our storefront SKU PRT-08032</description>
 </segment>
 <segment>
 <pinref part="MUX-A-1" gate="G$1" pin="SIG1"/>
-<wire x1="-152.4" y1="58.42" x2="-154.94" y2="58.42" width="0.1524" layer="91"/>
-<label x="-160.02" y="58.42" size="1.778" layer="95"/>
+<wire x1="-152.4" y1="53.34" x2="-154.94" y2="53.34" width="0.1524" layer="91"/>
+<label x="-160.02" y="53.34" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="C1-1" class="0">
@@ -7103,8 +7103,8 @@ Variant PTH is our storefront SKU PRT-08032</description>
 </segment>
 <segment>
 <pinref part="MUX-A-1" gate="G$1" pin="SIG3"/>
-<wire x1="-152.4" y1="55.88" x2="-154.94" y2="55.88" width="0.1524" layer="91"/>
-<label x="-160.02" y="55.88" size="1.778" layer="95"/>
+<wire x1="-152.4" y1="50.8" x2="-154.94" y2="50.8" width="0.1524" layer="91"/>
+<label x="-160.02" y="50.8" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="C2-2" class="0">
@@ -7125,8 +7125,8 @@ Variant PTH is our storefront SKU PRT-08032</description>
 </segment>
 <segment>
 <pinref part="MUX-A-1" gate="G$1" pin="SIG7"/>
-<wire x1="-152.4" y1="50.8" x2="-154.94" y2="50.8" width="0.1524" layer="91"/>
-<label x="-160.02" y="50.8" size="1.778" layer="95"/>
+<wire x1="-152.4" y1="45.72" x2="-154.94" y2="45.72" width="0.1524" layer="91"/>
+<label x="-160.02" y="45.72" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="C4-1" class="0">
@@ -7136,8 +7136,8 @@ Variant PTH is our storefront SKU PRT-08032</description>
 </segment>
 <segment>
 <pinref part="MUX-A-1" gate="G$1" pin="SIG8"/>
-<wire x1="-137.16" y1="50.8" x2="-134.62" y2="50.8" width="0.1524" layer="91"/>
-<label x="-134.62" y="50.8" size="1.778" layer="95"/>
+<wire x1="-137.16" y1="45.72" x2="-134.62" y2="45.72" width="0.1524" layer="91"/>
+<label x="-134.62" y="45.72" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="C5-1" class="0">
@@ -7147,8 +7147,8 @@ Variant PTH is our storefront SKU PRT-08032</description>
 </segment>
 <segment>
 <pinref part="MUX-A-1" gate="G$1" pin="SIG6"/>
-<wire x1="-137.16" y1="53.34" x2="-134.62" y2="53.34" width="0.1524" layer="91"/>
-<label x="-134.62" y="53.34" size="1.778" layer="95"/>
+<wire x1="-137.16" y1="48.26" x2="-134.62" y2="48.26" width="0.1524" layer="91"/>
+<label x="-134.62" y="48.26" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="C6-1" class="0">
@@ -7158,8 +7158,8 @@ Variant PTH is our storefront SKU PRT-08032</description>
 </segment>
 <segment>
 <pinref part="MUX-A-1" gate="G$1" pin="SIG4"/>
-<wire x1="-137.16" y1="55.88" x2="-134.62" y2="55.88" width="0.1524" layer="91"/>
-<label x="-134.62" y="55.88" size="1.778" layer="95"/>
+<wire x1="-137.16" y1="50.8" x2="-134.62" y2="50.8" width="0.1524" layer="91"/>
+<label x="-134.62" y="50.8" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="C7-1" class="0">
@@ -7169,8 +7169,8 @@ Variant PTH is our storefront SKU PRT-08032</description>
 </segment>
 <segment>
 <pinref part="MUX-A-1" gate="G$1" pin="SIG2"/>
-<wire x1="-137.16" y1="58.42" x2="-134.62" y2="58.42" width="0.1524" layer="91"/>
-<label x="-134.62" y="58.42" size="1.778" layer="95"/>
+<wire x1="-137.16" y1="53.34" x2="-134.62" y2="53.34" width="0.1524" layer="91"/>
+<label x="-134.62" y="53.34" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="C8-1" class="0">
@@ -7345,8 +7345,8 @@ Variant PTH is our storefront SKU PRT-08032</description>
 </segment>
 <segment>
 <pinref part="MUX-B-2" gate="G$1" pin="SIG8"/>
-<wire x1="-137.16" y1="-43.18" x2="-134.62" y2="-43.18" width="0.1524" layer="91"/>
-<label x="-134.62" y="-43.18" size="1.778" layer="95"/>
+<wire x1="-137.16" y1="-38.1" x2="-134.62" y2="-38.1" width="0.1524" layer="91"/>
+<label x="-134.62" y="-38.1" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="C9-2" class="0">
@@ -7356,8 +7356,8 @@ Variant PTH is our storefront SKU PRT-08032</description>
 </segment>
 <segment>
 <pinref part="MUX-B-2" gate="G$1" pin="SIG6"/>
-<wire x1="-137.16" y1="-40.64" x2="-134.62" y2="-40.64" width="0.1524" layer="91"/>
-<label x="-134.62" y="-40.64" size="1.778" layer="95"/>
+<wire x1="-137.16" y1="-35.56" x2="-134.62" y2="-35.56" width="0.1524" layer="91"/>
+<label x="-134.62" y="-35.56" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="C10-2" class="0">
@@ -7367,8 +7367,8 @@ Variant PTH is our storefront SKU PRT-08032</description>
 </segment>
 <segment>
 <pinref part="MUX-B-2" gate="G$1" pin="SIG4"/>
-<wire x1="-137.16" y1="-38.1" x2="-134.62" y2="-38.1" width="0.1524" layer="91"/>
-<label x="-134.62" y="-38.1" size="1.778" layer="95"/>
+<wire x1="-137.16" y1="-33.02" x2="-134.62" y2="-33.02" width="0.1524" layer="91"/>
+<label x="-134.62" y="-33.02" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="C11-2" class="0">
@@ -7378,8 +7378,8 @@ Variant PTH is our storefront SKU PRT-08032</description>
 </segment>
 <segment>
 <pinref part="MUX-B-2" gate="G$1" pin="SIG2"/>
-<wire x1="-137.16" y1="-35.56" x2="-134.62" y2="-35.56" width="0.1524" layer="91"/>
-<label x="-134.62" y="-35.56" size="1.778" layer="95"/>
+<wire x1="-137.16" y1="-30.48" x2="-134.62" y2="-30.48" width="0.1524" layer="91"/>
+<label x="-134.62" y="-30.48" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="C12-2" class="0">
@@ -7389,8 +7389,8 @@ Variant PTH is our storefront SKU PRT-08032</description>
 </segment>
 <segment>
 <pinref part="MUX-B-2" gate="G$1" pin="SIG7"/>
-<wire x1="-152.4" y1="-43.18" x2="-154.94" y2="-43.18" width="0.1524" layer="91"/>
-<label x="-160.02" y="-43.18" size="1.778" layer="95"/>
+<wire x1="-152.4" y1="-38.1" x2="-154.94" y2="-38.1" width="0.1524" layer="91"/>
+<label x="-160.02" y="-38.1" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="C13-2" class="0">
@@ -7400,8 +7400,8 @@ Variant PTH is our storefront SKU PRT-08032</description>
 </segment>
 <segment>
 <pinref part="MUX-B-2" gate="G$1" pin="SIG5"/>
-<wire x1="-152.4" y1="-40.64" x2="-154.94" y2="-40.64" width="0.1524" layer="91"/>
-<label x="-160.02" y="-40.64" size="1.778" layer="95"/>
+<wire x1="-152.4" y1="-35.56" x2="-154.94" y2="-35.56" width="0.1524" layer="91"/>
+<label x="-160.02" y="-35.56" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="C14-2" class="0">
@@ -7411,8 +7411,8 @@ Variant PTH is our storefront SKU PRT-08032</description>
 </segment>
 <segment>
 <pinref part="MUX-B-2" gate="G$1" pin="SIG3"/>
-<wire x1="-152.4" y1="-38.1" x2="-154.94" y2="-38.1" width="0.1524" layer="91"/>
-<label x="-160.02" y="-38.1" size="1.778" layer="95"/>
+<wire x1="-152.4" y1="-33.02" x2="-154.94" y2="-33.02" width="0.1524" layer="91"/>
+<label x="-160.02" y="-33.02" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="C15-2" class="0">
@@ -7422,8 +7422,8 @@ Variant PTH is our storefront SKU PRT-08032</description>
 </segment>
 <segment>
 <pinref part="MUX-B-2" gate="G$1" pin="SIG1"/>
-<wire x1="-152.4" y1="-35.56" x2="-154.94" y2="-35.56" width="0.1524" layer="91"/>
-<label x="-160.02" y="-35.56" size="1.778" layer="95"/>
+<wire x1="-152.4" y1="-30.48" x2="-154.94" y2="-30.48" width="0.1524" layer="91"/>
+<label x="-160.02" y="-30.48" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="C2-1" class="0">
@@ -7433,8 +7433,8 @@ Variant PTH is our storefront SKU PRT-08032</description>
 </segment>
 <segment>
 <pinref part="MUX-A-1" gate="G$1" pin="SIG5"/>
-<wire x1="-152.4" y1="53.34" x2="-154.94" y2="53.34" width="0.1524" layer="91"/>
-<label x="-160.02" y="53.34" size="1.778" layer="95"/>
+<wire x1="-152.4" y1="48.26" x2="-154.94" y2="48.26" width="0.1524" layer="91"/>
+<label x="-160.02" y="48.26" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="L8" class="0">
