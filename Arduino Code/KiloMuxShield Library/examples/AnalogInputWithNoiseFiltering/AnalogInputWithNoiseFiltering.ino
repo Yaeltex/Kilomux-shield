@@ -1,3 +1,15 @@
+/*
+ * Author: Franco Grassano - YAELTEX
+ * ---
+ * LICENSE INFO
+ * Kilo Mux Shield by Yaeltex is released by
+ * Creative Commons Atribución-CompartirIgual 4.0 Internacional - http://creativecommons.org/licenses/by-sa/4.0/
+ * ----
+ * 
+ * KiloMux Library is available at https://github.com/Yaeltex/KiloMux-Shield/blob/master/Arduino%20Code/KiloMuxShield%20Library/KiloMuxShield.zip
+ */
+
+
 #include <KiloMux.h>          // Import class declaration
 #include <KiloMuxDefs.h>      // Import KiloMux defines
 
@@ -29,7 +41,7 @@ void loop() {
 }
 
 
-// Thanks to Pablo Fullana for the help with this function!
+// Thanks to Pablo Fullana for helping out tuning this function!
 // It's just a threshold filter. If the new value stays within the previous value + - the noise threshold set, then it's considered noise
 unsigned int IsNoise(int newValue) {
   static bool analogDirection = 0;            // "static" means the value is stored and can be used next time this function runs
