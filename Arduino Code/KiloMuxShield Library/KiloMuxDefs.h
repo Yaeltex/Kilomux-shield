@@ -1,8 +1,8 @@
 /*
-KiloMux Library
+Kilomux Library
  */
-#ifndef KiloMuxDefs_h
-#define KiloMuxDefs_h
+#ifndef KilomuxDefs_h
+#define KilomuxDefs_h
 
 #include "Arduino.h"
 
@@ -25,7 +25,7 @@ KiloMux Library
 #define NUM_MUX_CHANNELS     16           // Number of multiplexing channels
 
 #define NUM_595              2            // Number of 74HC595 ICs
-#define NUM_SR_OUTPUTS       NUM_595*8    // Total number of shift register outputs
+#define NUM_OUTPUTS       	 NUM_595*8    // Total number of shift register outputs
 
 // Note On and Note Off values
 #define NOTE_ON   127

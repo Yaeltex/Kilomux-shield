@@ -3,19 +3,19 @@
  * Date: 18/02/2016
  * ---
  * LICENSE INFO
- * Kilo Mux Shield by Yaeltex is released by
+ * Kilomux Shield by Yaeltex is released by
  * Creative Commons Atribución-CompartirIgual 4.0 Internacional - http://creativecommons.org/licenses/by-sa/4.0/
  * ----
  * Description: Blink an LED.
- *              This example is for use with the KiloMux Shield.
+ *              This example is for use with the Kilomux Shield.
  * 
- * KiloMux Library is available at https://github.com/Yaeltex/KiloMux-Shield/blob/master/Arduino%20Code/KiloMuxShield%20Library/KiloMuxShield.zip
+ * Kilomux Library is available at https://github.com/Yaeltex/Kilomux-Shield/blob/master/Arduino%20Code/KilomuxShield%20Library/KilomuxShield.zip
  */
  
-#include <KiloMux.h>          // Import class declaration
-#include <KiloMuxDefs.h>      // Import KiloMux defines
+#include <Kilomux.h>          // Import class declaration
+#include <KilomuxDefs.h>      // Import Kilomux defines
 
-KiloMux KMShield;             // KiloMux Shield   
+Kilomux KmShield;             // KiloMux Shield   
 
 #define MS_ON  1000             // Number of milliseconds the LED will be on 
 #define MS_OFF 1000             // Number of milliseconds the LED will be off
@@ -27,9 +27,9 @@ void setup() {
 }
 
 void loop() {
-  KMShield.digitalWriteKM(ledOutput, HIGH);     // Turn led on
+  KmShield.digitalWriteKm(ledOutput, HIGH);     // Turn led on
   delay(MS_ON);                                 // Wait. LED is on.
-  KMShield.digitalWriteKM(ledOutput, LOW);      // Now turn it off. 
+  KmShield.digitalWriteKm(ledOutput, LOW);      // Now turn it off. 
   delay(MS_OFF);                                // Wait. It's off.
 }
 

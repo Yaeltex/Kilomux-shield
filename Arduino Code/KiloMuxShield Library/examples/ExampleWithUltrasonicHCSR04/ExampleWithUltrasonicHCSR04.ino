@@ -3,16 +3,16 @@
  * Date: 18/02/2016
  * ---
  * LICENSE INFO
- * Kilo Mux Shield by Yaeltex is released by
+ * Kilomux Shield by Yaeltex is released by
  * Creative Commons Atribución-CompartirIgual 4.0 Internacional - http://creativecommons.org/licenses/by-sa/4.0/
  * ----
  * Description: Use of an ultrasonic distance sensor HC-SR04. Reads sensor and sends MIDI CC message, whenever it changed.
  *              Uses moving average filter to smooth readings, and prevents reading from going to 0 whenever maximum distance is overreached, 
  *              or object goes out of sensing line.
  *              Uses activation button to turn sensing on or off, and a LED to indicate this.
- *              This example is for use with the KiloMux Shield.
+ *              This example is for use with the Kilomux Shield.
  * 
- * KiloMux Library is available at https://github.com/Yaeltex/KiloMux-Shield/blob/master/Arduino%20Code/KiloMuxShield%20Library/KiloMuxShield.zip
+ * KiloMux Library is available at https://github.com/Yaeltex/Kilomux-Shield/blob/master/Arduino%20Code/KilomuxShield%20Library/KilomuxShield.zip
  */
 
 /*

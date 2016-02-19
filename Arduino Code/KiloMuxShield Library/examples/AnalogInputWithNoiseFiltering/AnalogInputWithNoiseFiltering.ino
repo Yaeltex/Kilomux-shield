@@ -3,19 +3,19 @@
  * Date: 18/02/2016
  * ---
  * LICENSE INFO
- * Kilo Mux Shield by Yaeltex is released by
+ * Kilomux Shield by Yaeltex is released by
  * Creative Commons Atribución-CompartirIgual 4.0 Internacional - http://creativecommons.org/licenses/by-sa/4.0/
  * ----
  * Description: Analog input reading with threshold filtering to avoid flicker readings.
  *              This example is for use with the KiloMux Shield.
  * 
- * KiloMux Library is available at https://github.com/Yaeltex/KiloMux-Shield/blob/master/Arduino%20Code/KiloMuxShield%20Library/KiloMuxShield.zip
+ * Kilomux Library is available at https://github.com/Yaeltex/Kilomux-Shield/blob/master/Arduino%20Code/KilomuxShield%20Library/KilomuxShield.zip
  */
 
-#include <KiloMux.h>          // Import class declaration
-#include <KiloMuxDefs.h>      // Import KiloMux defines
+#include <Kilomux.h>          // Import class declaration
+#include <KilomuxDefs.h>      // Import KiloMux defines
 
-KiloMux KMShield;             // KiloMux Shield    
+Kilomux KmShield;             // Kilomux Shield    
 
 #define ANALOG_INCREASING   0     
 #define ANALOG_DECREASING   1
@@ -31,7 +31,7 @@ void setup() {
 void loop() {
   int analogData = 0;                                           // Variable to store analog values
   
-  analogData = KMShield.analogReadKM(MUX_A, potInput);          // Read analog value from MUX_A and channel 'potInput' (1-16) 
+  analogData = KmShield.analogReadKm(MUX_A, potInput);          // Read analog value from MUX_A and channel 'potInput' (1-16) 
   
   if (IsNoise(analogData)){                                     // If IsNoise() returns 1, then the new analog value is just noise
     // in which case, do nothing

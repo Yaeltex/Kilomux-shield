@@ -1,6 +1,6 @@
 # KiloMux Shield Library
 
-This is the arduino library for use with the KiloMux Shield.
+This is the arduino library for use with the Kilomux Shield.
 
 Feel free to contribute!
 

@@ -3,19 +3,19 @@
  * Date: 18/02/2016
  * ---
  * LICENSE INFO
- * Kilo Mux Shield by Yaeltex is released by
+ * Kilomux Shield by Yaeltex is released by
  * Creative Commons Atribución-CompartirIgual 4.0 Internacional - http://creativecommons.org/licenses/by-sa/4.0/
  * ----
  * Description: Reads button with external PullUp resistor, and sends its state over serial.
- *              This example is for use with the KiloMux Shield.
+ *              This example is for use with the Kilomux Shield.
  * 
- * KiloMux Library is available at https://github.com/Yaeltex/KiloMux-Shield/blob/master/Arduino%20Code/KiloMuxShield%20Library/KiloMuxShield.zip
+ * Kilomux Library is available at https://github.com/Yaeltex/KiloMux-Shield/blob/master/Arduino%20Code/KiloMuxShield%20Library/KiloMuxShield.zip
  */
  
-#include <KiloMux.h>              // Import class declaration
-#include <KiloMuxDefs.h>          // Import KiloMux defines
+#include <Kilomux.h>              // Import class declaration
+#include <KilomuxDefs.h>          // Import Kilomux defines
 
-KiloMux KMShield;                 // KiloMux Shield  
+Kilomux KmShield;                 // Kilomux Shield  
 
 unsigned int buttonInput = 1;     // Shield input where we connected a button or a sensor (1-16)
                                   // Remember to add a 10K pull-up resistor (from the button input to 5V)
@@ -25,8 +25,8 @@ void setup() {
 }
 
 void loop() {
-  int buttonState = 0;                                 // Variable to store digital values
-  buttonState = KMShield.digitalReadKM(MUX_A, buttonInput);     // Read digital value from MUX_A and channel 'buttonInput' (1-16)   
+  int buttonState = 0;                                          // Variable to store digital values
+  buttonState = KmShield.digitalReadKm(MUX_A, buttonInput);     // Read digital value from MUX_A and channel 'buttonInput' (1-16)   
   
   Serial.print("Button state: "); Serial.println(buttonState);  // print value at the serial monitor
 }

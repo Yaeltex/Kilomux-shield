@@ -1,13 +1,13 @@
 #include "Arduino.h"
-#include "KiloMux.h"
+#include "Kilomux.h"
 
 /*
-  Method:         KiloMux
-  Description:    Class constructor. Sets everything for a KiloMux Shield to work properly.
+  Method:         Kilomux
+  Description:    Class constructor. Sets everything for a Kilomux Shield to work properly.
   Parameters:     void
   Returns:        void
 */
-KiloMux::KiloMux(){
+Kilomux::Kilomux(){
     // Set output pins for shift register
     pinMode(LatchPin, OUTPUT);
     pinMode(DataPin, OUTPUT);
@@ -26,7 +26,7 @@ KiloMux::KiloMux(){
         muxPrevReadings[mux][chan] = 0;
       }
     }
-    for (int output = 0; output < NUM_SR_OUTPUTS; output++) {
+    for (int output = 0; output < NUM_OUTPUTS; output++) {
        outputState[output] = 0;
     }
     // This method sets the ADC prescaler, to change the sample rate
@@ -40,14 +40,14 @@ KiloMux::KiloMux(){
 }
 
 /*
-  Method:         digitalWriteKM
+  Method:         digitalWriteKm
   Description:    Change the state of a shift register output to HIGH or LOW
   Parameters:
                   output - Number of the output affected. Must be within 1 and 16
                   state  - New state of the output. Must be HIGH or LOW (1 or 0)
   Returns:        void
 */
-void KiloMux::digitalWriteKM(int output, int state){
+void Kilomux::digitalWriteKm(int output, int state){
   if (output >= 1 && output <= 16){
     outputState[OutputMapping[output-1]] = state;
     writeRegisters595();
@@ -57,7 +57,7 @@ void KiloMux::digitalWriteKM(int output, int state){
 }
 
 /*
-  Method:         digitalReadKM
+  Method:         digitalReadKm
   Description:    Read the state of a multiplexer channel as a digital input.
   Parameters:
                   mux    - Identifier of the multiplexer desired. Must be MUX_A or MUX_B (0 or 1)
@@ -66,7 +66,7 @@ void KiloMux::digitalWriteKM(int output, int state){
                            1: input is HIGH
                           -1: mux or chan is not valid
 */
-int KiloMux::digitalReadKM(int mux, int chan){
+int Kilomux::digitalReadKm(int mux, int chan){
     int digitalState;
     if (chan >= 1 && chan <= 16){
       if (mux == MUX_A)
@@ -97,7 +97,7 @@ int KiloMux::digitalReadKM(int mux, int chan){
 }
 
 /*
-  Method:         digitalReadKM
+  Method:         digitalReadKm
   Description:    Read the state of a multiplexer channel as a digital input.
   Parameters:
                   mux    - Identifier of the multiplexer desired. Must be MUX_A or MUX_B (0 or 1)
@@ -106,7 +106,7 @@ int KiloMux::digitalReadKM(int mux, int chan){
                            1: input is HIGH
                           -1: mux or chan is not valid
 */
-int KiloMux::digitalReadKM(int mux, int chan, int pullup){
+int Kilomux::digitalReadKm(int mux, int chan, int pullup){
     int digitalState;
     if (chan >= 1 && chan <= 16){
       if (mux == MUX_A)
@@ -142,7 +142,7 @@ int KiloMux::digitalReadKM(int mux, int chan, int pullup){
 
 
 /*
-  Method:         analogReadKM
+  Method:         analogReadKm
   Description:    Read the analog value of a multiplexer channel as an analog input.
   Parameters:
                   mux    - Identifier of the multiplexer desired. Must be MUX_A or MUX_B (0 or 1)
@@ -150,7 +150,7 @@ int KiloMux::digitalReadKM(int mux, int chan, int pullup){
   Returns:        int    - 0..1023: analog value read
                           -1: mux or chan is not valid
 */
-int KiloMux::analogReadKM(int mux, int chan){
+int Kilomux::analogReadKm(int mux, int chan){
     static unsigned int analogData;
     if (chan >= 1 && chan <= 16){     // Re-map hardware channels to have them read in the header order
       if (mux == MUX_A)
@@ -188,8 +188,8 @@ int KiloMux::analogReadKM(int mux, int chan){
   Parameters:     void
   Returns:        void
 */
-void KiloMux::clearRegisters595(void) {
-  for (int i = NUM_SR_OUTPUTS - 1; i >=  0; i--) {
+void Kilomux::clearRegisters595(void) {
+  for (int i = NUM_OUTPUTS - 1; i >=  0; i--) {
     outputState[i] = LOW;
   }
 }
@@ -200,10 +200,10 @@ void KiloMux::clearRegisters595(void) {
   Parameters:     void
   Returns:        void
 */
-void KiloMux::writeRegisters595() {
+void Kilomux::writeRegisters595() {
   digitalWrite(LatchPin, LOW);                  // Se baja la línea de latch para avisar al 595 que se van a enviar datos
 
-  for (int i = NUM_SR_OUTPUTS - 1; i >=  0; i--) {    // Se recorren todos los LEDs,
+  for (int i = NUM_OUTPUTS - 1; i >=  0; i--) {    // Se recorren todos los LEDs,
     digitalWrite(ClockPin, LOW);                  // Se baja "manualmente" la línea de clock
 
     int val = outputState[i];                       // Se recupera el estado del LED
@@ -226,7 +226,7 @@ void KiloMux::writeRegisters595() {
                                                               PS_128 (125KHz or 8620 samples/s)
   Returns:        void
 */
-void KiloMux::setADCprescaler(byte divider){
+void Kilomux::setADCprescaler(byte divider){
   ADCSRA &= ~PS_128;    // Set register to 0
   ADCSRA |= divider;    // Set the desired prescaler value
 }
@@ -245,7 +245,7 @@ void KiloMux::setADCprescaler(byte divider){
   Returns:        unsigned int - 0: New value is a true reading, not noise.
                                  1: New value was considered to be noise.
 */
-unsigned int KiloMux::isNoise(unsigned int newValue, unsigned int prevValue, bool direction) {
+unsigned int Kilomux::isNoise(unsigned int newValue, unsigned int prevValue, bool direction) {
   if (direction == ANALOG_UP){                    // If the signal is increasing
     if(newValue > prevValue){                     // and the new value is larger than the previous
        return 0;                                  // it's not noise.

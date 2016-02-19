@@ -3,14 +3,14 @@
  * Fecha: 18/02/2016
  * ---
  * INFORMACIÓN DE LICENCIA
- * Kilo Mux Shield por Yaeltex se distribuye bajo una licencia
+ * Kilomux Shield por Yaeltex se distribuye bajo una licencia
  * Creative Commons Atribución-CompartirIgual 4.0 Internacional - http://creativecommons.org/licenses/by-sa/4.0/
  * ----
  * Description: Uso de un sensor ultrasónico HC-SR04. Se lee el sensor y se envía un mensaje MIDI CC, cuando la lectura cambia.
  *              Se realiza un filtrado de media móvil para suavizar las lecturas, y se previene que el sensor lea 0 cuando el 
  *              objeto se aleja demasiado, o sale de la línea de sensado.
  *              Usa un botón para activar o desactivar el sensado, y un LED para indicar ese estado.
- *              Este ejemplo está pensado para el uso con el KiloMux Shield.
+ *              Este ejemplo está pensado para el uso con el Kilomux Shield.
  * 
  * Librería para el manejo del sensor de ultrasonido tomada de http://playground.arduino.cc/Code/NewPing
  */

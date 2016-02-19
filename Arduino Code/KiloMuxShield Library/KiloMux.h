@@ -1,5 +1,5 @@
 /*
-KiloMux Library
+Kilomux Library
 
 Header file - Class definition
 
@@ -13,20 +13,20 @@ References: - Code for 74HC595 ICs handling taken from http://bildr.org/2011/02/
 Buenos Aires, Argentina - 2015
 */
 
-#ifndef KiloMux_h     // Imports header file only if not imported earlier
-#define KiloMux_h
+#ifndef Kilomux_h     // Imports header file only if not imported earlier
+#define Kilomux_h
 
-#include "KiloMuxDefs.h"
+#include "KilomuxDefs.h"
 
-class KiloMux
+class Kilomux
 {
 public:                             // These are methods and variables accesible from Arduino IDE
-    KiloMux();                      // Class constructor
+    Kilomux();                      // Class constructor
     // Methods
-    void digitalWriteKM(int out, int state);                                              // Write digital data to shift register outputs
-    int digitalReadKM(int mux, int chan);                                                 // Read digital data from multiplexer
-    int digitalReadKM(int mux, int chan, int pullup);                                     // Read digital data from multiplexer, setting an internal pullup resistor
-    int analogReadKM(int mux, int chan);                                                  // Read analog data from multiplexer
+    void digitalWriteKm(int out, int state);                                              // Write digital data to shift register outputs
+    int digitalReadKm(int mux, int chan);                                                 // Read digital data from multiplexer
+    int digitalReadKm(int mux, int chan, int pullup);                                     // Read digital data from multiplexer, setting an internal pullup resistor
+    int analogReadKm(int mux, int chan);                                                  // Read analog data from multiplexer
     void setADCprescaler(byte setting);                                                   // Set Analog to Digital Converter (ADC) prescaler to change number of readings per second
     unsigned int isNoise(unsigned int newValue, unsigned int prevValue, bool direction);  // Method to determine if the reading is noise or a true change
 
@@ -54,7 +54,7 @@ private:
   	const int LatchPin = 7;                          // Latch Pin (ST_CP) connected to pin 12 of 74HC595
   	const int ClockPin = 8;                          // Clock Pin (SH_CP) connected to pin 11 of 74HC595
 
-    bool outputState[NUM_SR_OUTPUTS];                // State of every output
+    bool outputState[NUM_OUTPUTS];                // State of every output
 
     // Do not change - These are used to have the inputs and outputs of the headers in order
     byte MuxAMapping[NUM_MUX_CHANNELS] =  {0,        // INPUT 0   - Mux channel 0
