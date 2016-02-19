@@ -1,5 +1,5 @@
-# KiloMux Shield
-Repositorio para el KiloMux Shield para Arduino desarrollado en Yaeltex
+# Kilomux Shield
+Repositorio para el Kilomux Shield para Arduino desarrollado en Yaeltex
 con colaboración de Jorge Crowe, del Laboratorio del Juguete, ambos
 ubicados en Buenos Aires, Argentina.
 
@@ -31,7 +31,7 @@ cargarlo en la Arduino.
 
 Para más información acerca del shield, visitá nuestra wiki: http://wiki.yaeltex.com.ar/index.php?title=KiloMux_Shield
 
-Si tenes dudas, sugerencias o comentarios acerca del shield, escribi a
+Si tenes dudas, sugerencias o comentarios acerca del shield, escribí a
 franco@yaeltex.com.ar o posteala en el foro de Yaeltex http://foro.yaeltex.com.ar
 
 Saludos!

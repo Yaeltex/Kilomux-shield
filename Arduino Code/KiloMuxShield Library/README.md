@@ -1,4 +1,4 @@
-# KiloMux Shield Library
+# Kilomux Shield Library
 
 This is the arduino library for use with the Kilomux Shield.
 

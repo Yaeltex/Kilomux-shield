@@ -1,6 +1,6 @@
 Partlist
 
-Exported from KiloMuxV2.brd at 12/06/2015 05:21:27 p.m.
+Exported from KilomuxV2.brd at 12/06/2015 05:21:27 p.m.
 
 EAGLE Version 6.6.0 Copyright (c) 1988-2014 CadSoft
 
