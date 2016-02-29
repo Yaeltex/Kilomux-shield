@@ -4,7 +4,7 @@
  * ---
  * LICENSE INFO
  * Kilomux Shield by Yaeltex is released by
- * Creative Commons Atribución-CompartirIgual 4.0 Internacional - http://creativecommons.org/licenses/by-sa/4.0/
+ * * Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0) - http://creativecommons.org/licenses/by-sa/4.0/
  * ----
  * Description: Reads one analog input and sends value over serial.
  *              This example is for use with the Kilomux Shield.
