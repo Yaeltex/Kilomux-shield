@@ -24,6 +24,7 @@ public:                             // These are methods and variables accesible
     Kilomux();                      // Class constructor
     // Methods
     void digitalWriteKm(int out, int state);                                              // Write digital data to shift register outputs
+	void digitalWritePortKm(byte portState, int port);                                    // Write digital data of an entire port and update shift register outputs
     int digitalReadKm(int mux, int chan);                                                 // Read digital data from multiplexer
     int digitalReadKm(int mux, int chan, int pullup);                                     // Read digital data from multiplexer, setting an internal pullup resistor
     int analogReadKm(int mux, int chan);                                                  // Read analog data from multiplexer

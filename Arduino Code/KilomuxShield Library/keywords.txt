@@ -1,5 +1,6 @@
 Kilomux	KEYWORD1
 digitalWriteKm	KEYWORD2
+digitalWritePortKm	KEYWORD2
 digitalReadKm	KEYWORD2
 analogReadKm	KEYWORD2
 setADCprescaler	KEYWORD2

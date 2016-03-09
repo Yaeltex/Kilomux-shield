@@ -57,6 +57,25 @@ void Kilomux::digitalWriteKm(int output, int state){
 }
 
 /*
+  Method:         digitalWritePortKm
+  Description:    Set the state of an entire output port
+  Parameters:
+                  portState - 	Byte containint the state of the port to be set. MSB is output 1 and LSB is output 8 of the port
+                  port  - 	  	Number of output port to set (1 or 2)
+  Returns:        void
+*/
+void Kilomux::digitalWritePortKm(byte portState, int port){
+  if (port == 1 || port == 2){
+	  for(int output = 0;  output < 8; output++){
+		outputState[OutputMapping[output + (port-1)*8]] = portState&(1<<(7-output));
+	  }
+	  writeRegisters595();
+	}
+  else return;    // Return not setting any output
+
+}
+
+/*
   Method:         digitalReadKm
   Description:    Read the state of a multiplexer channel as a digital input.
   Parameters:
