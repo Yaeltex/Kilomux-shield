@@ -1,13 +1,29 @@
+/*
+ * Author: Franco Grassano - YAELTEX
+ * Date: 18/02/2016
+ * ---
+ * LICENSE INFO
+ * Kilomux Shield by Yaeltex is released by
+ * Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0) - http://creativecommons.org/licenses/by-sa/4.0/
+ * ----
+ * Description: This code drives an LED matrix with the outputs of the Kilomux shield.
+ *              The example can be used with up to 8 rows and 8 columns, setting the ROWS and COLS labels accordingly.
+ *              It's important to drive the columns and the rows with different ports (OUT-1 and OUT-2), and to specify 
+ *              the port used for the columns in the label COL_PORT.
+ * 
+ * KiloMux Library is available at https://github.com/Yaeltex/Kilomux-Shield/blob/master/Arduino%20Code/KilomuxShield%20Library/KilomuxShield.zip
+ */
+ 
 #include <Kilomux.h>
 #include <KilomuxDefs.h>
 
-#define ROW_INTERVAL 2500                 // Microseconds. With about 2.5 ms, no human can percept the multiplexing. You can't. I can't. No one can.
+#define ROW_INTERVAL 2500                 // Row multiplexing interval in microseconds. With about 2.5 ms, no human can percept the multiplexing. You can't. I can't. No one can.
 #define ROWS      4                       // Number of matrix rows. Change for your setup.
 #define COLS      4                       // Number of matrix columns. Change for your setup.
 
 #define COL_PORT  2                       // Output port where the columns are connected
 
-#define N_LEDS    ROWS*COLS
+#define N_LEDS    ROWS*COLS               // Total number of LEDs
 
 #define LED_OFF   0
 #define LED_ON    1
@@ -16,15 +32,14 @@
 
 Kilomux KmShield;                          // Kilomux instance
 
-unsigned int ledCols[] = {9, 10, 11, 12};  // KiloMux output where we already connected an LED (1-16). Add or take if you have a different setup.
-unsigned int ledRows[] = {1, 2, 3, 4};     // KiloMux output where we already connected an LED (1-16). Add or take if you have a different setup.
+unsigned int ledRows[] = {1, 2, 3, 4};     // KiloMux's outputs where we connected the rows. Add or take if you have a different setup.
+unsigned int ledCols[] = {9, 10, 11, 12};  // KiloMux's outputs where we connected the columns. Add or take if you have a different setup.
 
 uint8_t ledMatrixState[ROWS][COLS];        // This matrix will match always the LED matrix state.
 uint8_t led = 0;                           // Counter
 unsigned long lastMillis = 0;              // Variable to store time. Always type long, since it will have large values.
 
 void setup() {
-  // put your setup code here, to run once:
   // Hardware initialization
   for (int i=0; i<ROWS; i++){
     KmShield.digitalWriteKm(ledRows[i], LOW);       // Rows to LOW, means row off.
