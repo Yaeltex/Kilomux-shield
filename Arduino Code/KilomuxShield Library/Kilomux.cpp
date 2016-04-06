@@ -60,7 +60,9 @@ void Kilomux::digitalWriteKm(int output, int state){
   Method:         digitalWritePortKm
   Description:    Set the state of an entire output port
   Parameters:
-                  portState - 	Byte containint the state of the port to be set. MSB is output 1 and LSB is output 8 of the port
+                  portState - 	Byte containing the state of the port to be set. MSB is output 1 and LSB is output 8 of the port
+								portState -> B 1-0-0-1-0-1-1-1
+								outputs   ->   1-2-3-4-5-6-7-8
                   port  - 	  	Number of output port to set (1 or 2)
   Returns:        void
 */
@@ -143,14 +145,14 @@ int Kilomux::digitalReadKm(int mux, int chan, int pullup){
 
     switch (mux) {
         case MUX_A:
-            pinMode(MUX_A_PIN, INPUT);                // Estas dos líneas setean el pin analógico que recibe las entradas digitales como pin digital y
-            digitalWrite(MUX_A_PIN, HIGH);            // setea el resistor de Pull-Up en el mismo
-            digitalState = digitalRead(InMuxA);
+            pinMode(MUX_A_PIN, INPUT);                // These two lines set the analogic input pullup resistor
+            digitalWrite(MUX_A_PIN, HIGH);            
+            digitalState = digitalRead(InMuxA);		  // Read mux pin
             break;
         case MUX_B:
-            pinMode(MUX_B_PIN, INPUT);                // Estas dos líneas setean el pin analógico que recibe las entradas digitales como pin digital y
-            digitalWrite(MUX_B_PIN, HIGH);            // setea el resistor de Pull-Up en el mismo
-            digitalState = digitalRead(InMuxB);
+            pinMode(MUX_B_PIN, INPUT);                // These two lines set the analogic input pullup resistor
+            digitalWrite(MUX_B_PIN, HIGH);            
+            digitalState = digitalRead(InMuxB);		  // Read mux pin
             break;
 
         default:

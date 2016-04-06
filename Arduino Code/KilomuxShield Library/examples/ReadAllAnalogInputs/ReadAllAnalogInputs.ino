@@ -18,8 +18,8 @@
 #include <Kilomux.h>          // Import class declaration
 #include <KilomuxDefs.h>      // Import KiloMux defines
 
-#define MUX_START   1
-#define MUX_END     8
+#define MUX_START   1         // First input to read
+#define MUX_END     8         // Last input to read
 
 Kilomux KmShield;             // Kilomux Shield  
 
@@ -36,9 +36,9 @@ void loop() {
     Serial.print("IN "); Serial.print(input);                        // Print all values in a format like
     Serial.print(": ");                                              //    IN 0: 581  IN 1: 230 ...... IN 8: 500 
     Serial.print(analogData);                                        //    IN 0: 582  IN 1: 230 ...... IN 8: 500
-    Serial.print("  ");                                              //    IN 0: 583  IN 1: 230 ...... IN 8: 500
+    Serial.print("\t");                                              //    IN 0: 583  IN 1: 230 ...... IN 8: 500
   }                                                                  
-  
+  delay(5);
   Serial.println("");                                                // New Line
 }
 
