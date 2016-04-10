@@ -1,3 +1,17 @@
+/*
+ * Author: Franco Grassano - YAELTEX
+ * Date: 18/02/2016
+ * Buenos Aires, Argentina - 2015
+ * ---
+ * LICENSE INFO
+ * Kilomux Shield library for Arduino, by Yaeltex, is released by
+ * Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0) - http://creativecommons.org/licenses/by-sa/4.0/
+ * ----
+ *
+ * Definition of methods of the Kilomux class
+ *
+ */
+
 #include "Arduino.h"
 #include "Kilomux.h"
 
@@ -30,10 +44,10 @@ Kilomux::Kilomux(){
        outputState[output] = 0;
     }
     // This method sets the ADC prescaler, to change the sample rate
-    setADCprescaler(PS_16);               // PS_16 (1MHz o 50000 muestras/s)
-                                          // PS_32 (500KHz o 31250 muestras/s)
-                                          // PS_64 (250KHz o 16666 muestras/s)
-                                          // PS_128 (125KHz o 8620 muestras/s)
+    setADCprescaler(PS_16);               // PS_16 (1MHz or 50000 samples/s)
+                                          // PS_32 (500KHz or 31250 samples/s)
+                                          // PS_64 (250KHz or 16666 samples/s)
+                                          // PS_128 (125KHz or 8620 samples/s)
 
     clearRegisters595();                  // Set all outputs to LOW
     writeRegisters595();                  // Update outputs
@@ -58,7 +72,7 @@ void Kilomux::digitalWriteKm(int output, int state){
 
 /*
   Method:         digitalWritePortKm
-  Description:    Set the state of an entire output port
+  Description:    Set the state of an entire output port (8 pins of the 10-pin outpute headers on the shield)
   Parameters:
                   portState - 	Byte containing the state of the port to be set. MSB is output 1 and LSB is output 8 of the port
 								portState -> B 1-0-0-1-0-1-1-1
@@ -73,7 +87,7 @@ void Kilomux::digitalWritePortKm(byte portState, int port){
 	  }
 	  writeRegisters595();
 	}
-  else return;    // Return not setting any output
+  return;
 
 }
 
@@ -119,7 +133,7 @@ int Kilomux::digitalReadKm(int mux, int chan){
 
 /*
   Method:         digitalReadKm
-  Description:    Read the state of a multiplexer channel as a digital input.
+  Description:    Read the state of a multiplexer channel as a digital input, setting the analog input of the Arduino with a pullup resistor.
   Parameters:
                   mux    - Identifier of the multiplexer desired. Must be MUX_A or MUX_B (0 or 1)
                   chan   - Number of the channel desired. Must be within 1 and 16
@@ -205,7 +219,7 @@ int Kilomux::analogReadKm(int mux, int chan){
 
 /*
   Method:         clearRegisters595
-  Description:    Set every output to LOW
+  Description:    Set every output of the shift register to LOW
   Parameters:     void
   Returns:        void
 */
@@ -222,17 +236,17 @@ void Kilomux::clearRegisters595(void) {
   Returns:        void
 */
 void Kilomux::writeRegisters595() {
-  digitalWrite(LatchPin, LOW);                  // Se baja la línea de latch para avisar al 595 que se van a enviar datos
+  digitalWrite(LatchPin, LOW);                  // Latch line goes LOW to inform the IC that data will start to flow into it.
 
-  for (int i = NUM_OUTPUTS - 1; i >=  0; i--) {    // Se recorren todos los LEDs,
-    digitalWrite(ClockPin, LOW);                  // Se baja "manualmente" la línea de clock
+  for (int i = NUM_OUTPUTS - 1; i >=  0; i--) {    // Cycle through all outputs
+    digitalWrite(ClockPin, LOW);                  	// "Manual" clock signal goes LOW
 
-    int val = outputState[i];                       // Se recupera el estado del LED
+    int val = outputState[i];                       // Each output state is recovered
 
-    digitalWrite(DataPin, val);                   // Se escribe el estado del LED en la línea de datos
-    digitalWrite(ClockPin, HIGH);                 // Se levanta la línea de clock para el próximo bit
+    digitalWrite(DataPin, val);                   	// And written to the data signal
+    digitalWrite(ClockPin, HIGH);                 	// "Manual" clock signal goes HIGH
   }
-  digitalWrite(LatchPin, HIGH);                 // Se vuelve a poner en HIGH la línea de latch para avisar que no se enviarán mas datos
+  digitalWrite(LatchPin, HIGH);                 // Latch line goes HIGH to inform the IC that data is over.
 }
 
 /*

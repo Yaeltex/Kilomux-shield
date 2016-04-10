@@ -1,17 +1,16 @@
 /*
-Kilomux Library
-
-Header file - Class definition
-
-
-Author: Franco Grassano (YAELTEX)
-License: Creative Commons Attribution-ShareAlike 4.0 International - http://creativecommons.org/licenses/by-sa/4.0/
-References: - Code for 74HC595 ICs handling taken from http://bildr.org/2011/02/74HC595/
-            - Code for CD4067 multiplexers reading taken from http://mayhewlabs.com/products/mux-shield-2
-            - For ultrasonic sensor, use New Ping library http://playground.arduino.cc/Code/NewPing
-
-Buenos Aires, Argentina - 2015
-*/
+ * Author: Franco Grassano - YAELTEX
+ * Date: 18/02/2016
+ * Buenos Aires, Argentina - 2015
+ * ---
+ * LICENSE INFO
+ * Kilomux Shield library for Arduino, by Yaeltex, is released by
+ * Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0) - http://creativecommons.org/licenses/by-sa/4.0/
+ * ----
+ *
+ * Header file, with class definition
+ *
+ */
 
 #ifndef Kilomux_h     // Imports header file only if not imported earlier
 #define Kilomux_h
