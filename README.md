@@ -14,7 +14,7 @@ You can also find the whole HIDUINO repository - the firmware to send MIDI via U
 
 For more info, go to our [wiki](http://wiki.yaeltex.com.ar/index.php?title=KiloMux_Shield) (in Spanish, for now)
 
-If you have any questions, suggestions or comments about the shield, email us at franco@yaeltex.com.ar or post in Yaeltex's forum http://foro.yaeltex.com.ar
+If you have any questions, suggestions or comments about the shield, email us at franco (at) yaeltex.com.ar or post in [Yaeltex's forum](http://foro.yaeltex.com.ar)
 
 Cheers!
 
