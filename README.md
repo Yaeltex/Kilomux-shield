@@ -12,7 +12,7 @@ The code libraries necessary for the sketch functioning are also available: the 
 
 You can also find the whole HIDUINO repository - the firmware to send MIDI via USB and allow PC to recognize the Arduino as a MIDI device. In the "hiduino-master" folder you can find a tutorial on how to recompile (and rename) the firmware and load it into the Arduino device.
 
-For more info, go to our wiki http://wiki.yaeltex.com.ar/index.php?title=KiloMux_Shield (in Spanish, for now)
+For more info, go to our [wiki](http://wiki.yaeltex.com.ar/index.php?title=KiloMux_Shield) (in Spanish, for now)
 
 If you have any questions, suggestions or comments about the shield, email us at franco@yaeltex.com.ar or post in Yaeltex's forum http://foro.yaeltex.com.ar
 
