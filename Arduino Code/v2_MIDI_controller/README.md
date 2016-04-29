@@ -10,4 +10,4 @@ Por el momento, este código no hace uso de la librería "KiloMux Shield".
 Este código usa las siguientes librerías
 - [MuxShield](https://github.com/Yaeltex/Kilomux-shield/tree/master/Arduino%20Code/v2_MIDI_controller/Librer%C3%ADas/MuxShield) de [Mayhew Labs] (http://mayhewlabs.com/), modificada para que funcione con este shield, para la lectura de las entradas y salidas del shield
 - [NewPing] (http://playground.arduino.cc/Code/NewPing) para el manejo del sensor de ultrasonido
-- [Arduino MIDI Library] (https://github.com/FortySevenEffects/arduino_midi_library/releases/tag/4.2), para el manejo de la comunicación MIDI
+- [Arduino MIDI Library v4.2] (https://github.com/FortySevenEffects/arduino_midi_library/releases/tag/4.2), para el manejo de la comunicación MIDI
