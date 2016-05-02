@@ -54,22 +54,16 @@ void setup(); // Esto es para solucionar el bug que tiene Arduino al usar los #i
  
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Descomentar la próxima línea si el compilador no encuentra MIDI
- MIDI_CREATE_DEFAULT_INSTANCE()
+// MIDI_CREATE_DEFAULT_INSTANCE()
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Dejar descomentada sólo una de las tres lineas siguientes para definir el tipo de comunicación
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#define COMUNICACION_MIDI          // Para enviar mensajes a través de HIDUINO o por hardware
+//#define COMUNICACION_MIDI          // Para enviar mensajes a través de HIDUINO o por hardware
 //#define HAIRLESS_MIDI            // Para enviar mensajes midi por USB hacia Hairless MIDI
-//#define COMUNICACION_SERIAL      // Para debuggear con el Monitor Serial
+#define COMUNICACION_SERIAL      // Para debuggear con el Monitor Serial
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-#define MUX_ANALOGICO             MUX_A
-#define MUX_DIGITAL               MUX_B
-
-#define NUM_ENTRADAS_DIGITALES    16      // Máximo 32 entradas (analogicas + digitales)
-#define NUM_ENTRADAS_ANALOGICAS   16      //
 
 #define NUM_SALIDAS               16      // Máximo 16 salidas (64 para LEDs conectados en forma matricial)
 
@@ -88,10 +82,10 @@ void setup(); // Esto es para solucionar el bug que tiene Arduino al usar los #i
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#define SHIFTERS            // Dejar descomentada si se usan los shifters
+//#define SHIFTERS            // Dejar descomentada si se usan los shifters
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #if defined(SHIFTERS)
-#define TOGGLE_SHIFTERS     // Dejar descomentada si se usan los shifters con modo TOGGLE 
+//#define TOGGLE_SHIFTERS     // Dejar descomentada si se usan los shifters con modo TOGGLE 
 #endif  // endif SHIFTERS
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -109,6 +103,84 @@ void setup(); // Esto es para solucionar el bug que tiene Arduino al usar los #i
 #define CANAL_MIDI_CC     1                              // DEFINIR CANAL MIDI A UTILIZAR
 #define CANAL_MIDI_LEDS   1                              // DEFINIR CANAL MIDI A UTILIZAR
 
+#define NUM_SALIDAS               16      // Máximo 16 salidas (64 para LEDs conectados en forma matricial)
+
+// Tipo de entradas - NO MODIFICAR
+#define ANALOGICA         0
+#define DIGITAL           1
+
+// MODIFICAR SEGÚN APLICACIÓN
+// Tipo de entradas
+bool tipoEntrada[NUM_MUX][NUM_MUX_CHANNELS] = { {ANALOGICA,      // MUX A - Entrada 1
+                                                 ANALOGICA,      // MUX A - Entrada 2
+                                                 ANALOGICA,      // MUX A - Entrada 3                                          
+                                                 ANALOGICA,      // MUX A - Entrada 4
+                                                 ANALOGICA,      // MUX A - Entrada 5
+                                                 ANALOGICA,      // MUX A - Entrada 6
+                                                 ANALOGICA,      // MUX A - Entrada 7
+                                                 ANALOGICA,      // MUX A - Entrada 8
+                                                 ANALOGICA,      // MUX A - Entrada 9
+                                                 ANALOGICA,      // MUX A - Entrada 10
+                                                 ANALOGICA,      // MUX A - Entrada 11                                                   
+                                                 ANALOGICA,      // MUX A - Entrada 12
+                                                 ANALOGICA,      // MUX A - Entrada 13
+                                                 ANALOGICA,      // MUX A - Entrada 14
+                                                 ANALOGICA,      // MUX A - Entrada 15
+                                                 ANALOGICA},     // MUX A - Entrada 16
+                                                {DIGITAL,        // MUX B - Entrada 1
+                                                 DIGITAL,        // MUX B - Entrada 2
+                                                 DIGITAL,        // MUX B - Entrada 3                                       
+                                                 DIGITAL,        // MUX B - Entrada 4 
+                                                 DIGITAL,        // MUX B - Entrada 5 
+                                                 DIGITAL,        // MUX B - Entrada 6 
+                                                 DIGITAL,        // MUX B - Entrada 7 
+                                                 DIGITAL,        // MUX B - Entrada 8  
+                                                 DIGITAL,        // MUX B - Entrada 9 
+                                                 DIGITAL,        // MUX B - Entrada 10 
+                                                 DIGITAL,        // MUX B - Entrada 11                                                    
+                                                 DIGITAL,        // MUX B - Entrada 12 
+                                                 DIGITAL,        // MUX B - Entrada 13 
+                                                 DIGITAL,        // MUX B - Entrada 14 
+                                                 DIGITAL,        // MUX B - Entrada 15 
+                                                 DIGITAL}};       // MUX B - Entrada 16  
+
+// MODIFICAR SEGÚN APLICACIÓN
+// Desactivar entradas que no se usen
+#define DESACTIVADA       0
+#define ACTIVADA          1
+
+bool entradaActivada[NUM_MUX][NUM_MUX_CHANNELS] = {{ACTIVADA,      // MUX A - Entrada 1
+                                                    ACTIVADA,      // MUX A - Entrada 2
+                                                    ACTIVADA,      // MUX A - Entrada 3                                          
+                                                    ACTIVADA,      // MUX A - Entrada 4
+                                                    ACTIVADA,      // MUX A - Entrada 5
+                                                    ACTIVADA,      // MUX A - Entrada 6
+                                                    ACTIVADA,      // MUX A - Entrada 7
+                                                    ACTIVADA,      // MUX A - Entrada 8
+                                                    ACTIVADA,      // MUX A - Entrada 9
+                                                    ACTIVADA,      // MUX A - Entrada 10
+                                                    ACTIVADA,      // MUX A - Entrada 11                                                   
+                                                    ACTIVADA,      // MUX A - Entrada 12
+                                                    ACTIVADA,      // MUX A - Entrada 13
+                                                    ACTIVADA,      // MUX A - Entrada 14
+                                                    ACTIVADA,      // MUX A - Entrada 15
+                                                    ACTIVADA},     // MUX A - Entrada 16
+                                                   {ACTIVADA,      // MUX B - Entrada 1
+                                                    ACTIVADA,      // MUX B - Entrada 2
+                                                    ACTIVADA,      // MUX B - Entrada 3                                       
+                                                    ACTIVADA,      // MUX B - Entrada 4 
+                                                    ACTIVADA,      // MUX B - Entrada 5 
+                                                    ACTIVADA,      // MUX B - Entrada 6 
+                                                    ACTIVADA,      // MUX B - Entrada 7 
+                                                    ACTIVADA,      // MUX B - Entrada 8  
+                                                    ACTIVADA,      // MUX B - Entrada 9 
+                                                    ACTIVADA,      // MUX B - Entrada 10 
+                                                    ACTIVADA,      // MUX B - Entrada 11                                                    
+                                                    ACTIVADA,      // MUX B - Entrada 12 
+                                                    ACTIVADA,      // MUX B - Entrada 13 
+                                                    ACTIVADA,      // MUX B - Entrada 14 
+                                                    ACTIVADA,      // MUX B - Entrada 15 
+                                                    ACTIVADA}};    // MUX B - Entrada 16                                                 
 /*
  * Estos son los valores de notas que se quieren envíar cuando se detecte un cambio en cada canal del multiplexor
  * La primera columna indica el número de nota (o CC) MIDI que se enviará, al presionar el botón conectado en el canal indicado.
@@ -432,83 +504,82 @@ void loop() {
  * Compara con los valores previos, almacenados en 'lecturasPrev', y si cambian, y llama a las funciones que envían datos.
  */
 void LeerEntradas(void) {
-  if(NUM_ENTRADAS_ANALOGICAS){
-    for (int canal = 0; canal < NUM_ENTRADAS_ANALOGICAS; canal++) {                   // Recorro todos los canales de cada multiplexor
-      // ENTRADAS ANALÓGICAS 1 ///////////////////////////////////////////////////
-        unsigned int analogData = KMShield.analogReadKm(MUX_ANALOGICO, canal+1);        // Leer entradas analógicas 'KMShield.analogReadKm(N_MUX,N_CANAL)'
-        lecturas[MUX_ANALOGICO][canal] = analogData >> 3;                                 // El valor leido va de 0-1023. Convertimos a 0-127, dividiendo por 8.
-
-        if (!EsRuido(lecturas[MUX_ANALOGICO][canal], lecturasPrev[MUX_ANALOGICO][canal], canal, MUX_ANALOGICO)) {                                              // Si lo que leo no es ruido
-          #if defined(COMUNICACION_MIDI)|defined(HAIRLESS_MIDI)
-            EnviarControlChangeMidi(lecturas[MUX_ANALOGICO][canal], canal);                                     // Envío datos MIDI
-          #elif defined(COMUNICACION_SERIAL)
-            EnviarControlChangeSerial(lecturas[MUX_ANALOGICO][canal], canal);                                   // Envío datos SERIAL
-          #endif
-        }
-        else{
-          continue;                                                          // Sigo con la próxima lectura
-        }
-      ///////////////////////////////////////////////////////////////////////////
-      lecturasPrev[MUX_ANALOGICO][canal] = lecturas[MUX_ANALOGICO][canal];             // Almacenar lectura actual como anterior, para el próximo ciclo
-    }
-  }
-  if(NUM_ENTRADAS_DIGITALES){  
-    for (int canal = 0; canal < NUM_ENTRADAS_DIGITALES; canal++) {                   // Recorro todos los canales de cada multiplexor   
-      // ENTRADAS DIGITALES /////////////////////////////////////////////////////
-        // CÓDIGO PARA LECTURA DE ENTRADAS DIGITALES 
-        lecturas[MUX_DIGITAL][canal] = KMShield.digitalReadKm(MUX_DIGITAL, canal+1, PULLUP);      // Leer entradas digitales 'KMShield.digitalReadKm(N_MUX, N_CANAL)'
-
-        if (lecturas[MUX_DIGITAL][canal] != lecturasPrev[MUX_DIGITAL][canal]) {             // Me interesa la lectura, si cambió el estado del botón,
-          lecturasPrev[MUX_DIGITAL][canal] = lecturas[MUX_DIGITAL][canal];                  // Almacenar lectura actual como anterior, para el próximo ciclo
-          
-          if (!lecturas[MUX_DIGITAL][canal]){                                               // Si leo 0 (botón accionado)                                                                        
-                                                                                                
-            #if defined(SHIFTERS)                                                   // Si estoy usando SHIFTERS                                                                                        
-            if (byte shift = EsShifter(canal)){
-              CambiarBanco(shift);
-              continue;   // Si es un shifter, seguir con la próxima lectura.
-            }
-            #endif    // endif SHIFTERS
-            
-            estadoBoton[bancoActivo][canal] = !estadoBoton[bancoActivo][canal];     // MODO TOGGLE: Cambia de 0 a 1, o viceversa
-                                                                                    // MODO NORMAL: Cambia de 0 a 1
-            // Se envía el estado del botón por MIDI o SERIAL
+  for(int mux = 0; mux < NUM_MUX; mux++){
+    for (int canal = 0; canal < NUM_MUX_CHANNELS; canal++) {                   // Recorro todos los canales de cada multiplexor
+      if(entradaActivada[mux][canal]){
+        if(tipoEntrada[mux][canal] == ANALOGICA){
+          // ENTRADAS ANALÓGICAS 1 ///////////////////////////////////////////////////
+          unsigned int analogData = KMShield.analogReadKm(mux, canal+1);          // Leer entradas analógicas 'KMShield.analogReadKm(N_MUX,N_CANAL)'
+          lecturas[mux][canal] = analogData >> 3;                                 // El valor leido va de 0-1023. Convertimos a 0-127, dividiendo por 8.
+  
+          if (!EsRuido(lecturas[mux][canal], lecturasPrev[mux][canal], canal, mux)) {                                              // Si lo que leo no es ruido
             #if defined(COMUNICACION_MIDI)|defined(HAIRLESS_MIDI)
-            EnviarNoteMidi(canal, estadoBoton[bancoActivo][canal]*127);                                  // Envío MIDI
+              EnviarControlChangeMidi(lecturas[mux][canal], canal);                                     // Envío datos MIDI
             #elif defined(COMUNICACION_SERIAL)
-            EnviarNoteSerial(canal, estadoBoton[bancoActivo][canal]*127);                                // Envío SERIAL
-            estadoLeds[bancoActivo][mapeoLeds[mapeoNotes[canal]]] = estadoBoton[bancoActivo][canal]*2;   // Esta línea cambia el estado de los LEDs cuando se presionan los botones (solo SERIAL)
-            cambioEstadoLeds = 1;                                                                        // Actualizar LEDs
-            #endif              // endif COMUNICACION
-          }   
-                                                    
-          else if (lecturas[MUX_DIGITAL][canal]) {                        // Si se lee que el botón pasa de activo a inactivo (lectura -> 5V) y el estado previo era Activo
-            #if !defined(TOGGLE)
-            estadoBoton[bancoActivo][canal] = 0;                  // Se actualiza el flag a inactivo
+              EnviarControlChangeSerial(lecturas[mux][canal], canal);                                   // Envío datos SERIAL
             #endif
-            
-            #if defined(SHIFTERS)                                 // Si estoy usando SHIFTERS      
-            // Si el botón presionado es uno de los SHIFTERS de bancos
-              if (EsShifter(canal)){
-                #if !defined(TOGGLE_SHIFTERS)
-                CambiarBanco(-1);  
-                #endif
-                continue;
-              }           
-            #endif       // endif SHIFTERS
-            #if !defined(TOGGLE)                                          // Si no estoy usando el modo TOGGLE
-              #if defined(COMUNICACION_MIDI)|defined(HAIRLESS_MIDI)    
-              EnviarNoteMidi(canal, NOTE_OFF);                      // Envío MIDI
-              #elif defined(COMUNICACION_SERIAL)              
-              EnviarNoteSerial(canal, NOTE_OFF);                    // Envío SERIAL
-              estadoLeds[bancoActivo][mapeoLeds[mapeoNotes[canal]]] = LED_APAGADO;
-              cambioEstadoLeds = 1;
-              #endif      // endif COMUNICACION                                      
-            #endif     // endif TOGGLE
-          } 
-        }
+          }
+          else{
+            continue;                                                          // Sigo con la próxima lectura
+          }
         ///////////////////////////////////////////////////////////////////////////
-        continue;
+          lecturasPrev[mux][canal] = lecturas[mux][canal];             // Almacenar lectura actual como anterior, para el próximo ciclo  
+        }
+        // ENTRADAS DIGITALES /////////////////////////////////////////////////////
+        else if(tipoEntrada[mux][canal] == DIGITAL){
+          // CÓDIGO PARA LECTURA DE ENTRADAS DIGITALES Y SHIFTERS
+          lecturas[mux][canal] = KMShield.digitalReadKm(mux, canal+1, PULLUP);      // Leer entradas digitales 'KMShield.digitalReadKm(N_MUX, N_CANAL)'
+  
+          if (lecturas[mux][canal] != lecturasPrev[mux][canal]) {             // Me interesa la lectura, si cambió el estado del botón,
+            lecturasPrev[mux][canal] = lecturas[mux][canal];                  // Almacenar lectura actual como anterior, para el próximo ciclo
+            
+            if (!lecturas[mux][canal]){                                               // Si leo 0 (botón accionado)                                                                                                                                                        
+              #if defined(SHIFTERS)                                                   // Si estoy usando SHIFTERS                                                                                        
+              if (byte shift = EsShifter(canal)){
+                CambiarBanco(shift);
+                continue;   // Si es un shifter, seguir con la próxima lectura.
+              }
+              #endif    // endif SHIFTERS
+              
+              estadoBoton[bancoActivo][canal] = !estadoBoton[bancoActivo][canal];     // MODO TOGGLE: Cambia de 0 a 1, o viceversa
+                                                                                      // MODO NORMAL: Cambia de 0 a 1
+              // Se envía el estado del botón por MIDI o SERIAL
+              #if defined(COMUNICACION_MIDI)|defined(HAIRLESS_MIDI)
+              EnviarNoteMidi(canal, estadoBoton[bancoActivo][canal]*127);                                  // Envío MIDI
+              #elif defined(COMUNICACION_SERIAL)
+              EnviarNoteSerial(canal, estadoBoton[bancoActivo][canal]*127);                                // Envío SERIAL
+              estadoLeds[bancoActivo][mapeoLeds[mapeoNotes[canal]]] = estadoBoton[bancoActivo][canal]*2;   // Esta línea cambia el estado de los LEDs cuando se presionan los botones (solo SERIAL)
+              cambioEstadoLeds = 1;                                                                        // Actualizar LEDs
+              #endif              // endif COMUNICACION
+            }   
+                                                      
+            else if (lecturas[mux][canal]) {                        // Si se lee que el botón pasa de activo a inactivo (lectura -> 5V) y el estado previo era Activo
+              #if !defined(TOGGLE)
+              estadoBoton[bancoActivo][canal] = 0;                  // Se actualiza el flag a inactivo
+              #endif
+              
+              #if defined(SHIFTERS)                                 // Si estoy usando SHIFTERS      
+              // Si el botón presionado es uno de los SHIFTERS de bancos
+                if (EsShifter(canal)){
+                  #if !defined(TOGGLE_SHIFTERS)
+                  CambiarBanco(-1);  
+                  #endif
+                  continue;
+                }           
+              #endif       // endif SHIFTERS
+              #if !defined(TOGGLE)                                          // Si no estoy usando el modo TOGGLE
+                #if defined(COMUNICACION_MIDI)|defined(HAIRLESS_MIDI)    
+                EnviarNoteMidi(canal, NOTE_OFF);                      // Envío MIDI
+                #elif defined(COMUNICACION_SERIAL)              
+                EnviarNoteSerial(canal, NOTE_OFF);                    // Envío SERIAL
+                estadoLeds[bancoActivo][mapeoLeds[mapeoNotes[canal]]] = LED_APAGADO;
+                cambioEstadoLeds = 1;
+                #endif      // endif COMUNICACION                                      
+              #endif     // endif TOGGLE
+            } 
+          }
+        }
+      }
     }
   }
 }
