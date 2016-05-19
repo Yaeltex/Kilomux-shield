@@ -885,7 +885,7 @@ void EncenderLedsSerial(void){
   // DESCOMENTAR PARA DEBUGGEAR CON SERIAL ///////////////////////////////////////////////////////////////////////
     static unsigned int leds[BANCOS][NUM_LEDS_X_BANCO];
     if (Serial.available()){                // ¿Llegó un mensaje Serial?
-      char inputBuffer[2] = {' ',' '};
+      char inputBuffer[3] = {' ',' ', 0};
       short int led_number = 0;  // Capturo la nota
 
       Serial.readBytes(inputBuffer, 2);
