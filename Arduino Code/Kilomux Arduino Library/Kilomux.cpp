@@ -62,8 +62,8 @@ Kilomux::Kilomux(){
   Returns:        void
 */
 void Kilomux::digitalWriteKm(int output, int state){
-  if (output >= 1 && output <= 16){
-    outputState[OutputMapping[output-1]] = state;
+  if (output >= 0 && output <= 15){
+    outputState[OutputMapping[output]] = state;
     writeRegisters595();
   }
   else return;    // Return not setting any output
@@ -103,11 +103,11 @@ void Kilomux::digitalWritePortKm(byte portState, int port){
 */
 int Kilomux::digitalReadKm(int mux, int chan){
     int digitalState;
-    if (chan >= 1 && chan <= 16){
+    if (chan >= 0 && chan <= 15){
       if (mux == MUX_A)
-        chan = MuxAMapping[chan-1];
+        chan = MuxAMapping[chan];
       else if (mux == MUX_B)
-        chan = MuxBMapping[chan-1];
+        chan = MuxBMapping[chan];
       else return -1;   // Return ERROR
     }
     else return -1;     // Return ERROR
@@ -143,11 +143,11 @@ int Kilomux::digitalReadKm(int mux, int chan){
 */
 int Kilomux::digitalReadKm(int mux, int chan, int pullup){
     int digitalState;
-    if (chan >= 1 && chan <= 16){
+    if (chan >= 0 && chan <= 15){
       if (mux == MUX_A)
-        chan = MuxAMapping[chan-1];
+        chan = MuxAMapping[chan];
       else if (mux == MUX_B)
-        chan = MuxBMapping[chan-1];
+        chan = MuxBMapping[chan];
       else return -1;   // Return ERROR
     }
     else return -1;     // Return ERROR
@@ -187,11 +187,11 @@ int Kilomux::digitalReadKm(int mux, int chan, int pullup){
 */
 int Kilomux::analogReadKm(int mux, int chan){
     static unsigned int analogData;
-    if (chan >= 1 && chan <= 16){     // Re-map hardware channels to have them read in the header order
+    if (chan >= 0 && chan <= 15){     // Re-map hardware channels to have them read in the header order
       if (mux == MUX_A)
-        chan = MuxAMapping[chan-1];
+        chan = MuxAMapping[chan];
       else if (mux == MUX_B)
-        chan = MuxBMapping[chan-1];
+        chan = MuxBMapping[chan];
       else return -1;     // Return ERROR
     }
     else return -1;       // Return ERROR

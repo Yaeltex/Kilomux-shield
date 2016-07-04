@@ -23,14 +23,14 @@
 #define MUX_A_PIN            A0           // Mux A pin
 #define MUX_B_PIN            A1           // Mux B pin
 
-#define MUX_A1_START         1            // Mux A1 header first pin
-#define MUX_A1_END           8            // Mux A1 header last pin
-#define MUX_A2_START         9            // Mux A2 header first pin
-#define MUX_A2_END           16           // Mux A2 header last pin
-#define MUX_B1_START         1            // Mux B1 header first pin
-#define MUX_B1_END           8            // Mux B1 header last pin
-#define MUX_B2_START         9            // Mux B2 header first pin
-#define MUX_B2_END           16           // Mux B2 header last pin
+#define MUX_A1_START         0            // Mux A1 header first pin
+#define MUX_A1_END           7            // Mux A1 header last pin
+#define MUX_A2_START         8            // Mux A2 header first pin
+#define MUX_A2_END           15           // Mux A2 header last pin
+#define MUX_B1_START         0            // Mux B1 header first pin
+#define MUX_B1_END           7            // Mux B1 header last pin
+#define MUX_B2_START         8            // Mux B2 header first pin
+#define MUX_B2_END           15           // Mux B2 header last pin
 
 #define NUM_MUX              2            // Number of multiplexers to address
 #define NUM_MUX_CHANNELS     16           // Number of multiplexing channels
