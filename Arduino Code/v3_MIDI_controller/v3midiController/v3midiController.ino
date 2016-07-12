@@ -509,7 +509,7 @@ void LeerEntradas(void) {
       if(entradaActivada[mux][canal]){
         if(tipoEntrada[mux][canal] == ANALOGICA){
           // ENTRADAS ANALÓGICAS 1 ///////////////////////////////////////////////////
-          unsigned int analogData = KMShield.analogReadKm(mux, canal+1);          // Leer entradas analógicas 'KMShield.analogReadKm(N_MUX,N_CANAL)'
+          unsigned int analogData = KMShield.analogReadKm(mux, canal);          // Leer entradas analógicas 'KMShield.analogReadKm(N_MUX,N_CANAL)'
           lecturas[mux][canal] = analogData >> 3;                                 // El valor leido va de 0-1023. Convertimos a 0-127, dividiendo por 8.
   
           if (!EsRuido(lecturas[mux][canal], lecturasPrev[mux][canal], canal, mux)) {                                              // Si lo que leo no es ruido
@@ -528,7 +528,7 @@ void LeerEntradas(void) {
         // ENTRADAS DIGITALES /////////////////////////////////////////////////////
         else if(tipoEntrada[mux][canal] == DIGITAL){
           // CÓDIGO PARA LECTURA DE ENTRADAS DIGITALES Y SHIFTERS
-          lecturas[mux][canal] = KMShield.digitalReadKm(mux, canal+1, PULLUP);      // Leer entradas digitales 'KMShield.digitalReadKm(N_MUX, N_CANAL)'
+          lecturas[mux][canal] = KMShield.digitalReadKm(mux, canal, PULLUP);      // Leer entradas digitales 'KMShield.digitalReadKm(N_MUX, N_CANAL)'
   
           if (lecturas[mux][canal] != lecturasPrev[mux][canal]) {             // Me interesa la lectura, si cambió el estado del botón,
             lecturasPrev[mux][canal] = lecturas[mux][canal];                  // Almacenar lectura actual como anterior, para el próximo ciclo
@@ -802,17 +802,17 @@ void ActualizarLeds(void){
     
     for (led = 0; led < NUM_LEDS_X_BANCO; led++){
       if(estadoLeds[bancoActivo][led] == LED_ENCENDIDO){
-        KMShield.digitalWriteKm(led+1, HIGH);             // digitalWriteKM recibe de 1 a 16
+        KMShield.digitalWriteKm(led, HIGH);             // digitalWriteKM recibe de 0 a 15
       }
       else if(estadoLeds[bancoActivo][led] == LED_APAGADO){
-        KMShield.digitalWriteKm(led+1, LOW);              // digitalWriteKM recibe de 1 a 16
+        KMShield.digitalWriteKm(led, LOW);              // digitalWriteKM recibe de 0 a 15
       }
     }
     #if defined(SHIFTERS)
-    KMShield.digitalWriteKm(mapeoLeds[LED_SHIFTER_1]+1,estadoShifter[SHIFTER_1]);
-    KMShield.digitalWriteKm(mapeoLeds[LED_SHIFTER_2]+1,estadoShifter[SHIFTER_2]);
-    KMShield.digitalWriteKm(mapeoLeds[LED_SHIFTER_3]+1,estadoShifter[SHIFTER_3]);
-    KMShield.digitalWriteKm(mapeoLeds[LED_SHIFTER_4]+1,estadoShifter[SHIFTER_4]);
+    KMShield.digitalWriteKm(mapeoLeds[LED_SHIFTER_1],estadoShifter[SHIFTER_1]);
+    KMShield.digitalWriteKm(mapeoLeds[LED_SHIFTER_2],estadoShifter[SHIFTER_2]);
+    KMShield.digitalWriteKm(mapeoLeds[LED_SHIFTER_3],estadoShifter[SHIFTER_3]);
+    KMShield.digitalWriteKm(mapeoLeds[LED_SHIFTER_4],estadoShifter[SHIFTER_4]);
     #endif    // endif SHIFTERS
   }
 }

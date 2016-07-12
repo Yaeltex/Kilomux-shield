@@ -27,8 +27,8 @@
 MIDI_CREATE_DEFAULT_INSTANCE() // Create a hardware instance of the library
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//#define SERIAL_COMMS          // Leave uncommented (and comment the line below) to send over serial
-#define MIDI_COMMS          // Leave uncommented (and comment the line above) to send midi messages
+#define SERIAL_COMMS          // Leave uncommented (and comment the line below) to send over serial
+//#define MIDI_COMMS          // Leave uncommented (and comment the line above) to send midi messages
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #define NUM_OF_INPUTS_TO_READ   8        // We'll read the 8 inputs of por A1.

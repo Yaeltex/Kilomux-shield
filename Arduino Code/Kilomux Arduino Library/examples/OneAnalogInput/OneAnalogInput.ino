@@ -22,27 +22,33 @@
 
 MIDI_CREATE_DEFAULT_INSTANCE() // Create a hardware instance of the library
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#define SERIAL_COMMS          // Leave uncommented (and comment the line below) to send over serial
+//#define MIDI_COMMS          // Leave uncommented (and comment the line above) to send midi messages
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 #define MIDI_CHANNEL  1        // Pot value will be sent with CC#74 over channel 1 over MIDI port or USB
 #define POT_CC        74       // CC#74 -> VCF's cutoff freq
 
-Kilomux KmShield;             // Kilomux Shield    
+Kilomux KmShield;              // Kilomux Shield    
 
-unsigned int potInput = 0;    // Shield input where we connected a potentiometer or a sensor (0-15)
+unsigned int potInput = 0;     // Shield input where we connected a potentiometer or a sensor (0-15)
 
 void setup() { 
-  Serial.begin(115200);                               // Initialize serial                                                  <--|      
-                                                                                                                            // |-> Only one of these lines should be uncommented. Choose MIDI or Serial
-//MIDI.begin(MIDI_CHANNEL_OMNI); MIDI.turnThruOff();  // Initialize MIDI port. Turn MIDI-thru off, which is on by default   <--|
+  #if defined(SERIAL_COMMS)
+  Serial.begin(115200);                               // Initialize serial
+  #elif defined(MIDI_COMMS)
+  MIDI.begin(MIDI_CHANNEL_OMNI); MIDI.turnThruOff();  // Initialize MIDI port. Turn MIDI-thru off, which is on by default
+  #endif
 }
 
 void loop() {
   int analogData = 0;                                           // Variable to store analog values
   analogData = KmShield.analogReadKm(MUX_A, potInput);          // Read analog value from MUX_A and channel 'potInput' (0-15) 
   
-  Serial.print("Pot reading: "); Serial.println(analogData);    // Print value at the serial monitor                        <--|
-                                                                                                                            // |-> Only one of these lines should be uncommented. Choose MIDI or Serial                                       
-//MIDI.sendControlChange(POT_CC, analogData>>3, MIDI_CHANNEL);  // Or send midi message.                                    <--|  
-                                                                  // analogData >> 3, divides by 2^3 = 8, the value, to adjust to midi resolution (1024/8 = 128)
+  #if defined(SERIAL_COMMS)
+  Serial.print("Pot reading: "); Serial.println(analogData);    // Print value at the serial monitor                        
+  #elif defined(MIDI_COMMS)                                                                                                 
+  MIDI.sendControlChange(POT_CC, analogData>>3, MIDI_CHANNEL);  // Or send midi message.                                 
+  #endif                                                        // analogData >> 3, divides by 2^3 = 8, the value, to adjust to midi resolution (1024/8 = 128)                                                                 
 }
-
-
