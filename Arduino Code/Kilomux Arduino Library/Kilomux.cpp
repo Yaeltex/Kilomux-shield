@@ -17,7 +17,7 @@
 
 /*
   Method:         Kilomux
-  Description:    Class constructor. Sets everything for a Kilomux Shield to work properly.
+  Description:    Class constructor.
   Parameters:     void
   Returns:        void
 */
