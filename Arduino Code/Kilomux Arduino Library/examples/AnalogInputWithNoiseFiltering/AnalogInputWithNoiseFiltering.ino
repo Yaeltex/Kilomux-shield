@@ -35,6 +35,8 @@ Kilomux KmShield;             // Kilomux Shield instance
 unsigned int potInput = 0;    // Shield input where we connected a potentiometer or a sensor (0-15)
 
 void setup() {
+  KmShield.init();                                    // Initialize Kilomux shield hardware
+  
   //Serial.begin(115200);                               // Initialize serial                                                  <--|      
                                                                                                                             // |-> Only one of these lines should be uncommented. Choose MIDI or Serial
   MIDI.begin(MIDI_CHANNEL_OMNI); MIDI.turnThruOff();  // Initialize MIDI port. Turn MIDI-thru off, which is on by default   <--|

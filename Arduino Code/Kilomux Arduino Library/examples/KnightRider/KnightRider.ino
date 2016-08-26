@@ -21,7 +21,7 @@ Kilomux KmShield;             // Kilomux Shield
 #define MS_OFF 4              // Number of milliseconds the LED will be off
 
 void setup() {
-  // Nothing here
+  KmShield.init();
 }
 
 void loop() {

@@ -22,7 +22,17 @@
   Returns:        void
 */
 Kilomux::Kilomux(){
-    // Set output pins for shift register
+    
+}
+
+/*
+  Method:         initialize
+  Description:    Set everything up (pins, ADC speed, initialize variables and prepare shift registers)
+  Parameters:     void
+  Returns:        void
+*/
+void Kilomux::init(void){
+	// Set output pins for shift register
     pinMode(LatchPin, OUTPUT);
     pinMode(DataPin, OUTPUT);
     pinMode(ClockPin, OUTPUT);
@@ -32,7 +42,7 @@ Kilomux::Kilomux(){
     pinMode(_S1, OUTPUT);
     pinMode(_S2, OUTPUT);
     pinMode(_S3, OUTPUT);
-
+											  
     // Set every reading to 0
     for (int mux = 0; mux < NUM_MUX; mux++) {
       for (int chan = 0; chan < NUM_MUX_CHANNELS; chan++) {
@@ -43,16 +53,17 @@ Kilomux::Kilomux(){
     for (int output = 0; output < NUM_OUTPUTS; output++) {
        outputState[output] = 0;
     }
-    // This method sets the ADC prescaler, to change the sample rate
+    
+	// This method sets the ADC prescaler, to change the sample rate
     setADCprescaler(PS_16);               // PS_16 (1MHz or 50000 samples/s)
                                           // PS_32 (500KHz or 31250 samples/s)
                                           // PS_64 (250KHz or 16666 samples/s)
                                           // PS_128 (125KHz or 8620 samples/s)
 
+	
     clearRegisters595();                  // Set all outputs to LOW
     writeRegisters595();                  // Update outputs
 }
-
 /*
   Method:         digitalWriteKm
   Description:    Change the state of a shift register output to HIGH or LOW

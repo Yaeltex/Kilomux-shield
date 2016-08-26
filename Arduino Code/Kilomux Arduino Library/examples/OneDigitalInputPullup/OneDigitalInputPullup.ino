@@ -39,6 +39,8 @@ unsigned int buttonInput = 0;     // Shield input where we connected a button or
 bool buttonState = 1, lastState = 1;  // Variables to store digital values. Initialize off.
 
 void setup() {
+  KmShield.init();                                    // Initialize Kilomux shield hardware
+  
   #if defined(SERIAL_COMMS)
   Serial.begin(115200);                               // Initialize serial
   #elif defined(MIDI_COMMS)

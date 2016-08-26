@@ -1,9 +1,35 @@
+#######################################
+# Syntax Coloring Map ShiftPWM
+#######################################
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
 Kilomux	KEYWORD1
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+init	KEYWORD2
 digitalWriteKm	KEYWORD2
 digitalWritePortKm	KEYWORD2
 digitalReadKm	KEYWORD2
 analogReadKm	KEYWORD2
 setADCprescaler	KEYWORD2
 isNoise	KEYWORD2
-MUX_A	KEYWORD4
-MUX_B	KEYWORD4
+#######################################
+# Constants (LITERAL1)
+#######################################
+MUX_A	LITERAL1
+MUX_B	LITERAL1
+MUX_A1_START	LITERAL1
+MUX_A1_END	LITERAL1
+MUX_A2_START	LITERAL1
+MUX_A2_END	LITERAL1
+MUX_B1_START	LITERAL1
+MUX_B1_END	LITERAL1
+MUX_B2_START	LITERAL1
+MUX_B2_END	LITERAL1
+NUM_MUX	LITERAL1
+NUM_MUX_CHANNELS	LITERAL1
+NUM_595	LITERAL1
+NUM_OUTPUTS	LITERAL1
+PULLUP	LITERAL1

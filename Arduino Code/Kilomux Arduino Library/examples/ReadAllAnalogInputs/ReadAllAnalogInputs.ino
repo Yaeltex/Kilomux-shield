@@ -57,6 +57,8 @@ unsigned int analogDataPrev[NUM_OF_INPUTS_TO_READ];     // Variable to store pre
 byte analogDirection[NUM_OF_INPUTS_TO_READ];            // "static" means the value is stored and can be used next time this function runs
 
 void setup() {
+  KmShield.init();                                    // Initialize Kilomux shield hardware
+  
   // Set all elements in arrays to 0
   for(int i = 0; i < NUM_OF_INPUTS_TO_READ; i++){
      analogData[i] = 0;

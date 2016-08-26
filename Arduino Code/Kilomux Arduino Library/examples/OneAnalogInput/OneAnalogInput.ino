@@ -35,6 +35,8 @@ Kilomux KmShield;              // Kilomux Shield
 unsigned int potInput = 0;     // Shield input where we connected a potentiometer or a sensor (0-15)
 
 void setup() { 
+  KmShield.init();                                    // Initialize Kilomux shield hardware
+  
   #if defined(SERIAL_COMMS)
   Serial.begin(115200);                               // Initialize serial
   #elif defined(MIDI_COMMS)

@@ -23,7 +23,7 @@ Kilomux KmShield;             // KiloMux Shield
 unsigned int ledOutput = 0;   // KiloMux output where we already connected an LED (0-15)
 
 void setup() {
-  // Nothing here  
+  KmShield.init();
 }
 
 void loop() {
