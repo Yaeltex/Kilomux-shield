@@ -17,7 +17,7 @@
 
 /*
   Method:         Kilomux
-  Description:    Class constructor.
+  Description:    Class constructor. Sets everything for a Kilomux Shield to work properly.
   Parameters:     void
   Returns:        void
 */
@@ -103,6 +103,27 @@ void Kilomux::digitalWritePortKm(byte portState, int port){
 }
 
 /*
+  Method:         digitalWritePortKm
+  Description:    Set the state of an entire output port (8 pins of the 10-pin outpute headers on the shield)
+  Parameters:
+                  portState - 	Byte containing the state of the port to be set. MSB is output 1 and LSB is output 8 of the port
+								portState -> B 1-0-0-1-0-1-1-1
+								outputs   ->   1-2-3-4-5-6-7-8
+                  port  - 	  	Number of output port to set (1 or 2)
+  Returns:        void
+*/
+void Kilomux::digitalWritePortsKm(byte portState1, byte portState2){
+  for(int output = 0;  output < 8; output++){
+	outputState[OutputMapping[output]] = portState1&(1<<(7-output));
+  }
+  for(int output = 8;  output < 16; output++){
+	outputState[OutputMapping[output]] = portState2&(1<<(15-output));
+  }
+  writeRegisters595();
+  return;
+}
+
+/*
   Method:         digitalReadKm
   Description:    Read the state of a multiplexer channel as a digital input.
   Parameters:
@@ -146,8 +167,8 @@ int Kilomux::digitalReadKm(int mux, int chan){
   Method:         digitalReadKm
   Description:    Read the state of a multiplexer channel as a digital input, setting the analog input of the Arduino with a pullup resistor.
   Parameters:
-                  mux    - Identifier of the multiplexer desired. Must be MUX_A or MUX_B (0 or 1)
-                  chan   - Number of the channel desired. Must be within 1 and 16
+                  mux    - Identifier for the desired multiplexer. Must be MUX_A or MUX_B (0 or 1)
+                  chan   - Number for the desired channel. Must be within 1 and 16
   Returns:        int    - 0: input is LOW
                            1: input is HIGH
                           -1: mux or chan is not valid
@@ -170,12 +191,12 @@ int Kilomux::digitalReadKm(int mux, int chan, int pullup){
 
     switch (mux) {
         case MUX_A:
-            pinMode(MUX_A_PIN, INPUT);                // These two lines set the analogic input pullup resistor
+            pinMode(MUX_A_PIN, INPUT);                // These two lines set the analog input pullup resistor
             digitalWrite(MUX_A_PIN, HIGH);            
             digitalState = digitalRead(InMuxA);		  // Read mux pin
             break;
         case MUX_B:
-            pinMode(MUX_B_PIN, INPUT);                // These two lines set the analogic input pullup resistor
+            pinMode(MUX_B_PIN, INPUT);                // These two lines set the analog input pullup resistor
             digitalWrite(MUX_B_PIN, HIGH);            
             digitalState = digitalRead(InMuxB);		  // Read mux pin
             break;
