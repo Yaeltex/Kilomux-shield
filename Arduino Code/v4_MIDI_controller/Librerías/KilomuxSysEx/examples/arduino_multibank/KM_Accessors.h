@@ -7,14 +7,21 @@
 #ifndef _KM_ACCESSORS_H_
 #define _KM_ACCESSORS_H_
 
+#include "KM_Data.h"
+#include "KM_EEPROM.h"
+
 namespace KMS {
+extern EEPROM_IO io;
+
 class GlobalData {
     //0-2  3                 4-11          12                 13         14                        15
     //YTX, protocol_version, [8 reserved], [output_matrix:1], num_banks, num_input_norms per bank, num_outputs per bank
-    byte *_p;
+    byte _p[16];
   public:
     static const int length = 16;
-    GlobalData(byte *ptr) : _p(ptr) {}
+    GlobalData(){
+      io.read(0, _p, length);
+    }
 
     //Check if the loaded data is valid
     bool isValid() const {
@@ -55,8 +62,10 @@ class InputBase {
     friend class InputNorm;
     friend class InputUS;
   protected:
-    byte *_p;
-    InputBase(byte *ptr) : _p(ptr) {}
+    byte _p[9];
+    InputBase(unsigned int offset){
+      io.read(offset, _p, 5); 
+    }
   public:
 
     byte mode() const {
@@ -97,7 +106,9 @@ class InputBase {
 class InputNorm : public InputBase {
   public:
     static const int length = 6;
-    InputNorm(byte *ptr) : InputBase(ptr) {}
+    InputNorm(unsigned int offset) : InputBase(offset) {
+      io.read(offset+5, _p+5, 1);   
+    }
 
     bool analog() const {
       return (_p[5] & 1) != 0;
@@ -114,8 +125,9 @@ class InputUS : public InputBase {
     // distancia_min_H, distancia_min_L, distancia_max_H, distancia_max_L
   public:
     static const int length = 9;
-    InputUS(byte *ptr) : InputBase(ptr) {}
-
+    InputUS(unsigned int offset) : InputBase(offset) {
+      io.read(offset+5, _p+5, 4);   
+    }
     int dist_min() const {
       _p[5] << 7 | _p[6];
     }
@@ -129,11 +141,12 @@ class Output {
     // BYTE 0 -----------//BYTE 1 -//BYTE 2 -//BYTE 3 -//
     // 0      3-6      8-14      16-23      24-30      
     // blink, channel, num note, blink_min, blink_max
-    byte *_p;
+    byte _p[4];
   public:
     static const int length = 4;
-    Output(byte *ptr) : _p(ptr) {}
-
+    Output(unsigned int offset){
+      io.read(offset, _p, length);   
+    }
     bool blink() const {
       return (_p[0] & 1) != 0;
     }
@@ -152,3 +165,4 @@ class Output {
 };
 } //namespace KMS
 #endif // _KM_ACCESSORS_H_
+

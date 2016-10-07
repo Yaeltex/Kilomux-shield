@@ -4,7 +4,7 @@
 
 //PARA PROBAR, DESCOMENTAR ESTE DEFINE LA PRIMERA VEZ QUE SE SUBE/PRUEBA Y LUEGO DEJARLA COMENTADA PARA TESTEAR
 //
-//#define WRITE_EEPROM
+#define WRITE_EEPROM
 //
 
 static const byte test_data[] ={
@@ -91,9 +91,10 @@ void KM_test() {
 	Serial.begin(9600);
 	 
 	#ifdef WRITE_EEPROM
-    
-		KMS::io.write(0, test_data, sizeof(test_data));
-		Serial.println("EEPROM escrita");
+    unsigned long antMicros = micros();
+		KMS::io.write(0, test_data, 200);
+		Serial.print("EEPROM escrita en ");Serial.print(millis()-antMicros);Serial.println(" us");
+    Serial.println(sizeof(test_data));
 	#else
 		KMS::initialize();
 		KMS::GlobalData gd = KMS::globalData();
