@@ -211,7 +211,7 @@ void ReadInputs() {
     KMS::InputNorm input = KMS::input(contadorInput);
     mux = contadorInput/NUM_MUX_CHANNELS;
     channel = contadorInput%NUM_MUX_CHANNELS;
-    
+    Serial.println(contadorInput);
     if (input.mode() != KMS::M_OFF){
       if(input.analog() == KMS::T_ANALOG){
         if(input.mode() == KMS::M_NRPN)
@@ -233,8 +233,7 @@ void ReadInputs() {
       else if(input.analog() == KMS::T_DIGITAL){
         // CÓDIGO PARA LECTURA DE ENTRADAS DIGITALES Y SHIFTERS
         KMShield.muxReadings[mux][channel] = KMShield.digitalReadKm(mux, channel, PULLUP);      // Leer entradas digitales 'KMShield.digitalReadKm(N_MUX, N_CANAL)'
-        Serial.print("Mux: "); Serial.print(mux); Serial.print("  Channel: "); Serial.println(channel);
-        //if(contadorInput == 0) Serial.println(KMShield.muxReadings[mux][canal]);
+        //Serial.print("Mux: "); Serial.print(mux); Serial.print("  Channel: "); Serial.println(channel);
         if (KMShield.muxReadings[mux][channel] != KMShield.muxPrevReadings[mux][channel]) {     // Me interesa la lectura, si cambió el estado del botón,
           
           KMShield.muxPrevReadings[mux][channel] = KMShield.muxReadings[mux][channel];             // Almacenar lectura actual como anterior, para el próximo ciclo

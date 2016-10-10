@@ -1,0 +1,5 @@
+Proximo paso
+
+- Descubrir porque no andan las entradas en general (digitales siempre en 0, algunas analogicas no andan)
+- Separar en archivos distintos
+- Ojo con los modos, se agregó program change en el lugar que ahora ocupa el modo shifter
