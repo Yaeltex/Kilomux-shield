@@ -1,3 +1,4 @@
+
 /*
  * Autor: Franco Grassano - YAELTEX
  * ---
@@ -65,8 +66,6 @@ void setup(); // Esto es para solucionar el bug que tiene Arduino al usar los #i
 #define COMUNICACION_SERIAL      // Para debuggear con el Monitor Serial
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define NUM_SALIDAS               16      // Máximo 16 salidas (64 para LEDs conectados en forma matricial)
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Comentar la siguiente linea si no se usa sensor de ultrasonido HC_SR04
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -113,12 +112,12 @@ void setup(); // Esto es para solucionar el bug que tiene Arduino al usar los #i
 // Tipo de entradas
 bool tipoEntrada[NUM_MUX][NUM_MUX_CHANNELS] = { {ANALOGICA,      // MUX A - Entrada 1
                                                  ANALOGICA,      // MUX A - Entrada 2
-                                                 ANALOGICA,      // MUX A - Entrada 3                                          
-                                                 ANALOGICA,      // MUX A - Entrada 4
-                                                 ANALOGICA,      // MUX A - Entrada 5
-                                                 ANALOGICA,      // MUX A - Entrada 6
-                                                 ANALOGICA,      // MUX A - Entrada 7
-                                                 ANALOGICA,      // MUX A - Entrada 8
+                                                 DIGITAL,      // MUX A - Entrada 3                                          
+                                                 DIGITAL,      // MUX A - Entrada 4
+                                                 DIGITAL,      // MUX A - Entrada 5
+                                                 DIGITAL,      // MUX A - Entrada 6
+                                                 DIGITAL,      // MUX A - Entrada 7
+                                                 DIGITAL,      // MUX A - Entrada 8
                                                  ANALOGICA,      // MUX A - Entrada 9
                                                  ANALOGICA,      // MUX A - Entrada 10
                                                  ANALOGICA,      // MUX A - Entrada 11                                                   
@@ -149,22 +148,22 @@ bool tipoEntrada[NUM_MUX][NUM_MUX_CHANNELS] = { {ANALOGICA,      // MUX A - Entr
 #define DESACTIVADA       0
 #define ACTIVADA          1
 
-bool entradaActivada[NUM_MUX][NUM_MUX_CHANNELS] = {{ACTIVADA,      // MUX A - Entrada 1
-                                                    ACTIVADA,      // MUX A - Entrada 2
-                                                    ACTIVADA,      // MUX A - Entrada 3                                          
-                                                    ACTIVADA,      // MUX A - Entrada 4
-                                                    ACTIVADA,      // MUX A - Entrada 5
-                                                    ACTIVADA,      // MUX A - Entrada 6
-                                                    ACTIVADA,      // MUX A - Entrada 7
-                                                    ACTIVADA,      // MUX A - Entrada 8
-                                                    ACTIVADA,      // MUX A - Entrada 9
-                                                    ACTIVADA,      // MUX A - Entrada 10
-                                                    ACTIVADA,      // MUX A - Entrada 11                                                   
-                                                    ACTIVADA,      // MUX A - Entrada 12
-                                                    ACTIVADA,      // MUX A - Entrada 13
-                                                    ACTIVADA,      // MUX A - Entrada 14
-                                                    ACTIVADA,      // MUX A - Entrada 15
-                                                    ACTIVADA},     // MUX A - Entrada 16
+bool entradaActivada[NUM_MUX][NUM_MUX_CHANNELS] = {{DESACTIVADA,      // MUX A - Entrada 1
+                                                    DESACTIVADA,      // MUX A - Entrada 2
+                                                    DESACTIVADA,      // MUX A - Entrada 3                                          
+                                                    DESACTIVADA,      // MUX A - Entrada 4
+                                                    DESACTIVADA,      // MUX A - Entrada 5
+                                                    DESACTIVADA,      // MUX A - Entrada 6
+                                                    DESACTIVADA,      // MUX A - Entrada 7
+                                                    DESACTIVADA,      // MUX A - Entrada 8
+                                                    DESACTIVADA,      // MUX A - Entrada 9
+                                                    DESACTIVADA,      // MUX A - Entrada 10
+                                                    DESACTIVADA,      // MUX A - Entrada 11                                                   
+                                                    DESACTIVADA,      // MUX A - Entrada 12
+                                                    DESACTIVADA,      // MUX A - Entrada 13
+                                                    DESACTIVADA,      // MUX A - Entrada 14
+                                                    DESACTIVADA,      // MUX A - Entrada 15
+                                                    DESACTIVADA},     // MUX A - Entrada 16
                                                    {ACTIVADA,      // MUX B - Entrada 1
                                                     ACTIVADA,      // MUX B - Entrada 2
                                                     ACTIVADA,      // MUX B - Entrada 3                                       
@@ -173,14 +172,14 @@ bool entradaActivada[NUM_MUX][NUM_MUX_CHANNELS] = {{ACTIVADA,      // MUX A - En
                                                     ACTIVADA,      // MUX B - Entrada 6 
                                                     ACTIVADA,      // MUX B - Entrada 7 
                                                     ACTIVADA,      // MUX B - Entrada 8  
-                                                    ACTIVADA,      // MUX B - Entrada 9 
-                                                    ACTIVADA,      // MUX B - Entrada 10 
-                                                    ACTIVADA,      // MUX B - Entrada 11                                                    
-                                                    ACTIVADA,      // MUX B - Entrada 12 
-                                                    ACTIVADA,      // MUX B - Entrada 13 
-                                                    ACTIVADA,      // MUX B - Entrada 14 
-                                                    ACTIVADA,      // MUX B - Entrada 15 
-                                                    ACTIVADA}};    // MUX B - Entrada 16                                                 
+                                                    DESACTIVADA,      // MUX B - Entrada 9 
+                                                    DESACTIVADA,      // MUX B - Entrada 10 
+                                                    DESACTIVADA,      // MUX B - Entrada 11                                                    
+                                                    DESACTIVADA,      // MUX B - Entrada 12 
+                                                    DESACTIVADA,      // MUX B - Entrada 13 
+                                                    DESACTIVADA,      // MUX B - Entrada 14 
+                                                    DESACTIVADA,      // MUX B - Entrada 15 
+                                                    DESACTIVADA}};    // MUX B - Entrada 16                                                 
 /*
  * Estos son los valores de notas que se quieren envíar cuando se detecte un cambio en cada canal del multiplexor
  * La primera columna indica el número de nota (o CC) MIDI que se enviará, al presionar el botón conectado en el canal indicado.
@@ -440,6 +439,9 @@ void setup() {
   pinMode(PIN_BOTON_ACT_US,INPUT_PULLUP);  // Botón de activación para el sensor de distancia
 #endif  
 
+  // Initialize Kilomux shield
+  KMShield.init();
+  
   // Guardar cantidad de ms desde el encendido
   anteriorMillis = millis();
   
@@ -510,6 +512,7 @@ void LeerEntradas(void) {
         if(tipoEntrada[mux][canal] == ANALOGICA){
           // ENTRADAS ANALÓGICAS 1 ///////////////////////////////////////////////////
           unsigned int analogData = KMShield.analogReadKm(mux, canal);          // Leer entradas analógicas 'KMShield.analogReadKm(N_MUX,N_CANAL)'
+          
           lecturas[mux][canal] = analogData >> 3;                                 // El valor leido va de 0-1023. Convertimos a 0-127, dividiendo por 8.
   
           if (!EsRuido(lecturas[mux][canal], lecturasPrev[mux][canal], canal, mux)) {                                              // Si lo que leo no es ruido
@@ -964,8 +967,14 @@ void EnviarNoteSerial(unsigned int nota, unsigned int veloc) {
 
 #if defined(COMUNICACION_MIDI)|defined(HAIRLESS_MIDI)
 // Remapea las entradas analógicas y las envía por MIDI
-void EnviarControlChangeMidi(unsigned int valor, unsigned int nota) {
-  MIDI.sendControlChange(mapeoCC[nota]+SALTO_SHIFTER*bancoActivo, valor, CANAL_MIDI_CC);
+void EnviarControlChangeMidi(unsigned int valor, unsigned int cc) {
+  if(bancoActivo == 0){
+    MIDI.sendControlChange(mapeoCC[cc], valor, CANAL_MIDI_CC);  
+  }
+  else if (bancoActivo == 1){
+    MIDI.sendControlChange(mapeoCCbanco1[cc], valor, CANAL_MIDI_CC);  
+  }
+  
   return;
 }
 #endif  // endif COMUNICACION_SERIAL

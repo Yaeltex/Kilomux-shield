@@ -31,20 +31,23 @@
 #include <KM_Data.h>
 #include <Kilomux.h>
 #include <MIDI.h>
-#include <midi_Defs.h>
-#include <midi_Message.h>
-#include <midi_Namespace.h>
-#include <midi_Settings.h>
 
 void setup(); // Esto es para solucionar el bug que tiene Arduino al usar los #ifdef del preprocesador
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Descomentar la próxima línea si el compilador no encuentra MIDI
-MIDI_CREATE_DEFAULT_INSTANCE()
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//#define MIDI_COMMS
+#define MIDI_COMMS
 
-#define BLINK_INTERVAL 50
+#if defined(MIDI_COMMS)
+struct MySettings : public midi::DefaultSettings
+{
+    static const unsigned SysExMaxSize = 256; // Accept SysEx messages up to 1024 bytes long.
+};
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Create a 'MIDI' object using MySettings bound to Serial2.
+MIDI_CREATE_CUSTOM_INSTANCE(HardwareSerial, Serial, MIDI, MySettings);
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#endif
+
+#define BLINK_INTERVAL 200
 
 static const char * const modeLabels[] = {
     "Off"
@@ -59,16 +62,14 @@ static const char * const modeLabels[] = {
 #define NOISE_THRESHOLD             1                      // Ventana de ruido para las entradas analógicas. Si entrada < entrada+umbral o 
 #define NOISE_THRESHOLD_NRPN        3                      // Ventana de ruido para las entradas analógicas. Si entrada < entrada+umbral o 
 
-#define ANALOGO_UP     1
-#define ANALOGO_DOWN   0
+#define ANALOG_UP     1
+#define ANALOG_DOWN   0
 
 KMS::GlobalData gD = KMS::globalData();
 
 Kilomux KMShield;                                       // Objeto de la clase Kilomux
 bool digitalInputState[NUM_MUX*NUM_MUX_CHANNELS];   // Estado de los botones
 
-const byte *pMsg;
-   
 // Contadores, flags //////////////////////////////////////////////////////////////////////
 byte i, j, mux, channel;                       // Contadores para recorrer los multiplexores
 byte numBanks, numInputs, numOutputs;
@@ -86,26 +87,31 @@ void setup() {
   #else
   Serial.begin(115200);                  // Se inicializa la comunicación serial.
   #endif
-  
+
+  // Initialize Kilomux shield
+  KMShield.init();
+  // Initialize EEPROM handling library
   KMS::initialize();
 
-  pinMode(13, OUTPUT);
-
+  pinMode(LED_BUILTIN, OUTPUT);
+  Serial.print(gD.protocolVersion());
   if(gD.protocolVersion() == 1) 
-    packetSize = 200;
+    packetSize = 57;
     
   ResetConfig();
 }
 
 void loop(){
-  
+ 
   #if defined(MIDI_COMMS)
-  ReadMidi();
+  if(MIDI.read())
+    ReadMidi();
   #endif
 
   blinkLED();
-  
+
   if(!receivingSysEx) ReadInputs();
+
 }
 
 void ResetConfig(void){
@@ -120,8 +126,15 @@ void ResetConfig(void){
     Serial.print("Numero de salidas: "); Serial.println(numOutputs);
     #endif
   }
+  else{
+    #if !defined(MIDI_COMMS)
+    Serial.print("Datos en EEPROM no válidos");
+    #endif
+    while(1);
+  }
 
   KMS::setBank(0); 
+  configMode = 0;  
   
   // Setear todos las lecturas a 0
   for (mux = 0; mux < NUM_MUX; mux++) {                
@@ -148,57 +161,80 @@ void blinkLED(){
       if(!blinkCount){ flagBlink = 0; firstTime = true; }
     }
   }
+  return;
 }
 
 #if defined(MIDI_COMMS)
 // Lee el canal midi, note y velocity, y actualiza el estado de los leds.
 void ReadMidi(void) {
-  // COMENTAR PARA DEBUGGEAR CON SERIAL ///////////////////////////////////////////////////////////////////////
-  if (MIDI.read()) {         // ¿Llegó un mensaje MIDI?
-    if(MIDI.getType() == midi::SystemExclusive){
-      int sysexLength = 0;
-        
-      sysexLength = (int) MIDI.getSysExArrayLength();
-      pMsg = MIDI.getSysExArray();
-        
-      char sysexID[3]; 
-      sysexID[0] = (char) pMsg[1]; 
-      sysexID[1] = (char) pMsg[2]; 
-      sysexID[2] = (char) pMsg[3];
-        
-      char command = pMsg[4];
-        
-      if(sysexID[0] == 'Y' && sysexID[1] == 'T' && sysexID[2] == 'X'){
-          
-        if (command == 1){            // Enter config mode
-          flagBlink = 1;
-          blinkCount = 1;
-          configMode = 1;
-        }                             
-         
-        if(command == 3 && configMode){             // Save dump data
-          if (!receivingSysEx){
-            receivingSysEx = 1;
-            MIDI.sendNoteOn(127, receivingSysEx,1);
-          }
-          
-          KMS::io.write(packetSize*pMsg[5], pMsg+6, sysexLength-7);      // PACKET_SIZE is 200, pMsg has index in byte 6, total sysex packet has max. 207 bytes 
-                                                                          //                                                |F0, Y , T , X, command, index, F7|
-          MIDI.sendNoteOn(127, pMsg[5],1);                                                                          
-          flagBlink = 1;                                              
-          blinkCount = 2;
-          
-          if (sysexLength < 207){   // Last message?
-            receivingSysEx = 0;
-            MIDI.sendNoteOn(127, receivingSysEx,1);
-            flagBlink = 1;
-            blinkCount = 5;
-          }  
-        }  
+  switch(MIDI.getType()){
+    byte data1;
+    byte data2;
+    case midi::NoteOn:
+      data1 = MIDI.getData1();
+      data2 = MIDI.getData2();
+      if(data2 > 64){
+         KMShield.digitalWriteKm(data1, HIGH);
       }
-    } 
-  }
-  // FIN COMENTARIO ///////////////////////////////////////////////////////////////////////////////////////////
+      else{
+         KMShield.digitalWriteKm(data1, LOW);
+      }
+  break;
+  case midi::NoteOff:
+    data1 = MIDI.getData1();
+    data2 = MIDI.getData2();
+
+    if(!data2) KMShield.digitalWriteKm(data1, LOW);
+  break;
+  case midi::SystemExclusive:
+    int sysexLength = 0;
+    const byte *pMsg;
+      
+    sysexLength = (int) MIDI.getSysExArrayLength();
+    pMsg = MIDI.getSysExArray();
+
+    char sysexID[3]; 
+    sysexID[0] = (char) pMsg[1]; 
+    sysexID[1] = (char) pMsg[2]; 
+    sysexID[2] = (char) pMsg[3];
+      
+    char command = pMsg[4];
+
+    if(sysexID[0] == 'Y' && sysexID[1] == 'T' && sysexID[2] == 'X'){
+      configMode = 1;
+      
+      if (command == 1){            // Enter config mode
+        flagBlink = 1;
+        blinkCount = 1;
+        const byte configAckSysExMsg[5] = {'Y', 'T', 'X', 2, 0};
+        MIDI.sendSysEx(5, configAckSysExMsg, false);
+      }                             
+       
+      if(command == 3 && configMode){             // Save dump data
+        if (!receivingSysEx){
+          receivingSysEx = 1;
+          MIDI.sendNoteOn(0, receivingSysEx,1);
+        }
+        
+        KMS::io.write(packetSize*pMsg[5], pMsg+6, sysexLength-7);      // PACKET_SIZE is 200, pMsg has index in byte 6, total sysex packet has max. 207 bytes 
+                                                                        //                                                |F0, Y , T , X, command, index, F7|
+        MIDI.sendNoteOn(127, pMsg[5],1);                                                                          
+        flagBlink = 1;                                              
+        blinkCount = 1;
+        
+        if (sysexLength < packetSize+7){   // Last message?
+          receivingSysEx = 0;
+          MIDI.sendNoteOn(0, receivingSysEx,1);
+          flagBlink = 1;
+          blinkCount = 3;
+          const byte dumpOkMsg[5] = {'Y', 'T', 'X', 4, 0};
+          MIDI.sendSysEx(5, dumpOkMsg, false);
+          ResetConfig();
+        }  
+      }  
+    }
+    break;
+  } 
 }
 #endif
 
@@ -211,7 +247,7 @@ void ReadInputs() {
     KMS::InputNorm input = KMS::input(contadorInput);
     mux = contadorInput/NUM_MUX_CHANNELS;
     channel = contadorInput%NUM_MUX_CHANNELS;
-    Serial.println(contadorInput);
+   // Serial.println(contadorInput);
     if (input.mode() != KMS::M_OFF){
       if(input.analog() == KMS::T_ANALOG){
         if(input.mode() == KMS::M_NRPN)
@@ -222,7 +258,8 @@ void ReadInputs() {
                                                                                          
         if (!IsNoise(KMShield.muxReadings[mux][channel], KMShield.muxPrevReadings[mux][channel], 
                                            contadorInput, input.mode() == KMS::M_NRPN ? true : false)) {  // Si lo que leo no es ruido
-          InputChanged(input, KMShield.muxReadings[mux][channel]);                                          // Envío datos
+          // Enviar mensaje. Si es NRPN, multiplicar por 16 el valor para cubrir la resolución completa (16.384)                                                                                  
+          InputChanged(contadorInput, input, KMShield.muxReadings[mux][channel]);    
         }
         else{
           continue;                                                                          // Sigo con la próxima lectura
@@ -233,19 +270,21 @@ void ReadInputs() {
       else if(input.analog() == KMS::T_DIGITAL){
         // CÓDIGO PARA LECTURA DE ENTRADAS DIGITALES Y SHIFTERS
         KMShield.muxReadings[mux][channel] = KMShield.digitalReadKm(mux, channel, PULLUP);      // Leer entradas digitales 'KMShield.digitalReadKm(N_MUX, N_CANAL)'
+        
         //Serial.print("Mux: "); Serial.print(mux); Serial.print("  Channel: "); Serial.println(channel);
         if (KMShield.muxReadings[mux][channel] != KMShield.muxPrevReadings[mux][channel]) {     // Me interesa la lectura, si cambió el estado del botón,
           
           KMShield.muxPrevReadings[mux][channel] = KMShield.muxReadings[mux][channel];             // Almacenar lectura actual como anterior, para el próximo ciclo
           if (!KMShield.muxReadings[mux][channel]){
             digitalInputState[channel+mux*NUM_MUX_CHANNELS] = !digitalInputState[channel+mux*NUM_MUX_CHANNELS];   // MODO TOGGLE: Cambia de 0 a 1, o viceversa
-                                                                                                              // MODO NORMAL: Cambia de 0 a 1
-            InputChanged(input, KMShield.muxReadings[mux][channel]);
+                                                                                                                  // MODO NORMAL: Cambia de 0 a 1                                                                                                                  
+            InputChanged(contadorInput, input, KMShield.muxReadings[mux][channel]);
           }
           else if (KMShield.muxReadings[mux][channel]) {
             digitalInputState[channel+mux*NUM_MUX_CHANNELS] = 0;
-            InputChanged(input, KMShield.muxReadings[mux][channel]);
+            InputChanged(contadorInput, input, KMShield.muxReadings[mux][channel]);
           }
+          
         }
       }
     }
@@ -327,35 +366,62 @@ void ReadInputs() {
 }
 
 
-void InputChanged(const KMS::InputNorm &input, unsigned int value) {
+void InputChanged(int numInput, const KMS::InputNorm &input, unsigned int value) {
   byte currBank = KMS::bank();
+  byte mode = input.mode();
+  bool analog = input.analog();
+  byte param = input.param_fine() + numInputs*currBank;
+  byte channel = input.channel() + 1;
+  byte velocity = !value * NOTE_ON;
+  
   #if defined(MIDI_COMMS)
-  switch(input.mode()){
-    case KMS::M_NOTE:
-      MIDI.sendNoteOn(input.param_fine()+numInputs*currBank, value, input.channel());
-    break;
-    case KMS::M_CC:
-      MIDI.sendControlChange(input.param_fine()+numInputs*currBank, value, input.channel());
-    break;
-    case KMS::M_NRPN:
-      MIDI.sendControlChange( 101, input.param_coarse(), input.channel());
-      MIDI.sendControlChange( 100, input.param_fine(), input.channel());
-      MIDI.sendControlChange( 6, (value >> 7) & 0x7F, input.channel());
-      MIDI.sendControlChange( 38, (value & 0x7F), input.channel());
-    break;
-    case KMS::M_PROGRAM:
-      MIDI.sendProgramChange( value, input.channel());
-    break;
-    case KMS::M_SHIFTER:
-    break;
-    default:
-    break;
+  if(configMode){
+    if(analog){
+      MIDI.sendControlChange( numInput, value, 1);
+    }
+    else{
+      MIDI.sendNoteOn( numInput, velocity, 1); 
+    }
+  }
+  else{
+    switch(mode){
+      case (KMS::M_NOTE):
+        MIDI.sendNoteOn( param, velocity, channel);     // Channel is 1-16 to Arduino MIDI Lib, that's why + 1 is there
+      break;
+      case (KMS::M_CC):
+        MIDI.sendControlChange( param, value, channel);
+      break;
+      case KMS::M_NRPN:
+        MIDI.sendControlChange( 101, input.param_coarse(), channel);
+        MIDI.sendControlChange( 100, input.param_fine(), channel);
+        MIDI.sendControlChange( 6, (value >> 7) & 0x7F, channel);
+        MIDI.sendControlChange( 38, (value & 0x7F), channel);
+      break;
+      case KMS::M_PROGRAM:
+        if(value > 0){
+          MIDI.sendProgramChange( param, channel);
+        }
+      break;
+      case KMS::M_SHIFTER:
+        
+      break;
+      default:
+      break;
+    }
   }
   #else
-  Serial.print("Channel: "); Serial.print(input.channel()); Serial.print("\t");
-  Serial.print("Modo: "); Serial.print(MODE_LABEL(input.mode())); Serial.print("\t");
-  Serial.print("Parameter: "); Serial.print((input.param_coarse() << 7) | input.param_fine()); Serial.print("  Valor: "); Serial.println(value);
+    if(mode == KMS::M_NOTE){
+      value = !value * NOTE_ON;
+    }
+    else if(mode == KMS::M_NRPN){
+      value = map(value, 0, 1023, 0, 16383);
+    }
+    Serial.print("Channel: "); Serial.print(channel); Serial.print("\t");
+    Serial.print("Tipo: "); Serial.print(input.analog()?"Analog":"Digital"); Serial.print("\t");
+    Serial.print("Modo: "); Serial.print(MODE_LABEL(mode)); Serial.print("\t");
+    Serial.print("Parameter: "); Serial.print((input.param_coarse() << 7) | input.param_fine()); Serial.print("  Valor: "); Serial.println(value);
   #endif
+  
   return; 
 }
 
@@ -374,21 +440,21 @@ unsigned int IsNoise(unsigned int value, unsigned int prevValue, unsigned int in
   if (nrpn) noiseTh = NOISE_THRESHOLD_NRPN;
   else      noiseTh = NOISE_THRESHOLD;
                                             
-  if (upOrDown[input] == ANALOGO_UP){
+  if (upOrDown[input] == ANALOG_UP){
     if(value > prevValue){              // Si el valor está creciendo, y la nueva lectura es mayor a la anterior, 
        return 0;                        // no es ruido.
     }
     else if(value < prevValue - noiseTh){   // Si el valor está creciendo, y la nueva lectura menor a la anterior menos el UMBRAL
-      upOrDown[input] = ANALOGO_DOWN;                                     // se cambia el estado a DECRECIENDO y 
+      upOrDown[input] = ANALOG_DOWN;                                     // se cambia el estado a DECRECIENDO y 
       return 0;                                                               // no es ruido.
     }
   }
-  if (upOrDown[input] == ANALOGO_DOWN){                                   
+  if (upOrDown[input] == ANALOG_DOWN){                                   
     if(value < prevValue){  // Si el valor está decreciendo, y la nueva lectura es menor a la anterior,  
        return 0;                                        // no es ruido.
     }
     else if(value > prevValue + noiseTh){    // Si el valor está decreciendo, y la nueva lectura mayor a la anterior mas el UMBRAL
-      upOrDown[input] = ANALOGO_UP;                                       // se cambia el estado a CRECIENDO y 
+      upOrDown[input] = ANALOG_UP;                                       // se cambia el estado a CRECIENDO y 
       return 0;                                                               // no es ruido.
     }
   }

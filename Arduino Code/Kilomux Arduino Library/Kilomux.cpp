@@ -144,10 +144,8 @@ int Kilomux::digitalReadKm(int mux, int chan){
     }
     else return -1;     // Return ERROR
 
-    digitalWrite(_S0, (chan&1));
-    digitalWrite(_S1, (chan&3)>>1);
-    digitalWrite(_S2, (chan&7)>>2);
-    digitalWrite(_S3, (chan&15)>>3);
+	PORTD &= 0xC3;
+	PORTD |= chan<<2;
 
     switch (mux) {
         case MUX_A:
@@ -184,11 +182,9 @@ int Kilomux::digitalReadKm(int mux, int chan, int pullup){
     }
     else return -1;     // Return ERROR
 
-    digitalWrite(_S0, (chan&1));
-    digitalWrite(_S1, (chan&3)>>1);
-    digitalWrite(_S2, (chan&7)>>2);
-    digitalWrite(_S3, (chan&15)>>3);
-
+	PORTD &= 0xC3;
+	PORTD |= chan<<2;
+	
     switch (mux) {
         case MUX_A:
             pinMode(MUX_A_PIN, INPUT);                // These two lines set the analog input pullup resistor
@@ -228,10 +224,8 @@ int Kilomux::analogReadKm(int mux, int chan){
     }
     else return -1;       // Return ERROR
 
-    digitalWrite(_S0, (chan&1));
-    digitalWrite(_S1, (chan&3)>>1);
-    digitalWrite(_S2, (chan&7)>>2);
-    digitalWrite(_S3, (chan&15)>>3);
+	PORTD &= 0xC3;
+	PORTD |= chan<<2;
 
     switch (mux) {
         case MUX_A:
@@ -329,5 +323,5 @@ unsigned int Kilomux::isNoise(unsigned int newValue, unsigned int prevValue, boo
       return 0;                                   // it's not noise.
     }
   }
-  return 1;         // Si todo lo anterior no se cumple, es ruido.
+  return 1;         // If arrived here, the new reading isn't noise.
 }

@@ -65,7 +65,7 @@ void setup(); // Esto es para solucionar el bug que tiene Arduino al usar los #i
 // DEFINES PARA SENSOR ULTRASONICO                                                                                                    
   // AJUSTABLES
   #define CC_ULTRASONIDO       100
-  #define MAX_DISTANCIA        45        // Maxima distancia que se desea medir (en centimetros). El sensor mide hasta 400-500cm.
+  #define MAX_DISTANCIA        100        // Maxima distancia que se desea medir (en centimetros). El sensor mide hasta 400-500cm.
   #define MIN_DISTANCIA        2         // Minima distancia que se desea medir (en centimetros). El sensor mide desde 1cm.
   #define DELAY_ULTRAS         15        // Delay entre dos pings del sensor (en milisegundos). Mantener arriba de 10.
   #define UMBRAL_DIFERENCIA_US 80        // 
@@ -140,22 +140,22 @@ int LeerUltrasonico(void){
   static bool estadoBotonUSAnt = 1;                // Inicializo inactivo (entrada activa baja)
   static bool estadoBotonUS = 1;                   // Inicializo inactivo (entrada activa baja)
   static bool estadoLed = 0;                       // Inicializo inactivo (salida activa alta)
-  static bool sensorActivado = 0;                  // Inicializo inactivo (variable interna)
+  static bool sensorActivado = 1;                  // Inicializo inactivo (variable interna)
   static unsigned int indiceFiltro = 0;            // Indice que recorre los valores del filtro de suavizado
     
   int microSeg = 0;                                // Contador de microsegundos para el ping del sensor.
   
-  // Este codigo verifica si se presionó el botón y activa o desactiva el sensor cada vez que se presiona
-  estadoBotonUS = digitalRead(PIN_BOTON_ACT_US);
-  if(estadoBotonUS == LOW && estadoBotonUSAnt == HIGH){    // Si el botón previamente estaba en estado alto, y ahora esta en estado bajo, quiere decir que paso de estar no presionado a presionado (activo bajo)
-    estadoBotonUSAnt = LOW;                                // Actualizo el estado previo
-    sensorActivado = !sensorActivado;                      // Activo o desactivo el sensor
-    estadoLed = !estadoLed;                                // Cambio el estado del LED
-    digitalWrite(PIN_LED_ACT_US, estadoLed);               // Y actualizo la salida
-  }
-  else if(estadoBotonUS == HIGH && estadoBotonUSAnt == LOW){  // Si el botón previamente estaba en estado bajo, y ahora esta en estado alto, quiere decir que paso de estar presionado a no presionado 
-    estadoBotonUSAnt = HIGH;                                  // Actualizo el estado previo
-  } 
+//  // Este codigo verifica si se presionó el botón y activa o desactiva el sensor cada vez que se presiona
+//  estadoBotonUS = digitalRead(PIN_BOTON_ACT_US);
+//  if(estadoBotonUS == LOW && estadoBotonUSAnt == HIGH){    // Si el botón previamente estaba en estado alto, y ahora esta en estado bajo, quiere decir que paso de estar no presionado a presionado (activo bajo)
+//    estadoBotonUSAnt = LOW;                                // Actualizo el estado previo
+//    sensorActivado = !sensorActivado;                      // Activo o desactivo el sensor
+//    estadoLed = !estadoLed;                                // Cambio el estado del LED
+//    digitalWrite(PIN_LED_ACT_US, estadoLed);               // Y actualizo la salida
+//  }
+//  else if(estadoBotonUS == HIGH && estadoBotonUSAnt == LOW){  // Si el botón previamente estaba en estado bajo, y ahora esta en estado alto, quiere decir que paso de estar presionado a no presionado 
+//    estadoBotonUSAnt = HIGH;                                  // Actualizo el estado previo
+//  } 
   
   if(sensorActivado){                                       // Si el sensor está activado
     if (millis()-antMillisUltraSonico > DELAY_ULTRAS){      // y transcurrió el delay minimo entre lecturas

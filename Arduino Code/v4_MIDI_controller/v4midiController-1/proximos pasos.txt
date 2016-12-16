@@ -1,5 +1,23 @@
-Proximo paso
+Proximo paso v4
 
-- Descubrir porque no andan las entradas en general (digitales siempre en 0, algunas analogicas no andan)
 - Separar en archivos distintos
 - Ojo con los modos, se agregó program change en el lugar que ahora ocupa el modo shifter
+- Chequear lectura de datos del sensor ultrasónico
+- chequear valores de nrpn
+
+Proximos pasos Kilomux Lib
+
+- Remapear entradas de 0 a 31. Actualizar documentación y ejemplos.
+
+
+Proximos pasos Canalis
+
+- Agregar versión al About
+- Agregar botón de "Cancelar stream" mientras bufferea
+- Grabar el setting inicial de buffer en las default shared pref, y hacer que aparezca en las preferencias
+
+Proximos pasos Kilowhat
+
+- Tabs para entradas y salidas
+- CTRL y SHIFT para selección multiple de parámetros
+- Una fila arriba de las entradas y las salidas que copie los parámetros y que al ser seleccionada se aplique sobre todas las entradas y salidas activas
