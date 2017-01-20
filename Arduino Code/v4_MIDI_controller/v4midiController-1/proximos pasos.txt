@@ -15,9 +15,3 @@ Proximos pasos Canalis
 - Agregar versión al About
 - Agregar botón de "Cancelar stream" mientras bufferea
 - Grabar el setting inicial de buffer en las default shared pref, y hacer que aparezca en las preferencias
-
-Proximos pasos Kilowhat
-
-- Tabs para entradas y salidas
-- CTRL y SHIFT para selección multiple de parámetros
-- Una fila arriba de las entradas y las salidas que copie los parámetros y que al ser seleccionada se aplique sobre todas las entradas y salidas activas
