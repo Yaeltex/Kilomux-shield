@@ -1,7 +1,7 @@
 Proximo paso v4
 
+- Agregar código para LEDs por medio de configuración en EEPROM
 - Separar en archivos distintos
-- Ojo con los modos, se agregó program change en el lugar que ahora ocupa el modo shifter
 - Chequear lectura de datos del sensor ultrasónico
 - chequear valores de nrpn
 
