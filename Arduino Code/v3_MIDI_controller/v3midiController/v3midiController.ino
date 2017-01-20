@@ -55,15 +55,15 @@ void setup(); // Esto es para solucionar el bug que tiene Arduino al usar los #i
  
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Descomentar la próxima línea si el compilador no encuentra MIDI
-// MIDI_CREATE_DEFAULT_INSTANCE()
+ MIDI_CREATE_DEFAULT_INSTANCE()
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Dejar descomentada sólo una de las tres lineas siguientes para definir el tipo de comunicación
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//#define COMUNICACION_MIDI          // Para enviar mensajes a través de HIDUINO o por hardware
+#define COMUNICACION_MIDI          // Para enviar mensajes a través de HIDUINO o por hardware
 //#define HAIRLESS_MIDI            // Para enviar mensajes midi por USB hacia Hairless MIDI
-#define COMUNICACION_SERIAL      // Para debuggear con el Monitor Serial
+//#define COMUNICACION_SERIAL      // Para debuggear con el Monitor Serial
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -112,8 +112,8 @@ void setup(); // Esto es para solucionar el bug que tiene Arduino al usar los #i
 // Tipo de entradas
 bool tipoEntrada[NUM_MUX][NUM_MUX_CHANNELS] = { {ANALOGICA,      // MUX A - Entrada 1
                                                  ANALOGICA,      // MUX A - Entrada 2
-                                                 DIGITAL,      // MUX A - Entrada 3                                          
-                                                 DIGITAL,      // MUX A - Entrada 4
+                                                 ANALOGICA,      // MUX A - Entrada 3                                          
+                                                 ANALOGICA,      // MUX A - Entrada 4
                                                  DIGITAL,      // MUX A - Entrada 5
                                                  DIGITAL,      // MUX A - Entrada 6
                                                  DIGITAL,      // MUX A - Entrada 7
@@ -148,22 +148,22 @@ bool tipoEntrada[NUM_MUX][NUM_MUX_CHANNELS] = { {ANALOGICA,      // MUX A - Entr
 #define DESACTIVADA       0
 #define ACTIVADA          1
 
-bool entradaActivada[NUM_MUX][NUM_MUX_CHANNELS] = {{DESACTIVADA,      // MUX A - Entrada 1
-                                                    DESACTIVADA,      // MUX A - Entrada 2
-                                                    DESACTIVADA,      // MUX A - Entrada 3                                          
-                                                    DESACTIVADA,      // MUX A - Entrada 4
+bool entradaActivada[NUM_MUX][NUM_MUX_CHANNELS] = {{ACTIVADA,      // MUX A - Entrada 1
+                                                    ACTIVADA,      // MUX A - Entrada 2
+                                                    ACTIVADA,      // MUX A - Entrada 3                                          
+                                                    ACTIVADA,      // MUX A - Entrada 4
                                                     DESACTIVADA,      // MUX A - Entrada 5
                                                     DESACTIVADA,      // MUX A - Entrada 6
                                                     DESACTIVADA,      // MUX A - Entrada 7
                                                     DESACTIVADA,      // MUX A - Entrada 8
-                                                    DESACTIVADA,      // MUX A - Entrada 9
-                                                    DESACTIVADA,      // MUX A - Entrada 10
-                                                    DESACTIVADA,      // MUX A - Entrada 11                                                   
-                                                    DESACTIVADA,      // MUX A - Entrada 12
-                                                    DESACTIVADA,      // MUX A - Entrada 13
-                                                    DESACTIVADA,      // MUX A - Entrada 14
-                                                    DESACTIVADA,      // MUX A - Entrada 15
-                                                    DESACTIVADA},     // MUX A - Entrada 16
+                                                    ACTIVADA,      // MUX A - Entrada 9
+                                                    ACTIVADA,      // MUX A - Entrada 10
+                                                    ACTIVADA,      // MUX A - Entrada 11                                                   
+                                                    ACTIVADA,      // MUX A - Entrada 12
+                                                    ACTIVADA,      // MUX A - Entrada 13
+                                                    ACTIVADA,      // MUX A - Entrada 14
+                                                    ACTIVADA,      // MUX A - Entrada 15
+                                                    ACTIVADA},     // MUX A - Entrada 16
                                                    {ACTIVADA,      // MUX B - Entrada 1
                                                     ACTIVADA,      // MUX B - Entrada 2
                                                     ACTIVADA,      // MUX B - Entrada 3                                       
@@ -968,13 +968,7 @@ void EnviarNoteSerial(unsigned int nota, unsigned int veloc) {
 #if defined(COMUNICACION_MIDI)|defined(HAIRLESS_MIDI)
 // Remapea las entradas analógicas y las envía por MIDI
 void EnviarControlChangeMidi(unsigned int valor, unsigned int cc) {
-  if(bancoActivo == 0){
-    MIDI.sendControlChange(mapeoCC[cc], valor, CANAL_MIDI_CC);  
-  }
-  else if (bancoActivo == 1){
-    MIDI.sendControlChange(mapeoCCbanco1[cc], valor, CANAL_MIDI_CC);  
-  }
-  
+  MIDI.sendControlChange(mapeoCC[cc]+SALTO_SHIFTER*bancoActivo, valor, CANAL_MIDI_CC);
   return;
 }
 #endif  // endif COMUNICACION_SERIAL
@@ -985,6 +979,3 @@ void EnviarControlChangeSerial(unsigned int valor, unsigned int nota) {
   return; 
 }
 #endif  // endif COMUNICACION_SERIAL
-
-
-
