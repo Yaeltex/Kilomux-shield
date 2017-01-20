@@ -39,10 +39,10 @@ void setup(); // Esto es para solucionar el bug que tiene Arduino al usar los #i
 #if defined(MIDI_COMMS)
 struct MySettings : public midi::DefaultSettings
 {
-    static const unsigned SysExMaxSize = 256; // Accept SysEx messages up to 1024 bytes long.
+    static const unsigned SysExMaxSize = 64; // Accept SysEx messages up to 1024 bytes long.
 };
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Create a 'MIDI' object using MySettings bound to Serial2.
+// Create a 'MIDI' object using MySettings bound to Serial.
 MIDI_CREATE_CUSTOM_INSTANCE(HardwareSerial, Serial, MIDI, MySettings);
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #endif
@@ -54,6 +54,7 @@ static const char * const modeLabels[] = {
   , "Note"
   , "CC"
   , "NRPN"
+  , "Program Change"
   , "Shifter"
 };
 #define MODE_LABEL(m)   ((m) <= KMS::M_SHIFTER ? modeLabels[m] : "???")
@@ -71,9 +72,10 @@ Kilomux KMShield;                                       // Objeto de la clase Ki
 bool digitalInputState[NUM_MUX*NUM_MUX_CHANNELS];   // Estado de los botones
 
 // Contadores, flags //////////////////////////////////////////////////////////////////////
-byte i, j, mux, channel;                       // Contadores para recorrer los multiplexores
+byte mux, channel;                       // Contadores para recorrer los multiplexores
 byte numBanks, numInputs, numOutputs;
 bool ledMode;
+bool firstBoot = false;
 bool flagBlink = 0, configMode = 0, receivingSysEx = 0;                         
 unsigned long millisPrevLED = 0;               // Variable para guardar ms
 static byte blinkCount = 0;
@@ -95,9 +97,15 @@ void setup() {
 
   pinMode(LED_BUILTIN, OUTPUT);
   Serial.print(gD.protocolVersion());
-  if(gD.protocolVersion() == 1) 
+  
+  if(gD.protocolVersion() == 1 && !firstBoot) 
     packetSize = 57;
+  else{
+    firstBoot = true;
+    packetSize = 57;
+  }
     
+ 
   ResetConfig();
 }
 
@@ -108,10 +116,11 @@ void loop(){
     ReadMidi();
   #endif
 
-  blinkLED();
+  if(!firstBoot){
+    blinkLED();
 
-  if(!receivingSysEx) ReadInputs();
-
+    if(!receivingSysEx) ReadInputs();  
+  }
 }
 
 void ResetConfig(void){
@@ -130,7 +139,8 @@ void ResetConfig(void){
     #if !defined(MIDI_COMMS)
     Serial.print("Datos en EEPROM no válidos");
     #endif
-    while(1);
+    if(!firstBoot)
+      while(1);
   }
 
   KMS::setBank(0); 
@@ -173,6 +183,7 @@ void ReadMidi(void) {
     case midi::NoteOn:
       data1 = MIDI.getData1();
       data2 = MIDI.getData2();
+      
       if(data2 > 64){
          KMShield.digitalWriteKm(data1, HIGH);
       }
@@ -213,18 +224,22 @@ void ReadMidi(void) {
       if(command == 3 && configMode){             // Save dump data
         if (!receivingSysEx){
           receivingSysEx = 1;
-          MIDI.sendNoteOn(0, receivingSysEx,1);
+          // For debugging purpose
+          //MIDI.sendNoteOn(0, receivingSysEx,1);
         }
         
-        KMS::io.write(packetSize*pMsg[5], pMsg+6, sysexLength-7);      // PACKET_SIZE is 200, pMsg has index in byte 6, total sysex packet has max. 207 bytes 
-                                                                        //                                                |F0, Y , T , X, command, index, F7|
-        MIDI.sendNoteOn(127, pMsg[5],1);                                                                          
+        KMS::io.write(packetSize*pMsg[5], pMsg+6, sysexLength-7);      // pMsg has index in byte 6, total sysex packet has max.
+                                                                       // |F0, 'Y' , 'T' , 'X', command, index, F7|
+        // For debugging purpose
+        //MIDI.sendNoteOn(127, pMsg[5],1);                                                                          
+        
         flagBlink = 1;                                              
         blinkCount = 1;
         
         if (sysexLength < packetSize+7){   // Last message?
           receivingSysEx = 0;
-          MIDI.sendNoteOn(0, receivingSysEx,1);
+          // For debugging purpose
+          //MIDI.sendNoteOn(0, receivingSysEx,1);
           flagBlink = 1;
           blinkCount = 3;
           const byte dumpOkMsg[5] = {'Y', 'T', 'X', 4, 0};
@@ -249,25 +264,42 @@ void ReadInputs() {
     channel = contadorInput%NUM_MUX_CHANNELS;
    // Serial.println(contadorInput);
     if (input.mode() != KMS::M_OFF){
-      if(input.analog() == KMS::T_ANALOG){
+      if(input.mode() == KMS::M_SHIFTER){
+        // CÓDIGO PARA LECTURA DE ENTRADAS DIGITALES Y SHIFTERS
+        KMShield.muxReadings[mux][channel] = KMShield.digitalReadKm(mux, channel, PULLUP);      // Leer entradas digitales 'KMShield.digitalReadKm(N_MUX, N_CANAL)'
+        //Serial.print("Mux: "); Serial.print(mux); Serial.print("  Channel: "); Serial.println(channel);
+        if (KMShield.muxReadings[mux][channel] != KMShield.muxPrevReadings[mux][channel]) {     // Me interesa la lectura, si cambió el estado del botón,
+          KMShield.muxPrevReadings[mux][channel] = KMShield.muxReadings[mux][channel];             // Almacenar lectura actual como anterior, para el próximo ciclo
+          byte currBank = KMS::bank();
+          byte param = input.param_fine();
+          byte value = KMShield.muxReadings[mux][channel];
+          if(!value && currBank != param && param <= KMS::realBanks()){
+            KMS::setBank(param); 
+            #if !defined(MIDI_COMMS)
+              Serial.print("Bank: "); Serial.println(param);
+            #endif
+          }
+        }
+      }
+      else if(input.AD() == KMS::T_ANALOG){
         if(input.mode() == KMS::M_NRPN)
-          KMShield.muxReadings[mux][channel] = KMShield.analogReadKm(mux, channel);          // Si es NRPN leer entradas analógicas 'KMShield.analogReadKm(N_MUX,N_CANAL)'
+          KMShield.muxReadings[mux][channel] = KMShield.analogReadKm(mux, channel);           // Si es NRPN leer entradas analógicas 'KMShield.analogReadKm(N_MUX,N_CANAL)'
         else                                                                                 
-          KMShield.muxReadings[mux][channel] = KMShield.analogReadKm(mux, channel) >> 3;     // Si no es NRPN, leer entradas analógicas 'KMShield.analogReadKm(N_MUX,N_CANAL)'
-                                                                                         // El valor leido va de 0-1023. Convertimos a 0-127, dividiendo por 8.
+          KMShield.muxReadings[mux][channel] = KMShield.analogReadKm(mux, channel) >> 3;      // Si no es NRPN, leer entradas analógicas 'KMShield.analogReadKm(N_MUX,N_CANAL)'
+                                                                                              // El valor leido va de 0-1023. Convertimos a 0-127, dividiendo por 8.
                                                                                          
         if (!IsNoise(KMShield.muxReadings[mux][channel], KMShield.muxPrevReadings[mux][channel], 
                                            contadorInput, input.mode() == KMS::M_NRPN ? true : false)) {  // Si lo que leo no es ruido
-          // Enviar mensaje. Si es NRPN, multiplicar por 16 el valor para cubrir la resolución completa (16.384)                                                                                  
+          // Enviar mensaje.                                                                                 
           InputChanged(contadorInput, input, KMShield.muxReadings[mux][channel]);    
         }
         else{
           continue;                                                                          // Sigo con la próxima lectura
         }
-        KMShield.muxPrevReadings[mux][channel] = KMShield.muxReadings[mux][channel];             // Almacenar lectura actual como anterior, para el próximo ciclo
+        KMShield.muxPrevReadings[mux][channel] = KMShield.muxReadings[mux][channel];         // Almacenar lectura actual como anterior, para el próximo ciclo
       }
       
-      else if(input.analog() == KMS::T_DIGITAL){
+      else if(input.AD() == KMS::T_DIGITAL){
         // CÓDIGO PARA LECTURA DE ENTRADAS DIGITALES Y SHIFTERS
         KMShield.muxReadings[mux][channel] = KMShield.digitalReadKm(mux, channel, PULLUP);      // Leer entradas digitales 'KMShield.digitalReadKm(N_MUX, N_CANAL)'
         
@@ -284,7 +316,6 @@ void ReadInputs() {
             digitalInputState[channel+mux*NUM_MUX_CHANNELS] = 0;
             InputChanged(contadorInput, input, KMShield.muxReadings[mux][channel]);
           }
-          
         }
       }
     }
@@ -369,24 +400,22 @@ void ReadInputs() {
 void InputChanged(int numInput, const KMS::InputNorm &input, unsigned int value) {
   byte currBank = KMS::bank();
   byte mode = input.mode();
-  bool analog = input.analog();
-  byte param = input.param_fine() + numInputs*currBank;
-  byte channel = input.channel() + 1;
+  bool analog = input.AD();       // 1 is analog
+  byte param = input.param_fine();
+  byte channel = input.channel();
   byte velocity = !value * NOTE_ON;
   
   #if defined(MIDI_COMMS)
   if(configMode){
-    if(analog){
+    if(analog)
       MIDI.sendControlChange( numInput, value, 1);
-    }
-    else{
+    else
       MIDI.sendNoteOn( numInput, velocity, 1); 
-    }
   }
   else{
     switch(mode){
       case (KMS::M_NOTE):
-        MIDI.sendNoteOn( param, velocity, channel);     // Channel is 1-16 to Arduino MIDI Lib, that's why + 1 is there
+        MIDI.sendNoteOn( param, analog ? value : velocity, channel);     // Channel is 1-16 to Arduino MIDI Lib, that's why + 1 is there
       break;
       case (KMS::M_CC):
         MIDI.sendControlChange( param, value, channel);
@@ -402,22 +431,25 @@ void InputChanged(int numInput, const KMS::InputNorm &input, unsigned int value)
           MIDI.sendProgramChange( param, channel);
         }
       break;
-      case KMS::M_SHIFTER:
-        
-      break;
+//      case KMS::M_SHIFTER:
+//        MIDI.sendNoteOn(param, value ,KMS::bank()+1);
+//        if(!value && currBank != param && param <= KMS::realBanks()){
+//          KMS::setBank(param); 
+//        }
+//      break;
       default:
       break;
     }
   }
   #else
     if(mode == KMS::M_NOTE){
-      value = !value * NOTE_ON;
+      if(!analog) value = !value * NOTE_ON;
     }
     else if(mode == KMS::M_NRPN){
       value = map(value, 0, 1023, 0, 16383);
     }
     Serial.print("Channel: "); Serial.print(channel); Serial.print("\t");
-    Serial.print("Tipo: "); Serial.print(input.analog()?"Analog":"Digital"); Serial.print("\t");
+    Serial.print("Tipo: "); Serial.print(input.AD()?"Analog":"Digital"); Serial.print("\t");
     Serial.print("Modo: "); Serial.print(MODE_LABEL(mode)); Serial.print("\t");
     Serial.print("Parameter: "); Serial.print((input.param_coarse() << 7) | input.param_fine()); Serial.print("  Valor: "); Serial.println(value);
   #endif
