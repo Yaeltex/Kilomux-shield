@@ -1,9 +1,18 @@
 Proximo paso v4
 
+Bugs
+- Filtrando ruido antes de mapear, se repiten valores cuando el rango es distinto de 0-127
+- Configurando 1 o 2 entradas, hay ruido (NOTE ON 42)
+
+Mejoras
+- implementar toggle/moment
 - Agregar código para LEDs por medio de configuración en EEPROM
 - Separar en archivos distintos
 - Chequear lectura de datos del sensor ultrasónico
 - chequear valores de nrpn
+
+
+Proximos pasos Kilowhat
 
 Proximos pasos Kilomux Lib
 

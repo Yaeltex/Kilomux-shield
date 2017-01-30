@@ -34,7 +34,7 @@
 
 void setup(); // Esto es para solucionar el bug que tiene Arduino al usar los #ifdef del preprocesador
 
-#define MIDI_COMMS
+//#define MIDI_COMMS
 
 #if defined(MIDI_COMMS)
 struct MySettings : public midi::DefaultSettings
@@ -47,7 +47,7 @@ MIDI_CREATE_CUSTOM_INSTANCE(HardwareSerial, Serial, MIDI, MySettings);
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #endif
 
-#define BLINK_INTERVAL 200
+#define BLINK_INTERVAL 100
 
 static const char * const modeLabels[] = {
     "Off"
@@ -61,7 +61,7 @@ static const char * const modeLabels[] = {
 
 // AJUSTABLE - Si hay ruido que varía entre valores (+- 1, +- 2, +- 3...) colocar el umbral en (1, 2, 3...)
 #define NOISE_THRESHOLD             1                      // Ventana de ruido para las entradas analógicas. Si entrada < entrada+umbral o 
-#define NOISE_THRESHOLD_NRPN        3                      // Ventana de ruido para las entradas analógicas. Si entrada < entrada+umbral o 
+#define NOISE_THRESHOLD_NRPN        60                      // Ventana de ruido para las entradas analógicas. Si entrada < entrada+umbral o 
 
 #define ANALOG_UP     1
 #define ANALOG_DOWN   0
@@ -74,11 +74,12 @@ bool digitalInputState[NUM_MUX*NUM_MUX_CHANNELS];   // Estado de los botones
 // Contadores, flags //////////////////////////////////////////////////////////////////////
 byte mux, channel;                       // Contadores para recorrer los multiplexores
 byte numBanks, numInputs, numOutputs;
+byte prevBank, currBank = 0;
 bool ledMode;
-bool firstBoot = false;
-bool flagBlink = 0, configMode = 0, receivingSysEx = 0;                         
+bool firstBoot = false, firstRead = true;
+bool flagBlinkStatus = 0, configMode = 0, receivingSysEx = 0;                         
 unsigned long millisPrevLED = 0;               // Variable para guardar ms
-static byte blinkCount = 0;
+static byte blinkCountStatus = 0;
 unsigned int packetSize;
 ///////////////////////////////////////////////////////////////////////////////////////////
 
@@ -96,16 +97,18 @@ void setup() {
   KMS::initialize();
 
   pinMode(LED_BUILTIN, OUTPUT);
-  Serial.print(gD.protocolVersion());
+
+  #if !defined(MIDI_COMMS)
+  Serial.print("Kilowhat protocol: v");
+  Serial.println(gD.protocolVersion());
+  #endif
   
   if(gD.protocolVersion() == 1 && !firstBoot) 
     packetSize = 57;
   else{
     firstBoot = true;
     packetSize = 57;
-  }
-    
- 
+  } 
   ResetConfig();
 }
 
@@ -117,7 +120,7 @@ void loop(){
   #endif
 
   if(!firstBoot){
-    blinkLED();
+    blinkStatusLED();
 
     if(!receivingSysEx) ReadInputs();  
   }
@@ -145,8 +148,9 @@ void ResetConfig(void){
 
   KMS::setBank(0); 
   configMode = 0;  
+  firstRead = true;
   
-  // Setear todos las lecturas a 0
+  // Inicializar lecturas
   for (mux = 0; mux < NUM_MUX; mux++) {                
     for (channel = 0; channel < NUM_MUX_CHANNELS; channel++) {
       KMShield.muxReadings[mux][channel] = KMShield.analogReadKm(mux, channel);
@@ -156,19 +160,19 @@ void ResetConfig(void){
   }
 }
 
-void blinkLED(){
+void blinkStatusLED(){
   static bool lastLEDState = LOW;
   static unsigned long millisPrev = 0;
   static bool firstTime = true;
   
-  if(flagBlink && blinkCount){
+  if(flagBlinkStatus && blinkCountStatus){
     if (firstTime){ firstTime = false; millisPrev = millis(); }
     if(millis()-millisPrev > BLINK_INTERVAL){
       millisPrev = millis();
       digitalWrite(13, !lastLEDState);
       lastLEDState = !lastLEDState;
-      if(lastLEDState == LOW) blinkCount--;
-      if(!blinkCount){ flagBlink = 0; firstTime = true; }
+      if(lastLEDState == LOW) blinkCountStatus--;
+      if(!blinkCountStatus){ flagBlinkStatus = 0; firstTime = true; }
     }
   }
   return;
@@ -184,12 +188,10 @@ void ReadMidi(void) {
       data1 = MIDI.getData1();
       data2 = MIDI.getData2();
       
-      if(data2 > 64){
+      if(data2 > 64)
          KMShield.digitalWriteKm(data1, HIGH);
-      }
-      else{
+      else
          KMShield.digitalWriteKm(data1, LOW);
-      }
   break;
   case midi::NoteOff:
     data1 = MIDI.getData1();
@@ -215,8 +217,8 @@ void ReadMidi(void) {
       configMode = 1;
       
       if (command == 1){            // Enter config mode
-        flagBlink = 1;
-        blinkCount = 1;
+        flagBlinkStatus = 1;
+        blinkCountStatus = 1;
         const byte configAckSysExMsg[5] = {'Y', 'T', 'X', 2, 0};
         MIDI.sendSysEx(5, configAckSysExMsg, false);
       }                             
@@ -233,15 +235,15 @@ void ReadMidi(void) {
         // For debugging purpose
         //MIDI.sendNoteOn(127, pMsg[5],1);                                                                          
         
-        flagBlink = 1;                                              
-        blinkCount = 1;
+        flagBlinkStatus = 1;                                              
+        blinkCountStatus = 1;
         
         if (sysexLength < packetSize+7){   // Last message?
           receivingSysEx = 0;
           // For debugging purpose
           //MIDI.sendNoteOn(0, receivingSysEx,1);
-          flagBlink = 1;
-          blinkCount = 3;
+          flagBlinkStatus = 1;
+          blinkCountStatus = 3;
           const byte dumpOkMsg[5] = {'Y', 'T', 'X', 4, 0};
           MIDI.sendSysEx(5, dumpOkMsg, false);
           ResetConfig();
@@ -258,63 +260,102 @@ void ReadMidi(void) {
  * Compara con los valores previos, almacenados en 'lecturasPrev', y si cambian, y llama a las funciones que envían datos.
  */
 void ReadInputs() {
-  for(int contadorInput = 0; contadorInput < numInputs; contadorInput++){
+  static unsigned int currAnalogValue = 0, prevAnalogValue = 0;
+  for(int contadorInput = 0; contadorInput < 3; contadorInput++){
     KMS::InputNorm input = KMS::input(contadorInput);
-    mux = contadorInput/NUM_MUX_CHANNELS;
-    channel = contadorInput%NUM_MUX_CHANNELS;
-   // Serial.println(contadorInput);
+    mux = contadorInput < 16 ? MUX_A : MUX_B;           // MUX 0 or 1
+    channel = contadorInput%NUM_MUX_CHANNELS;           // CHANNEL 0-15
+    
     if (input.mode() != KMS::M_OFF){
       if(input.mode() == KMS::M_SHIFTER){
-        // CÓDIGO PARA LECTURA DE ENTRADAS DIGITALES Y SHIFTERS
+        // CÓDIGO PARA LECTURA DE SHIFTERS
         KMShield.muxReadings[mux][channel] = KMShield.digitalReadKm(mux, channel, PULLUP);      // Leer entradas digitales 'KMShield.digitalReadKm(N_MUX, N_CANAL)'
         //Serial.print("Mux: "); Serial.print(mux); Serial.print("  Channel: "); Serial.println(channel);
         if (KMShield.muxReadings[mux][channel] != KMShield.muxPrevReadings[mux][channel]) {     // Me interesa la lectura, si cambió el estado del botón,
-          KMShield.muxPrevReadings[mux][channel] = KMShield.muxReadings[mux][channel];             // Almacenar lectura actual como anterior, para el próximo ciclo
-          byte currBank = KMS::bank();
+          KMShield.muxPrevReadings[mux][channel] = KMShield.muxReadings[mux][channel];          // Almacenar lectura actual como anterior, para el próximo ciclo
+          if (firstRead) continue;                                                              // Esto es  para evitar que al resetear se cambie el banco
           byte param = input.param_fine();
-          byte value = KMShield.muxReadings[mux][channel];
-          if(!value && currBank != param && param <= KMS::realBanks()){
+          byte buttonState = !KMShield.muxReadings[mux][channel];
+          static bool isShifterToggle;
+          static bool bankButtonPressed;
+          currBank = KMS::bank();
+          if(buttonState && currBank != param && param <= KMS::realBanks() && !bankButtonPressed){
+            isShifterToggle = input.toggle();
+            prevBank = currBank;
             KMS::setBank(param); 
+            currBank = param;
+            bankButtonPressed = true;
             #if !defined(MIDI_COMMS)
-              Serial.print("Bank: "); Serial.println(param);
+              Serial.println("");
+              Serial.print("Current Bank: "); Serial.print(KMS::bank()); 
+              Serial.print("\tPrevious bank: "); Serial.print(prevBank); 
+              Serial.print("\tBank button mode: "); Serial.println(isShifterToggle); Serial.println("");
             #endif
+          }
+          else if(!buttonState && !isShifterToggle && param == currBank && bankButtonPressed){    // button not activated and shifter is momentary
+            KMS::setBank(prevBank);                             // reset bank to previous
+            prevBank = param;
+            currBank = KMS::bank();
+            bankButtonPressed = false;
+            #if !defined(MIDI_COMMS)
+              Serial.println("");
+              Serial.print("Bank: "); Serial.print(KMS::bank());
+              Serial.print("\tPrevious bank: "); Serial.print(prevBank); 
+              Serial.print("\tBank button mode: "); Serial.println(isShifterToggle); Serial.println("");
+            #endif
+          }
+          else if (!buttonState && isShifterToggle && param == currBank && bankButtonPressed){
+            bankButtonPressed = false;
           }
         }
       }
       else if(input.AD() == KMS::T_ANALOG){
         if(input.mode() == KMS::M_NRPN)
-          KMShield.muxReadings[mux][channel] = KMShield.analogReadKm(mux, channel);           // Si es NRPN leer entradas analógicas 'KMShield.analogReadKm(N_MUX,N_CANAL)'
+          currAnalogValue = KMShield.analogReadKm(mux, channel);           // Si es NRPN leer entradas analógicas 'KMShield.analogReadKm(N_MUX,N_CANAL)'
         else                                                                                 
-          KMShield.muxReadings[mux][channel] = KMShield.analogReadKm(mux, channel) >> 3;      // Si no es NRPN, leer entradas analógicas 'KMShield.analogReadKm(N_MUX,N_CANAL)'
+          currAnalogValue = KMShield.analogReadKm(mux, channel) >> 3;      // Si no es NRPN, leer entradas analógicas 'KMShield.analogReadKm(N_MUX,N_CANAL)'
                                                                                               // El valor leido va de 0-1023. Convertimos a 0-127, dividiendo por 8.
-                                                                                         
-        if (!IsNoise(KMShield.muxReadings[mux][channel], KMShield.muxPrevReadings[mux][channel], 
-                                           contadorInput, input.mode() == KMS::M_NRPN ? true : false)) {  // Si lo que leo no es ruido
-          // Enviar mensaje.                                                                                 
-          InputChanged(contadorInput, input, KMShield.muxReadings[mux][channel]);    
+        byte minMidi = input.param_min_coarse();
+        byte maxMidi = input.param_max_coarse();
+        byte maxPreMap = input.mode() == KMS::M_NRPN ? 1023 : 127;
+        
+        if(!minMidi || maxMidi < maxPreMap)
+          currAnalogValue = map(currAnalogValue, 0, maxPreMap, minMidi, maxMidi);
+
+        if (!firstRead && !IsNoise(currAnalogValue, prevAnalogValue, 
+                                   contadorInput, input.mode() == KMS::M_NRPN ? true : false)) {  // Si lo que leo no es ruido                                                                                
+          //Serial.print("Curr Value "); Serial.println(currAnalogValue);
+          //Serial.print("Prev Value "); Serial.println(prevAnalogValue);                                    
+          //InputChanged(contadorInput, input, currAnalogValue);                                    // Enviar mensaje. 
+        }
+        else if(firstRead){
+          //KMShield.muxPrevReadings[mux][channel] = KMShield.muxReadings[mux][channel];         // Almacenar lectura actual como anterior, para el próximo ciclo
+          prevAnalogValue = currAnalogValue;
+          continue;
         }
         else{
           continue;                                                                          // Sigo con la próxima lectura
         }
-        KMShield.muxPrevReadings[mux][channel] = KMShield.muxReadings[mux][channel];         // Almacenar lectura actual como anterior, para el próximo ciclo
+        //KMShield.muxPrevReadings[mux][channel] = KMShield.muxReadings[mux][channel];         // Almacenar lectura actual como anterior, para el próximo ciclo
+        prevAnalogValue = currAnalogValue;
       }
       
       else if(input.AD() == KMS::T_DIGITAL){
         // CÓDIGO PARA LECTURA DE ENTRADAS DIGITALES Y SHIFTERS
         KMShield.muxReadings[mux][channel] = KMShield.digitalReadKm(mux, channel, PULLUP);      // Leer entradas digitales 'KMShield.digitalReadKm(N_MUX, N_CANAL)'
-        
+        bool toggle = input.toggle();
         //Serial.print("Mux: "); Serial.print(mux); Serial.print("  Channel: "); Serial.println(channel);
         if (KMShield.muxReadings[mux][channel] != KMShield.muxPrevReadings[mux][channel]) {     // Me interesa la lectura, si cambió el estado del botón,
-          
           KMShield.muxPrevReadings[mux][channel] = KMShield.muxReadings[mux][channel];             // Almacenar lectura actual como anterior, para el próximo ciclo
+          if (firstRead) continue;
           if (!KMShield.muxReadings[mux][channel]){
             digitalInputState[channel+mux*NUM_MUX_CHANNELS] = !digitalInputState[channel+mux*NUM_MUX_CHANNELS];   // MODO TOGGLE: Cambia de 0 a 1, o viceversa
                                                                                                                   // MODO NORMAL: Cambia de 0 a 1                                                                                                                  
-            InputChanged(contadorInput, input, KMShield.muxReadings[mux][channel]);
+            InputChanged(contadorInput, input, !digitalInputState[channel+mux*NUM_MUX_CHANNELS]);
           }
-          else if (KMShield.muxReadings[mux][channel]) {
+          else if (KMShield.muxReadings[mux][channel] && !toggle) {
             digitalInputState[channel+mux*NUM_MUX_CHANNELS] = 0;
-            InputChanged(contadorInput, input, KMShield.muxReadings[mux][channel]);
+            InputChanged(contadorInput, input, !digitalInputState[channel+mux*NUM_MUX_CHANNELS]);
           }
         }
       }
@@ -394,49 +435,59 @@ void ReadInputs() {
 //        }
 //      }
   }
+  firstRead = false;
 }
 
-
 void InputChanged(int numInput, const KMS::InputNorm &input, unsigned int value) {
-  byte currBank = KMS::bank();
   byte mode = input.mode();
   bool analog = input.AD();       // 1 is analog
   byte param = input.param_fine();
   byte channel = input.channel();
-  byte velocity = !value * NOTE_ON;
-  
+  byte minMidi = input.param_min_coarse();
+  byte maxMidi = input.param_max_coarse();
+  byte velocity;
+  byte ccValue;
+  unsigned int nrpnValue;
+
   #if defined(MIDI_COMMS)
   if(configMode){
     if(analog)
       MIDI.sendControlChange( numInput, value, 1);
     else
-      MIDI.sendNoteOn( numInput, velocity, 1); 
+      MIDI.sendNoteOn( numInput, !value*127, 1); 
   }
   else{
     switch(mode){
       case (KMS::M_NOTE):
-        MIDI.sendNoteOn( param, analog ? value : velocity, channel);     // Channel is 1-16 to Arduino MIDI Lib, that's why + 1 is there
+        if(analog)
+          velocity = value;
+        else{
+          if(value)    velocity = minMidi;
+          else         velocity = maxMidi;
+        }
+        MIDI.sendNoteOn( param, velocity, channel);     // Channel is 1-16 to Arduino MIDI Lib, that's why + 1 is there
       break;
       case (KMS::M_CC):
-        MIDI.sendControlChange( param, value, channel);
+        if(analog)
+          if(!minMidi || maxMidi<127)
+            ccValue = value;
+        else{
+          if(value)    ccValue = minMidi;
+          else         ccValue = maxMidi;
+        }
+        MIDI.sendControlChange( param, ccValue, channel);
       break;
       case KMS::M_NRPN:
         MIDI.sendControlChange( 101, input.param_coarse(), channel);
         MIDI.sendControlChange( 100, input.param_fine(), channel);
-        MIDI.sendControlChange( 6, (value >> 7) & 0x7F, channel);
-        MIDI.sendControlChange( 38, (value & 0x7F), channel);
+        MIDI.sendControlChange( 6, (nrpnValue >> 7) & 0x7F, channel);
+        MIDI.sendControlChange( 38, (nrpnValue & 0x7F), channel);
       break;
       case KMS::M_PROGRAM:
         if(value > 0){
           MIDI.sendProgramChange( param, channel);
         }
       break;
-//      case KMS::M_SHIFTER:
-//        MIDI.sendNoteOn(param, value ,KMS::bank()+1);
-//        if(!value && currBank != param && param <= KMS::realBanks()){
-//          KMS::setBank(param); 
-//        }
-//      break;
       default:
       break;
     }
@@ -466,7 +517,7 @@ void InputChanged(int numInput, const KMS::InputNorm &input, unsigned int value)
 
 unsigned int IsNoise(unsigned int value, unsigned int prevValue, unsigned int input, bool nrpn) {
   static bool upOrDown[NUM_MUX_CHANNELS*2] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-                                            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+                                              0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
   byte noiseTh;
   
   if (nrpn) noiseTh = NOISE_THRESHOLD_NRPN;
