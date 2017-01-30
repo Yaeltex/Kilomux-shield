@@ -34,7 +34,7 @@
 
 void setup(); // Esto es para solucionar el bug que tiene Arduino al usar los #ifdef del preprocesador
 
-#define MIDI_COMMS
+//#define MIDI_COMMS
 
 #if defined(MIDI_COMMS)
 struct MySettings : public midi::DefaultSettings
@@ -315,12 +315,11 @@ void ReadInputs() {
         else                                                                                 
           KMShield.muxReadings[mux][channel] = KMShield.analogReadKm(mux, channel) >> 3;      // Si no es NRPN, leer entradas analógicas 'KMShield.analogReadKm(N_MUX,N_CANAL)'
                                                                                               // El valor leido va de 0-1023. Convertimos a 0-127, dividiendo por 8.
-        
-        currAnalogValue = map(KMShield.muxReadings[mux][channel], 0, KMS::M_NRPN ? 1023 : 127, input.param_min_coarse(), input.param_max_coarse());
-        
-        if (!firstRead && !IsNoise(currAnalogValue, prevAnalogValue, 
-                                   contadorInput, input.mode() == KMS::M_NRPN ? true : false)) {  // Si lo que leo no es ruido                                                                                
-          InputChanged(contadorInput, input, currAnalogValue);                                    // Enviar mensaje. 
+         
+        if (!IsNoise(KMShield.muxReadings[mux][channel], KMShield.muxPrevReadings[mux][channel], 
+                                            contadorInput, input.mode() == KMS::M_NRPN ? true : false)) {  // Si lo que leo no es ruido
+        	// Enviar mensaje.                                                                                 
+			    InputChanged(contadorInput, input, KMShield.muxReadings[mux][channel]);    
         }
         else if(firstRead){
           KMShield.muxPrevReadings[mux][channel] = KMShield.muxReadings[mux][channel];         // Almacenar lectura actual como anterior, para el próximo ciclo
@@ -330,7 +329,6 @@ void ReadInputs() {
           continue;                                                                          // Sigo con la próxima lectura
         }
         KMShield.muxPrevReadings[mux][channel] = KMShield.muxReadings[mux][channel];         // Almacenar lectura actual como anterior, para el próximo ciclo
-        prevAnalogValue = currAnalogValue;
       }
       
       else if(input.AD() == KMS::T_DIGITAL){
