@@ -34,7 +34,7 @@
 
 void setup(); // Esto es para solucionar el bug que tiene Arduino al usar los #ifdef del preprocesador
 
-//#define MIDI_COMMS
+#define MIDI_COMMS
 
 #if defined(MIDI_COMMS)
 struct MySettings : public midi::DefaultSettings
@@ -61,7 +61,7 @@ static const char * const modeLabels[] = {
 
 // AJUSTABLE - Si hay ruido que varía entre valores (+- 1, +- 2, +- 3...) colocar el umbral en (1, 2, 3...)
 #define NOISE_THRESHOLD             1                      // Ventana de ruido para las entradas analógicas. Si entrada < entrada+umbral o 
-#define NOISE_THRESHOLD_NRPN        60                      // Ventana de ruido para las entradas analógicas. Si entrada < entrada+umbral o 
+#define NOISE_THRESHOLD_NRPN        3                      // Ventana de ruido para las entradas analógicas. Si entrada < entrada+umbral o 
 
 #define ANALOG_UP     1
 #define ANALOG_DOWN   0
@@ -261,7 +261,7 @@ void ReadMidi(void) {
  */
 void ReadInputs() {
   static unsigned int currAnalogValue = 0, prevAnalogValue = 0;
-  for(int contadorInput = 0; contadorInput < 3; contadorInput++){
+  for(int contadorInput = 0; contadorInput < numInputs; contadorInput++){
     KMS::InputNorm input = KMS::input(contadorInput);
     mux = contadorInput < 16 ? MUX_A : MUX_B;           // MUX 0 or 1
     channel = contadorInput%NUM_MUX_CHANNELS;           // CHANNEL 0-15
@@ -311,32 +311,25 @@ void ReadInputs() {
       }
       else if(input.AD() == KMS::T_ANALOG){
         if(input.mode() == KMS::M_NRPN)
-          currAnalogValue = KMShield.analogReadKm(mux, channel);           // Si es NRPN leer entradas analógicas 'KMShield.analogReadKm(N_MUX,N_CANAL)'
+          KMShield.muxReadings[mux][channel] = KMShield.analogReadKm(mux, channel);           // Si es NRPN leer entradas analógicas 'KMShield.analogReadKm(N_MUX,N_CANAL)'
         else                                                                                 
-          currAnalogValue = KMShield.analogReadKm(mux, channel) >> 3;      // Si no es NRPN, leer entradas analógicas 'KMShield.analogReadKm(N_MUX,N_CANAL)'
+          KMShield.muxReadings[mux][channel] = KMShield.analogReadKm(mux, channel) >> 3;      // Si no es NRPN, leer entradas analógicas 'KMShield.analogReadKm(N_MUX,N_CANAL)'
                                                                                               // El valor leido va de 0-1023. Convertimos a 0-127, dividiendo por 8.
-        byte minMidi = input.param_min_coarse();
-        byte maxMidi = input.param_max_coarse();
-        byte maxPreMap = input.mode() == KMS::M_NRPN ? 1023 : 127;
         
-        if(!minMidi || maxMidi < maxPreMap)
-          currAnalogValue = map(currAnalogValue, 0, maxPreMap, minMidi, maxMidi);
-
+        currAnalogValue = map(KMShield.muxReadings[mux][channel], 0, KMS::M_NRPN ? 1023 : 127, input.param_min_coarse(), input.param_max_coarse());
+        
         if (!firstRead && !IsNoise(currAnalogValue, prevAnalogValue, 
                                    contadorInput, input.mode() == KMS::M_NRPN ? true : false)) {  // Si lo que leo no es ruido                                                                                
-          //Serial.print("Curr Value "); Serial.println(currAnalogValue);
-          //Serial.print("Prev Value "); Serial.println(prevAnalogValue);                                    
-          //InputChanged(contadorInput, input, currAnalogValue);                                    // Enviar mensaje. 
+          InputChanged(contadorInput, input, currAnalogValue);                                    // Enviar mensaje. 
         }
         else if(firstRead){
-          //KMShield.muxPrevReadings[mux][channel] = KMShield.muxReadings[mux][channel];         // Almacenar lectura actual como anterior, para el próximo ciclo
-          prevAnalogValue = currAnalogValue;
+          KMShield.muxPrevReadings[mux][channel] = KMShield.muxReadings[mux][channel];         // Almacenar lectura actual como anterior, para el próximo ciclo
           continue;
         }
         else{
           continue;                                                                          // Sigo con la próxima lectura
         }
-        //KMShield.muxPrevReadings[mux][channel] = KMShield.muxReadings[mux][channel];         // Almacenar lectura actual como anterior, para el próximo ciclo
+        KMShield.muxPrevReadings[mux][channel] = KMShield.muxReadings[mux][channel];         // Almacenar lectura actual como anterior, para el próximo ciclo
         prevAnalogValue = currAnalogValue;
       }
       
@@ -460,7 +453,7 @@ void InputChanged(int numInput, const KMS::InputNorm &input, unsigned int value)
     switch(mode){
       case (KMS::M_NOTE):
         if(analog)
-          velocity = value;
+          velocity = map(value, 0, 127, minMidi, maxMidi);
         else{
           if(value)    velocity = minMidi;
           else         velocity = maxMidi;
@@ -470,7 +463,7 @@ void InputChanged(int numInput, const KMS::InputNorm &input, unsigned int value)
       case (KMS::M_CC):
         if(analog)
           if(!minMidi || maxMidi<127)
-            ccValue = value;
+            ccValue = map(value, 0, 127, minMidi, maxMidi);
         else{
           if(value)    ccValue = minMidi;
           else         ccValue = maxMidi;
@@ -478,6 +471,7 @@ void InputChanged(int numInput, const KMS::InputNorm &input, unsigned int value)
         MIDI.sendControlChange( param, ccValue, channel);
       break;
       case KMS::M_NRPN:
+        nrpnValue = map(value, 0, 1023, minMidi, (maxMidi<<7) + 127);       // 0-1023 -> 0 - 16129
         MIDI.sendControlChange( 101, input.param_coarse(), channel);
         MIDI.sendControlChange( 100, input.param_fine(), channel);
         MIDI.sendControlChange( 6, (nrpnValue >> 7) & 0x7F, channel);
