@@ -34,7 +34,7 @@
 
 void setup(); // Esto es para solucionar el bug que tiene Arduino al usar los #ifdef del preprocesador
 
-//#define MIDI_COMMS
+#define MIDI_COMMS
 
 #if defined(MIDI_COMMS)
 struct MySettings : public midi::DefaultSettings
@@ -316,7 +316,7 @@ void ReadInputs() {
           KMShield.muxReadings[mux][channel] = KMShield.analogReadKm(mux, channel) >> 3;      // Si no es NRPN, leer entradas analógicas 'KMShield.analogReadKm(N_MUX,N_CANAL)'
                                                                                               // El valor leido va de 0-1023. Convertimos a 0-127, dividiendo por 8.
          
-        if (!IsNoise(KMShield.muxReadings[mux][channel], KMShield.muxPrevReadings[mux][channel], 
+        if (!firstRead && !IsNoise(KMShield.muxReadings[mux][channel], KMShield.muxPrevReadings[mux][channel], 
                                             contadorInput, input.mode() == KMS::M_NRPN ? true : false)) {  // Si lo que leo no es ruido
         	// Enviar mensaje.                                                                                 
 			    InputChanged(contadorInput, input, KMShield.muxReadings[mux][channel]);    
@@ -460,8 +460,7 @@ void InputChanged(int numInput, const KMS::InputNorm &input, unsigned int value)
       break;
       case (KMS::M_CC):
         if(analog)
-          if(!minMidi || maxMidi<127)
-            ccValue = map(value, 0, 127, minMidi, maxMidi);
+          ccValue = map(value, 0, 127, minMidi, maxMidi);
         else{
           if(value)    ccValue = minMidi;
           else         ccValue = maxMidi;
@@ -491,6 +490,8 @@ void InputChanged(int numInput, const KMS::InputNorm &input, unsigned int value)
     else if(mode == KMS::M_NRPN){
       value = map(value, 0, 1023, 0, 16383);
     }
+    if(analog) 
+      value = map(value, 0, mode == KMS::M_NRPN ? 1023:127, minMidi, maxMidi);
     Serial.print("Channel: "); Serial.print(channel); Serial.print("\t");
     Serial.print("Tipo: "); Serial.print(input.AD()?"Analog":"Digital"); Serial.print("\t");
     Serial.print("Modo: "); Serial.print(MODE_LABEL(mode)); Serial.print("\t");
