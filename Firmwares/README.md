@@ -1,2 +1,8 @@
 Tutorial de como programar y recompilar HIDUINO
-https://docs.google.com/document/d/15jb0kX-AjQZPDCQXfaMo66J0Ss9-AABITjlBMpLWaSk/edit
+instructables.com/id/Recompilar-y-cargar-HIDUINO-mediante-ISP/
+
+Tutorial on how to recompile, rename and flash HIDUINO
+instructables.com/id/Recompilar-y-cargar-HIDUINO-mediante-ISP/
+
+MOCOLUFA (dual boot USB-Serial and MIDI)
+https://github.com/kuwatay/mocolufa
