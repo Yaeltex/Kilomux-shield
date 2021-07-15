@@ -29,9 +29,9 @@ como un dispositivo MIDI. En la carpeta "hiduino-master" se puede
 encontrar un tutorial para recompilar (y renombrar) el firmware y para
 cargarlo en la Arduino.
 
-Para más información acerca del shield, visitá nuestra wiki: http://wiki.yaeltex.com.ar/index.php?title=KiloMux_Shield
+Para más información acerca del shield, visitá nuestra wiki: https://wiki.yaeltex.com/?nocache=1#.C2.B7_Kilomux_Shield
 
 Si tenes dudas, sugerencias o comentarios acerca del shield, escribí a
-franco@yaeltex.com.ar o posteala en el foro de Yaeltex http://foro.yaeltex.com.ar
+franco@yaeltex.com.ar o posteala en el foro de Yaeltex http://forum.yaeltex.com
 
 Saludos!
