@@ -32,6 +32,6 @@ cargarlo en la Arduino.
 Para más información acerca del shield, visitá [nuestra wiki](https://wiki.yaeltex.com/?nocache=1#.C2.B7_Kilomux_Shield)
 
 Si tenes dudas, sugerencias o comentarios acerca del shield, escribí a
-franco@yaeltex.com.ar o posteala en el [foro de Yaeltex](http://forum.yaeltex.com)
+franco@yaeltex.com o posteala en el [foro de Yaeltex](http://forum.yaeltex.com)
 
 Saludos!
